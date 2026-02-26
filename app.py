@@ -164,7 +164,10 @@ with st.sidebar:
         [
             "🏠  Dashboard",
             "🎵  Catalog",
+            "📦  Catalog Manager",
             "📊  Streaming",
+            "💰  Revenue",
+            "🌐  Cross-Platform",
             "📱  Instagram",
             "🤝  Collaborators",
             "📈  Growth",
@@ -178,7 +181,7 @@ with st.sidebar:
     st.markdown('<div style="height: 40px"></div>', unsafe_allow_html=True)
     st.markdown(
         '<div style="font-size:0.7rem;color:#484f58;padding:0 14px">'
-        'v2.0 · Static data · Streamlit + Plotly</div>',
+        'v3.0 · Live APIs + Static fallback</div>',
         unsafe_allow_html=True,
     )
 
@@ -189,8 +192,14 @@ if page == "🏠  Dashboard":
     from pages.dashboard import render
 elif page == "🎵  Catalog":
     from pages.catalog import render
+elif page == "📦  Catalog Manager":
+    from pages.catalog_manager import render
 elif page == "📊  Streaming":
     from pages.streaming import render
+elif page == "💰  Revenue":
+    from pages.revenue import render
+elif page == "🌐  Cross-Platform":
+    from pages.cross_platform import render
 elif page == "📱  Instagram":
     from pages.instagram import render
 elif page == "🤝  Collaborators":

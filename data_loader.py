@@ -1,4 +1,7 @@
-"""Centralized data loaders — imported by all pages."""
+"""Centralized data loaders — imported by all pages.
+
+Each loader tries the live API service first, then falls back to static CSV/JSON.
+"""
 from __future__ import annotations
 
 import json
@@ -9,6 +12,10 @@ import streamlit as st
 
 DATA_DIR = Path(__file__).parent / "data"
 
+
+# ---------------------------------------------------------------------------
+# Static file loaders (always available, used as fallback)
+# ---------------------------------------------------------------------------
 
 @st.cache_data
 def load_songs_all() -> pd.DataFrame:
@@ -23,14 +30,31 @@ def load_songs_recent() -> pd.DataFrame:
 
 
 @st.cache_data
-def load_ig_insights() -> dict:
-    with open(DATA_DIR / "instagram_jakke_insights_30d.json") as f:
-        return json.load(f)
+def load_catalog() -> pd.DataFrame:
+    return pd.read_csv(DATA_DIR / "musicteam_catalog.csv")
 
 
 @st.cache_data
-def load_catalog() -> pd.DataFrame:
-    return pd.read_csv(DATA_DIR / "musicteam_catalog.csv")
+def load_music_collaborators() -> pd.DataFrame:
+    return pd.read_csv(DATA_DIR / "music_collaborators.csv")
+
+
+# ---------------------------------------------------------------------------
+# Instagram — API or static fallback
+# ---------------------------------------------------------------------------
+
+@st.cache_data
+def load_ig_insights() -> dict:
+    try:
+        from services.instagram_client import is_available, get_insights_30d
+        if is_available():
+            data = get_insights_30d()
+            if data and data.get("_source") == "api":
+                return data
+    except Exception:
+        pass
+    with open(DATA_DIR / "instagram_jakke_insights_30d.json") as f:
+        return json.load(f)
 
 
 @st.cache_data
@@ -67,18 +91,31 @@ def load_ig_day_of_week() -> pd.DataFrame:
     return pd.read_csv(DATA_DIR / "ig_day_of_week.csv")
 
 
+# ---------------------------------------------------------------------------
+# Songstats — API or static fallback
+# ---------------------------------------------------------------------------
+
 @st.cache_data
 def load_songstats_jakke() -> dict:
+    try:
+        from services.songstats_client import get_jakke_stats
+        data = get_jakke_stats()
+        if data and data.get("_source") == "api":
+            return data
+    except Exception:
+        pass
     with open(DATA_DIR / "songstats_jakke.json") as f:
         return json.load(f)
 
 
 @st.cache_data
 def load_songstats_enjune() -> dict:
+    try:
+        from services.songstats_client import get_enjune_stats
+        data = get_enjune_stats()
+        if data and data.get("_source") == "api":
+            return data
+    except Exception:
+        pass
     with open(DATA_DIR / "songstats_enjune.json") as f:
         return json.load(f)
-
-
-@st.cache_data
-def load_music_collaborators() -> pd.DataFrame:
-    return pd.read_csv(DATA_DIR / "music_collaborators.csv")
