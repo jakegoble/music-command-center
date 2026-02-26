@@ -92,7 +92,7 @@ st.markdown("""
         border: none !important;
         color: #c9d1d9 !important;
         text-align: left !important;
-        padding: 9px 14px !important;
+        padding: 9px 0 !important;
         margin: 1px 0 !important;
         font-size: 0.88rem !important;
         font-weight: 500 !important;
@@ -125,8 +125,8 @@ st.markdown("""
     [data-testid="stMetricLabel"] { color: #8b949e; font-size: 0.8rem; font-weight: 500; }
     [data-testid="stMetricValue"] { color: #f0f6fc; font-size: 1.5rem; font-weight: 700; }
 
-    /* Tabs — left-aligned */
-    .stTabs [data-baseweb="tab-list"] { gap: 4px; border-bottom: 1px solid #21262d; justify-content: flex-start; }
+    /* Tabs — left-aligned, no extra margin */
+    .stTabs [data-baseweb="tab-list"] { gap: 4px; border-bottom: 1px solid #21262d; justify-content: flex-start; padding-left: 0 !important; margin-left: 0 !important; }
     .stTabs [data-baseweb="tab"] {
         background: transparent;
         border-radius: 8px 8px 0 0;
@@ -191,7 +191,7 @@ st.markdown("""
         color: #484f58;
         text-transform: uppercase;
         letter-spacing: 0.1em;
-        padding: 16px 14px 4px 14px;
+        padding: 16px 0 4px 0;
         margin: 0;
     }
 
@@ -338,7 +338,7 @@ with st.sidebar:
             if is_active:
                 st.markdown(
                     f'<div style="background:rgba(29,185,84,0.12);border-left:3px solid #1DB954;'
-                    f'border-radius:8px;padding:9px 11px;margin:1px 0;">'
+                    f'border-radius:8px;padding:9px 0;margin:1px 0;">'
                     f'<span style="color:#f0f6fc;font-weight:600;font-size:0.88rem">'
                     f'{icon}  {label}</span></div>',
                     unsafe_allow_html=True,
