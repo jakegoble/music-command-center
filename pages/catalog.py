@@ -8,7 +8,8 @@ import streamlit as st
 
 from theme import (
     SPOTIFY_GREEN, ACCENT_BLUE, GOLD, AMBER, MUTED, IG_PINK,
-    PLOTLY_LAYOUT, kpi_row, section, spacer,
+    PLOTLY_LAYOUT, kpi_row, section, spacer, genre_pill, genre_pills,
+    GENRE_COLORS, platform_icon,
 )
 
 
@@ -77,7 +78,16 @@ def render() -> None:
         {"label": "Playlisted", "value": str(playlisted_count), "accent": SPOTIFY_GREEN},
     ])
 
-    spacer(16)
+    spacer(8)
+
+    # Genre summary
+    genre_counts = unified["genre"].value_counts()
+    genre_html = " ".join(
+        f'{genre_pill(g)} <span style="color:#484f58;font-size:0.72rem;margin-right:8px">{c}</span>'
+        for g, c in genre_counts.items() if g
+    )
+    if genre_html:
+        st.markdown(f'<div style="margin-bottom:16px">{genre_html}</div>', unsafe_allow_html=True)
 
     tab_overview, tab_revenue, tab_health, tab_remixes, tab_timeline = st.tabs(
         ["Overview", "Revenue", "Health", "Remixes", "Timeline"]
@@ -113,7 +123,7 @@ def render() -> None:
 
         spacer(8)
         display = filtered[[
-            "song", "artist", "streams", "ss_popularity", "est_revenue",
+            "song", "artist", "genre", "streams", "ss_popularity", "est_revenue",
             "jake_split", "jake_revenue",
             "Writers", "ISRC", "Dolby Atmos", "release_date", "collaborators",
         ]].copy()
@@ -123,9 +133,10 @@ def render() -> None:
         display["jake_split"] = display["jake_split"].apply(lambda x: f"{x:.0%}")
         display["jake_revenue"] = display["jake_revenue"].apply(lambda x: f"${x:,.2f}")
         display["ss_popularity"] = display["ss_popularity"].apply(lambda x: str(x) if x > 0 else "—")
+        display["genre"] = display["genre"].fillna("—")
         display["collaborators"] = display["collaborators"].fillna("—")
         display.columns = [
-            "Song", "Artist", "Streams", "Popularity", "Est. Revenue",
+            "Song", "Artist", "Genre", "Streams", "Popularity", "Est. Revenue",
             "Jake's %", "Jake's Rev",
             "Writers", "ISRC", "Atmos", "Released", "Collaborators",
         ]
@@ -143,6 +154,10 @@ def render() -> None:
 
         if selected_track:
             track = unified[unified["song"] == selected_track].iloc[0]
+            track_genre = track.get("genre", "")
+            if track_genre:
+                st.markdown(genre_pill(track_genre), unsafe_allow_html=True)
+                spacer(8)
             c1, c2, c3, c4, c5, c6 = st.columns(6)
             c1.metric("Streams", f"{track['streams']:,}")
             c2.metric("Popularity", str(track["ss_popularity"]) if track["ss_popularity"] > 0 else "—")

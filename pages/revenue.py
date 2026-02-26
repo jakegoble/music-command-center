@@ -8,7 +8,7 @@ import streamlit as st
 
 from theme import (
     SPOTIFY_GREEN, ACCENT_BLUE, GOLD, AMBER, MUTED, IG_PINK,
-    PLOTLY_LAYOUT, kpi_row, section, spacer,
+    PLOTLY_LAYOUT, kpi_row, section, spacer, platform_icon,
 )
 
 

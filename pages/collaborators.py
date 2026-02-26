@@ -8,7 +8,7 @@ import streamlit as st
 
 from theme import (
     IG_PINK, SPOTIFY_GREEN, ACCENT_BLUE, GOLD, AMBER, MUTED,
-    PLOTLY_LAYOUT, kpi_row, section, spacer,
+    PLOTLY_LAYOUT, kpi_row, section, spacer, avatar,
 )
 
 TIER_COLORS = {1: GOLD, 2: ACCENT_BLUE, 3: MUTED}
@@ -162,8 +162,9 @@ def render() -> None:
     section("Key Collaborator Deep Dives")
 
     with st.expander("@enjune.music — 16 posts · Avg 404 likes · Tier 1"):
+        st.markdown(avatar("Enjune Music", 32) + ' <span style="font-weight:600;color:#f0f6fc;vertical-align:middle">Enjune Music</span>', unsafe_allow_html=True)
         st.markdown("""
-**Enjune Music** is Jake's music brand account. Cross-posts between personal and brand.
+Jake's music brand account. Cross-posts between personal and brand.
 
 - **16 collab posts** over the music era (2022–2026)
 - **Total engagement**: 6,471 likes
@@ -173,8 +174,9 @@ def render() -> None:
         """)
 
     with st.expander("@timjck / @ontout — 3 posts · Avg 1,570 likes · Tier 1"):
+        st.markdown(avatar("Tim JCK", 32) + ' <span style="font-weight:600;color:#f0f6fc;vertical-align:middle">Tim JCK / @ontout</span>', unsafe_allow_html=True)
         st.markdown("""
-**Tim JCK** through @ontout sessions = highest-impact collaboration by far.
+@ontout sessions = highest-impact collaboration by far.
 
 - **3 collab posts** — small sample but wildly consistent
 - **Average**: 1,570 likes/post (**13x solo average**)
@@ -184,6 +186,7 @@ def render() -> None:
         """)
 
     with st.expander("@curtreynolds — 3 posts · Avg 132 likes · Tier 2"):
+        st.markdown(avatar("Curt Reynolds", 32) + ' <span style="font-weight:600;color:#f0f6fc;vertical-align:middle">Curt Reynolds</span>', unsafe_allow_html=True)
         st.markdown("Consistent performer, slightly above solo average. Reliable but not a breakout multiplier.")
 
     spacer(20)

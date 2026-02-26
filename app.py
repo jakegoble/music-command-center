@@ -92,12 +92,18 @@ st.markdown("""
         box-shadow: none !important;
     }
 
-    /* Metric cards */
+    /* Metric cards — depth + hover */
     [data-testid="stMetric"] {
         background: #161b22;
         border: 1px solid #21262d;
         border-radius: 10px;
         padding: 16px 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    [data-testid="stMetric"]:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.4);
     }
     [data-testid="stMetricLabel"] { color: #8b949e; font-size: 0.8rem; font-weight: 500; }
     [data-testid="stMetricValue"] { color: #f0f6fc; font-size: 1.5rem; font-weight: 700; }
@@ -111,6 +117,7 @@ st.markdown("""
         padding: 10px 18px;
         font-weight: 500;
         font-size: 0.88rem;
+        transition: all 0.15s ease;
     }
     .stTabs [data-baseweb="tab"]:hover { color: #f0f6fc; background: rgba(255,255,255,0.03); }
     .stTabs [aria-selected="true"] {
@@ -120,11 +127,16 @@ st.markdown("""
         font-weight: 600;
     }
 
-    /* Expanders */
+    /* Expanders — depth */
     details[data-testid="stExpander"] {
         background: #161b22;
         border: 1px solid #21262d;
         border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        transition: box-shadow 0.15s ease;
+    }
+    details[data-testid="stExpander"]:hover {
+        box-shadow: 0 4px 16px rgba(0,0,0,0.35);
     }
     details[data-testid="stExpander"] summary {
         font-weight: 500;
@@ -132,7 +144,11 @@ st.markdown("""
     }
 
     /* Dataframes */
-    .stDataFrame { border-radius: 10px; overflow: hidden; }
+    .stDataFrame {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
 
     /* Selectbox */
     .stSelectbox > div > div { background: #161b22; border-color: #21262d; }
@@ -140,8 +156,13 @@ st.markdown("""
     /* Alerts */
     div[data-testid="stAlert"] { border-radius: 10px; font-size: 0.9rem; }
 
-    /* Plotly spacing */
-    .stPlotlyChart { margin-bottom: -12px; }
+    /* Plotly — depth + hover */
+    .stPlotlyChart {
+        margin-bottom: -12px;
+        border-radius: 10px;
+        transition: transform 0.15s ease;
+    }
+    .stPlotlyChart:hover { transform: translateY(-1px); }
 
     /* Divider */
     hr { border-color: #161b22 !important; margin: 1.5rem 0 !important; }
@@ -156,6 +177,27 @@ st.markdown("""
         padding: 16px 14px 4px 14px;
         margin: 0;
     }
+
+    /* Genre pill badges */
+    .genre-pill {
+        display: inline-block;
+        font-size: 0.68rem;
+        font-weight: 600;
+        padding: 3px 10px;
+        border-radius: 12px;
+        letter-spacing: 0.03em;
+        white-space: nowrap;
+        color: #f0f6fc;
+    }
+
+    /* Gradient header cards */
+    .gradient-card {
+        background: linear-gradient(135deg, #161b22 0%, #1c2333 100%);
+        border: 1px solid #21262d;
+        border-radius: 12px;
+        padding: 20px 24px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -169,14 +211,17 @@ if "current_page" not in st.session_state:
 # Sidebar — button-based navigation (exactly one active at a time)
 # ---------------------------------------------------------------------------
 with st.sidebar:
-    # Brand header
+    # Brand header with avatar
     st.markdown("""
-    <div style="padding:8px 0 16px 0">
-        <div style="font-size:1.3rem;font-weight:700;color:#f0f6fc;letter-spacing:-0.02em">
-            🎵 Music Command Center
-        </div>
-        <div style="font-size:0.78rem;color:#8b949e;margin-top:4px">
-            Jakke · iLÜ · Enjune Music
+    <div style="padding:8px 0 16px 0;display:flex;align-items:center;gap:12px">
+        <div style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#1DB954,#1a5276);color:#f0f6fc;font-size:16px;font-weight:700;flex-shrink:0">JG</div>
+        <div>
+            <div style="font-size:1.15rem;font-weight:700;color:#f0f6fc;letter-spacing:-0.02em">
+                Music Command Center
+            </div>
+            <div style="font-size:0.72rem;color:#8b949e;margin-top:2px">
+                Jakke · iLÜ · Enjune Music
+            </div>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -204,7 +249,7 @@ with st.sidebar:
     st.markdown('<div style="height:40px"></div>', unsafe_allow_html=True)
     st.markdown(
         '<div style="font-size:0.7rem;color:#484f58;padding:0 14px">'
-        'v3.0 · Live APIs + Static fallback</div>',
+        'v4.0 · Live APIs + Static fallback</div>',
         unsafe_allow_html=True,
     )
 

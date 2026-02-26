@@ -8,6 +8,7 @@ import streamlit as st
 from theme import (
     SPOTIFY_GREEN, IG_PINK, ACCENT_BLUE, MUTED, GOLD, AMBER,
     PLOTLY_LAYOUT, kpi_row, section, spacer,
+    artist_header, genre_pill, platform_icon,
 )
 
 
@@ -27,12 +28,10 @@ def render() -> None:
     enjune = load_songstats_enjune()
 
     # --- Page header ---
-    st.markdown("""
-    <div style="margin-bottom:28px">
-        <h1 style="margin:0;font-size:1.8rem;font-weight:700;color:#f0f6fc">Dashboard</h1>
-        <p style="color:#8b949e;margin:4px 0 0 0;font-size:0.9rem">At-a-glance health check across streaming, social, and catalog</p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown(
+        artist_header("Jakke", "Dashboard — at-a-glance health check across streaming, social, and catalog"),
+        unsafe_allow_html=True,
+    )
 
     # --- KPI Row 1: Streaming ---
     top_song = songs.loc[songs["streams"].idxmax()]
@@ -72,7 +71,10 @@ def render() -> None:
         with cols[i]:
             song_data = songs[songs["song"] == song_name]
             streams_text = f"{song_data.iloc[0]['streams']:,} streams" if not song_data.empty else ""
+            song_genre = song_data.iloc[0].get("genre", "") if not song_data.empty else ""
             with st.expander(f"🎵 **{song_name}**"):
+                if song_genre:
+                    st.markdown(genre_pill(song_genre), unsafe_allow_html=True)
                 if streams_text:
                     st.caption(streams_text)
                 if top_playlists:

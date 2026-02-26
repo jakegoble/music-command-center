@@ -8,7 +8,7 @@ import streamlit as st
 
 from theme import (
     IG_PINK, IG_PURPLE, IG_ORANGE, ACCENT_BLUE, MUTED, GOLD,
-    PLOTLY_LAYOUT, chart_layout, kpi_row, section, spacer,
+    PLOTLY_LAYOUT, chart_layout, kpi_row, section, spacer, platform_icon,
 )
 
 # UTC → ET offset (EST = -5)

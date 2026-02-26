@@ -1,29 +1,29 @@
-song,listeners,streams,saves,release_date,artist,collaborators,popularity
-Your Love's Not Wasted,0,1911265,0,2024-07-11,Jakke,Allen Blickle,36
-Sugar Tide,0,240897,0,2022-08-26,Jakke,"Enjune, Nuage",9
-Peace Of Mind,0,186415,0,,Jakke,Somelee,23
-Hurricane,0,170954,0,2023-12-01,Jakke,matty co.,10
-Karma Response,0,119987,0,2024-12-13,Jakke,Nuage,13
-Waves,0,71430,0,2022-04-08,Jakke,Enjune,5
-Drink You Slowly,0,64213,0,2023-08-18,Jakke,Allen Blickle,
-Without Peace,0,58742,0,2025-06-20,Jakke,Jake Goble,20
-Shallow Mold,0,56307,0,,Jakke,matty co.,
-Late Night,0,55224,0,2023-05-12,Jakke,Allen Blickle,31
-Delicate,0,48367,0,2024-03-15,Jakke,Allen Blickle,15
-Brick by Brick,0,41205,0,2024-09-06,Jakke,Allen Blickle,30
-Adriatic,0,37891,0,,Jakke,,
-Whisper Of The Void,0,28103,0,2025-03-21,iLÜ,Trevor Coulter,
-Waves (Acoustic),0,25890,0,2022-06-17,Jakke,,
-Sugar Tide (Club Mix),0,22345,0,2022-11-04,Jakke,,
-WAIT,0,21876,0,2024-10-16,Jakke,Jake Goble,13
-Sugar Tide (Lofi Remix),0,19430,0,2023-01-20,Jakke,,
-HOW DO YOU LOVE,0,15000,0,,Jakke,TÂCHES,
-Sugar Tide (Remix),0,10000,0,,Jakke,Jackets,
-Release,0,8000,0,,Jakke,Enjune,
-Father World (Mama Earth),0,5000,0,,Jakke,Enjune,
-Burn Me Up,0,5000,0,2021,Jakke,Enjune,
-Burn,0,2000,0,2021,Jakke,,
-Take Me With You,0,3000,0,,Jakke,GLITTER COWBOYS,
-Release (TRØVES Remix),0,1500,0,,Jakke,TRØVES,
-Burn Me Up (Jako Diaz Remix),0,1200,0,,Jakke,Jako Diaz,
-Release (Curt Reynolds Remix),0,500,0,,Jakke,Curt Reynolds,
+song,listeners,streams,saves,release_date,artist,collaborators,popularity,genre
+Your Love's Not Wasted,0,1911265,0,2024-07-11,Jakke,Allen Blickle,36,Organic House
+Sugar Tide,0,240897,0,2022-08-26,Jakke,"Enjune, Nuage",9,Deep House
+Peace Of Mind,0,186415,0,,Jakke,Somelee,23,Melodic House
+Hurricane,0,170954,0,2023-12-01,Jakke,matty co.,10,Indie Electronic
+Karma Response,0,119987,0,2024-12-13,Jakke,Nuage,13,Downtempo
+Waves,0,71430,0,2022-04-08,Jakke,Enjune,5,Chillwave
+Drink You Slowly,0,64213,0,2023-08-18,Jakke,Allen Blickle,,Organic House
+Without Peace,0,58742,0,2025-06-20,Jakke,,20,Melodic House
+Shallow Mold,0,56307,0,,Jakke,matty co.,,Indie Electronic
+Late Night,0,55224,0,2023-05-12,Jakke,Allen Blickle,31,Organic House
+Delicate,0,48367,0,2024-03-15,Jakke,Allen Blickle,15,Organic House
+Brick by Brick,0,41205,0,2024-09-06,Jakke,Allen Blickle,30,Organic House
+Adriatic,0,37891,0,,iLÜ,Trevor Coulter,,"Melodic Techno"
+Whisper Of The Void,0,28103,0,2025-03-21,iLÜ,Trevor Coulter,,Melodic Techno
+Waves (Acoustic),0,25890,0,2022-06-17,Jakke,,,Acoustic
+Sugar Tide (Club Mix),0,22345,0,2022-11-04,Jakke,,,Deep House
+WAIT,0,21876,0,2024-10-16,Jakke,,13,Downtempo
+Sugar Tide (Lofi Remix),0,19430,0,2023-01-20,Jakke,,,Lo-Fi
+HOW DO YOU LOVE,0,15000,0,,Jakke,TÂCHES,,Indie Electronic
+Sugar Tide (Remix),0,10000,0,,Jakke,Jackets,,Deep House
+Release,0,8000,0,,Jakke,Enjune,,Chillwave
+Father World (Mama Earth),0,5000,0,,Jakke,Enjune,,Ambient
+Burn Me Up,0,5000,0,2021,Jakke,Enjune,,Chillwave
+Burn,0,2000,0,2021,Jakke,,,Downtempo
+Take Me With You,0,3000,0,,Jakke,GLITTER COWBOYS,,Indie Electronic
+Release (TRØVES Remix),0,1500,0,,Jakke,TRØVES,,Deep House
+Burn Me Up (Jako Diaz Remix),0,1200,0,,Jakke,Jako Diaz,,Progressive House
+Release (Curt Reynolds Remix),0,500,0,,Jakke,Curt Reynolds,,Deep House

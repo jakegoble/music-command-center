@@ -8,7 +8,7 @@ import plotly.graph_objects as go
 import pandas as pd
 import streamlit as st
 
-from theme import SPOTIFY_GREEN, ACCENT_BLUE, AMBER, GOLD, MUTED, PLOTLY_LAYOUT, kpi_row, section, spacer
+from theme import SPOTIFY_GREEN, ACCENT_BLUE, AMBER, GOLD, MUTED, PLOTLY_LAYOUT, kpi_row, section, spacer, genre_pill
 
 
 def render() -> None:
@@ -128,7 +128,10 @@ def render() -> None:
         pct_recent = (recent_count / row["streams"] * 100) if row["streams"] > 0 else 0
         collab_str = row.get("collaborators", "—") if pd.notna(row.get("collaborators", None)) else "—"
         pop_str = f"{int(row['popularity'])}%" if row.get("popularity", 0) > 0 else "—"
+        song_genre = row.get("genre", "")
         with st.expander(f"{row['song']} — {row['streams']:,} all-time"):
+            if song_genre:
+                st.markdown(genre_pill(song_genre), unsafe_allow_html=True)
             c1, c2, c3, c4, c5 = st.columns(5)
             c1.metric("All-Time", f"{row['streams']:,}")
             c2.metric("Recent (3yr)", f"{recent_count:,}")
