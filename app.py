@@ -109,6 +109,12 @@ st.markdown("""
         padding-bottom: 0px !important;
     }
 
+    /* Sidebar button wrappers — force full width so buttons sit flush left */
+    section[data-testid="stSidebar"] .stElementContainer,
+    section[data-testid="stSidebar"] .stButton {
+        width: 100% !important;
+    }
+
     /* Sidebar nav buttons — compact, left-aligned */
     section[data-testid="stSidebar"] .stButton > button {
         background: transparent !important;
