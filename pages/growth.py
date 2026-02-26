@@ -5,7 +5,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
-from theme import IG_PINK, SPOTIFY_GREEN, ACCENT_BLUE, GOLD, MUTED, PLOTLY_LAYOUT, section, spacer
+from theme import IG_PINK, SPOTIFY_GREEN, ACCENT_BLUE, GOLD, MUTED, PLOTLY_LAYOUT, chart_layout, section, spacer
 
 MILESTONES = [
     {"year": 2012, "event": "First Instagram post", "icon": "📸", "detail": "27 posts, 12 avg likes — the beginning"},
@@ -85,9 +85,12 @@ def render() -> None:
         mode="lines+markers", line=dict(color=ACCENT_BLUE, width=2), yaxis="y2",
         hovertemplate="%{x|%b %Y}<br>Avg <b>%{y:.0f}</b> likes<extra></extra>",
     ))
-    fig2.update_layout(**PLOTLY_LAYOUT, height=380,
-                        yaxis=dict(title="Total Likes"), yaxis2=dict(title="Avg Likes", overlaying="y", side="right", showgrid=False),
-                        legend=dict(orientation="h", y=1.08))
+    fig2.update_layout(**chart_layout(
+        height=380,
+        yaxis=dict(title="Total Likes"),
+        yaxis2=dict(title="Avg Likes", overlaying="y", side="right", showgrid=False),
+        legend=dict(orientation="h", y=1.08),
+    ))
     st.plotly_chart(fig2, use_container_width=True, key="growth_monthly")
 
     spacer(24)

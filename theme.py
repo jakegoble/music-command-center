@@ -20,6 +20,19 @@ BG = "#0e1117"
 CARD_BG = "#161b22"
 BORDER = "#21262d"
 
+# Platform colors
+PLATFORM_COLORS = {
+    "Spotify": SPOTIFY_GREEN,
+    "Apple Music": "#fc3c44",
+    "YouTube": "#ff0000",
+    "YouTube Music": "#ff0000",
+    "Amazon Music": "#00a8e1",
+    "Deezer": "#a238ff",
+    "Tidal": "#000000",
+    "Instagram": IG_PINK,
+    "SoundCloud": "#ff5500",
+}
+
 # ---------------------------------------------------------------------------
 # Plotly shared layout
 # ---------------------------------------------------------------------------
@@ -34,35 +47,40 @@ PLOTLY_LAYOUT = dict(
 )
 
 
+def chart_layout(**overrides) -> dict:
+    """Build a Plotly layout dict that safely merges with PLOTLY_LAYOUT.
+
+    Use this instead of **PLOTLY_LAYOUT when you need to override yaxis, yaxis2, legend, etc.
+    This avoids the 'got multiple values for keyword argument' error.
+    """
+    layout = dict(PLOTLY_LAYOUT)
+    for key in ["xaxis", "yaxis", "xaxis2", "yaxis2"]:
+        if key in overrides:
+            base = dict(layout.get(key, {}))
+            base.update(overrides.pop(key))
+            layout[key] = base
+    layout.update(overrides)
+    return layout
+
+
 # ---------------------------------------------------------------------------
-# HTML KPI card
+# KPI card — clean single-line HTML (fixes HTML leak bug)
 # ---------------------------------------------------------------------------
 def kpi_card(label: str, value: str, *, delta: str = "", accent: str = SPOTIFY_GREEN, sub: str = "") -> str:
-    """Return HTML for a styled KPI card with left accent border."""
-    delta_html = ""
+    """Return HTML for a styled KPI card. Uses spans to avoid nested div rendering issues."""
+    parts = [
+        f'<div style="background:{CARD_BG};border:1px solid {BORDER};border-left:3px solid {accent};border-radius:10px;padding:18px 20px;">',
+        f'<span style="font-size:0.78rem;color:{MUTED};font-weight:500;letter-spacing:0.03em;text-transform:uppercase;display:block;">{label}</span>',
+        f'<span style="font-size:1.65rem;color:{TEXT};font-weight:700;margin-top:4px;line-height:1.2;display:block;">{value}</span>',
+    ]
     if delta:
         is_neg = delta.startswith("-") or "down" in delta.lower()
         color = "#f85149" if is_neg else SPOTIFY_GREEN
-        delta_html = f'<div style="font-size:0.8rem;color:{color};margin-top:4px">{delta}</div>'
-
-    sub_html = ""
+        parts.append(f'<span style="font-size:0.8rem;color:{color};margin-top:4px;display:block;">{delta}</span>')
     if sub:
-        sub_html = f'<div style="font-size:0.75rem;color:{MUTED};margin-top:2px">{sub}</div>'
-
-    return f"""
-    <div style="
-        background:{CARD_BG};
-        border:1px solid {BORDER};
-        border-left:3px solid {accent};
-        border-radius:10px;
-        padding:18px 20px;
-    ">
-        <div style="font-size:0.78rem;color:{MUTED};font-weight:500;letter-spacing:0.03em;text-transform:uppercase">{label}</div>
-        <div style="font-size:1.65rem;color:{TEXT};font-weight:700;margin-top:4px;line-height:1.2">{value}</div>
-        {delta_html}
-        {sub_html}
-    </div>
-    """
+        parts.append(f'<span style="font-size:0.75rem;color:{MUTED};margin-top:2px;display:block;">{sub}</span>')
+    parts.append('</div>')
+    return "".join(parts)
 
 
 def kpi_row(cards: list[dict]) -> None:
@@ -86,7 +104,7 @@ def section(title: str) -> None:
 
 
 # ---------------------------------------------------------------------------
-# Spacer (replaces dividers with whitespace)
+# Spacer
 # ---------------------------------------------------------------------------
 def spacer(height: int = 24) -> None:
     st.markdown(f'<div style="height:{height}px"></div>', unsafe_allow_html=True)

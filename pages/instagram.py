@@ -8,7 +8,7 @@ import streamlit as st
 
 from theme import (
     IG_PINK, IG_PURPLE, IG_ORANGE, ACCENT_BLUE, MUTED, GOLD,
-    PLOTLY_LAYOUT, kpi_row, section, spacer,
+    PLOTLY_LAYOUT, chart_layout, kpi_row, section, spacer,
 )
 
 # UTC → ET offset (EST = -5)
@@ -153,9 +153,12 @@ def render() -> None:
                     yaxis="y2", hovertemplate="%{x}<br><b>%{text}</b> posts<extra></extra>",
                     text=year_monthly["posts"],
                 ))
-                fig.update_layout(**PLOTLY_LAYOUT, height=340,
-                                  yaxis=dict(title="Likes"), yaxis2=dict(title="Posts", overlaying="y", side="right", showgrid=False),
-                                  legend=dict(orientation="h", y=1.1))
+                fig.update_layout(**chart_layout(
+                    height=340,
+                    yaxis=dict(title="Likes"),
+                    yaxis2=dict(title="Posts", overlaying="y", side="right", showgrid=False),
+                    legend=dict(orientation="h", y=1.1),
+                ))
                 st.plotly_chart(fig, use_container_width=True, key="ig_monthly_eng")
 
             with right:
