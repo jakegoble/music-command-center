@@ -7,10 +7,10 @@ import streamlit as st
 
 from theme import (
     SPOTIFY_GREEN, IG_PINK, ACCENT_BLUE, MUTED, GOLD, AMBER,
-    PLOTLY_LAYOUT, kpi_row, section, spacer,
-    artist_header, genre_pill, genre_tag, genre_tags,
-    performance_sidebar, inject_page_accent, track_row,
-    get_platform_icon_html, load_artist_profile,
+    PLOTLY_LAYOUT, PLOTLY_CONFIG, kpi_row, section, spacer,
+    genre_pill, genre_tag, genre_tags,
+    performance_sidebar, track_row,
+    get_platform_icon_html, load_artist_profile, render_page_title,
 )
 
 
@@ -30,18 +30,7 @@ def render() -> None:
     enjune = load_songstats_enjune()
     profile = load_artist_profile(st.session_state.get("active_artist", "jakke"))
 
-    inject_page_accent("dashboard")
-
-    # --- Page header ---
-    st.markdown(
-        artist_header(
-            profile.get("name", "Jakke"),
-            "Dashboard — at-a-glance health check across streaming, social, and catalog",
-            verified=profile.get("verified", False),
-            flag=profile.get("country_flag", ""),
-        ),
-        unsafe_allow_html=True,
-    )
+    render_page_title("Dashboard", "At-a-glance health check across streaming, social, and catalog", "#f0c040")
 
     # --- 3:1 Layout: Main content (left 3) + Performance sidebar (right 1) ---
     main_col, sidebar_col = st.columns([3, 1], gap="large")
@@ -109,7 +98,7 @@ def render() -> None:
             fig.update_layout(**PLOTLY_LAYOUT, height=380, yaxis_title="", xaxis_title="")
             fig.update_xaxes(tickformat=",")
             fig.update_traces(hovertemplate="%{y}<br><b>%{x:,.0f}</b> streams<extra></extra>")
-            st.plotly_chart(fig, use_container_width=True, key="dash_top10")
+            st.plotly_chart(fig, use_container_width=True, config=PLOTLY_CONFIG, key="dash_top10")
 
         with right:
             section("IG Engagement by Year")
@@ -126,7 +115,7 @@ def render() -> None:
             ))
             fig2.add_annotation(x=2017, y=470, text="Peak: 470", showarrow=True, arrowhead=0, arrowcolor=GOLD, font=dict(color=GOLD, size=11))
             fig2.update_layout(**PLOTLY_LAYOUT, height=380, yaxis_title="Avg Likes / Post", xaxis_title="")
-            st.plotly_chart(fig2, use_container_width=True, key="dash_ig_yearly")
+            st.plotly_chart(fig2, use_container_width=True, config=PLOTLY_CONFIG, key="dash_ig_yearly")
 
         spacer(16)
 
@@ -140,7 +129,7 @@ def render() -> None:
             fig3.update_layout(**PLOTLY_LAYOUT, height=380, yaxis_title="", xaxis_title="")
             fig3.update_xaxes(tickformat=",")
             fig3.update_traces(hovertemplate="%{y}<br><b>%{x:,.0f}</b> streams<extra></extra>")
-            st.plotly_chart(fig3, use_container_width=True, key="dash_recent")
+            st.plotly_chart(fig3, use_container_width=True, config=PLOTLY_CONFIG, key="dash_recent")
 
         with right2:
             section("Top Playlists by Reach")
@@ -151,4 +140,4 @@ def render() -> None:
             fig4.update_layout(**PLOTLY_LAYOUT, height=380, yaxis_title="", xaxis_title="")
             fig4.update_xaxes(tickformat=",")
             fig4.update_traces(hovertemplate="%{y}<br><b>%{x:,}</b> followers<extra></extra>")
-            st.plotly_chart(fig4, use_container_width=True, key="dash_playlists")
+            st.plotly_chart(fig4, use_container_width=True, config=PLOTLY_CONFIG, key="dash_playlists")

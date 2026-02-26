@@ -8,9 +8,8 @@ import streamlit as st
 
 from theme import (
     SPOTIFY_GREEN, IG_PINK, ACCENT_BLUE, GOLD, AMBER, MUTED,
-    PLOTLY_LAYOUT, kpi_row, section, spacer,
-    platform_icon, PLATFORM_ICONS, inject_page_accent,
-    get_platform_icon_html,
+    PLOTLY_LAYOUT, PLOTLY_CONFIG, kpi_row, section, spacer,
+    render_page_title, get_platform_icon_html,
 )
 
 
@@ -25,14 +24,7 @@ def render() -> None:
     ig = load_ig_insights()
     songs = load_songs_all()
 
-    inject_page_accent("cross_platform")
-
-    st.markdown("""
-    <div style="margin-bottom:28px">
-        <h1 style="margin:0;font-size:1.8rem;font-weight:700;color:#f0f6fc">Cross-Platform</h1>
-        <p style="color:#8b949e;margin:4px 0 0 0;font-size:0.9rem">Unified view across streaming, social, and video platforms</p>
-    </div>
-    """, unsafe_allow_html=True)
+    render_page_title("Cross-Platform", "Unified view across streaming, social, and video platforms", "#58a6ff")
 
     # --- Universe KPIs ---
     combined_streams = ss["cross_platform"]["total_streams"] + enjune["spotify"]["total_streams"]
@@ -64,7 +56,7 @@ def render() -> None:
         ))
         fig.update_layout(**PLOTLY_LAYOUT, height=360, yaxis_title="Streams")
         fig.update_yaxes(tickformat=",")
-        st.plotly_chart(fig, use_container_width=True, key="xp_streams_artist")
+        st.plotly_chart(fig, use_container_width=True, config=PLOTLY_CONFIG, key="xp_streams_artist")
 
     with right:
         section("Follower Distribution")
@@ -82,7 +74,7 @@ def render() -> None:
         fig2.update_traces(textinfo="label+percent", textfont_color="#f0f6fc",
                            textposition="auto", insidetextorientation="radial",
                            hovertemplate="%{label}<br><b>%{value:,}</b> followers<extra></extra>")
-        st.plotly_chart(fig2, use_container_width=True, key="xp_followers")
+        st.plotly_chart(fig2, use_container_width=True, config=PLOTLY_CONFIG, key="xp_followers")
 
     spacer(28)
 
@@ -102,7 +94,7 @@ def render() -> None:
         fig_pl.update_layout(**PLOTLY_LAYOUT, height=max(360, len(all_playlists) * 28), yaxis_title="", xaxis_title="Playlist Followers")
         fig_pl.update_xaxes(tickformat=",")
         fig_pl.update_traces(hovertemplate="%{y}<br><b>%{x:,}</b> followers<extra></extra>")
-        st.plotly_chart(fig_pl, use_container_width=True, key="xp_playlists")
+        st.plotly_chart(fig_pl, use_container_width=True, config=PLOTLY_CONFIG, key="xp_playlists")
 
     spacer(28)
 
@@ -162,7 +154,7 @@ YouTube data requires a free API key. Set <code>YOUTUBE_API_KEY</code> and <code
                 )
                 fig_sim.update_layout(**PLOTLY_LAYOUT, height=max(280, len(similar) * 32), yaxis_title="", xaxis_title="Match %")
                 fig_sim.update_traces(hovertemplate="%{y}<br><b>%{x:.1f}%</b> match<extra></extra>")
-                st.plotly_chart(fig_sim, use_container_width=True, key="xp_lastfm_similar")
+                st.plotly_chart(fig_sim, use_container_width=True, config=PLOTLY_CONFIG, key="xp_lastfm_similar")
     else:
         st.markdown("""
 <div style="background:#161b22;border:1px solid #21262d;border-radius:10px;padding:18px 20px">
@@ -173,19 +165,10 @@ Last.fm data requires a free API key. Set <code>LASTFM_API_KEY</code> in secrets
 
     spacer(28)
 
-    # --- API Connection Status ---
-    section("API Connection Status")
+    # --- API Connection Status (collapsed to one line) ---
     statuses = get_all_api_status()
-    cols = st.columns(len(statuses))
-    for col, status in zip(cols, statuses):
-        with col:
-            svg_icon = get_platform_icon_html(status.name, 22)
-            dot = "🟢" if status.configured else "⚪"
-            label = "Connected" if status.configured else "Not configured"
-            st.markdown(f"""
-<div style="background:linear-gradient(135deg, #161b22 0%, #1c2333 100%);border:1px solid #21262d;border-radius:10px;padding:14px 16px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.25)">
-    <div style="margin-bottom:6px">{svg_icon}</div>
-    <div style="font-size:0.75rem;color:#8b949e;font-weight:600;text-transform:uppercase;letter-spacing:0.05em">{status.name}</div>
-    <div style="font-size:0.72rem;color:{'#3fb950' if status.configured else '#484f58'};margin-top:3px">{dot} {label}</div>
-</div>
-            """, unsafe_allow_html=True)
+    connected = [s for s in statuses if s.configured]
+    pending = [s for s in statuses if not s.configured]
+    if pending:
+        names = ", ".join(s.name for s in pending)
+        st.caption(f"⚠️ {len(pending)} API connection{'s' if len(pending) != 1 else ''} pending ({names}) — Configure in Settings")

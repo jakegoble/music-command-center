@@ -8,8 +8,8 @@ import streamlit as st
 
 from theme import (
     SPOTIFY_GREEN, ACCENT_BLUE, GOLD, AMBER, MUTED, IG_PINK,
-    PLOTLY_LAYOUT, kpi_row, section, spacer, platform_icon,
-    inject_page_accent,
+    PLOTLY_LAYOUT, PLOTLY_CONFIG, kpi_row, section, spacer, platform_icon,
+    render_page_title,
 )
 
 
@@ -23,14 +23,7 @@ def render() -> None:
     ss = load_songstats_jakke()
     enjune = load_songstats_enjune()
 
-    inject_page_accent("revenue")
-
-    st.markdown("""
-    <div style="margin-bottom:28px">
-        <h1 style="margin:0;font-size:1.8rem;font-weight:700;color:#f0f6fc">Revenue</h1>
-        <p style="color:#8b949e;margin:4px 0 0 0;font-size:0.9rem">Streaming revenue estimates, ownership splits, and projections</p>
-    </div>
-    """, unsafe_allow_html=True)
+    render_page_title("Revenue", "Streaming revenue estimates, ownership splits, and projections", "#f0c040")
 
     # --- Compute revenue ---
     jakke_cross = ss["cross_platform"]["total_streams"]
@@ -90,7 +83,7 @@ def render() -> None:
         fig.update_layout(**PLOTLY_LAYOUT, height=340, yaxis_title="", xaxis_title="Estimated Revenue ($)", showlegend=False)
         fig.update_xaxes(tickprefix="$", tickformat=",")
         fig.update_traces(hovertemplate="%{y}<br><b>$%{x:,.0f}</b><extra></extra>")
-        st.plotly_chart(fig, use_container_width=True, key="rev_by_platform")
+        st.plotly_chart(fig, use_container_width=True, key="rev_by_platform", config=PLOTLY_CONFIG)
 
     with right:
         section("Per-Stream Rates by Platform")
@@ -104,7 +97,7 @@ def render() -> None:
         fig_rates.update_layout(**PLOTLY_LAYOUT, height=340, yaxis_title="", xaxis_title="$/Stream")
         fig_rates.update_xaxes(tickprefix="$")
         fig_rates.update_traces(hovertemplate="%{y}<br><b>$%{x:.4f}</b>/stream<extra></extra>")
-        st.plotly_chart(fig_rates, use_container_width=True, key="rev_rates")
+        st.plotly_chart(fig_rates, use_container_width=True, key="rev_rates", config=PLOTLY_CONFIG)
 
     spacer(28)
 
@@ -121,7 +114,7 @@ def render() -> None:
     ))
     fig_top.update_layout(**PLOTLY_LAYOUT, height=480, yaxis_title="", xaxis_title="Jake's Revenue ($)")
     fig_top.update_xaxes(tickprefix="$", tickformat=",")
-    st.plotly_chart(fig_top, use_container_width=True, key="rev_top_earners")
+    st.plotly_chart(fig_top, use_container_width=True, key="rev_top_earners", config=PLOTLY_CONFIG)
 
     spacer(28)
 
@@ -189,7 +182,7 @@ def render() -> None:
         ))
         fig_proj.update_layout(**PLOTLY_LAYOUT, height=340, xaxis_title="Month", yaxis_title="Cumulative Revenue ($)")
         fig_proj.update_yaxes(tickprefix="$", tickformat=",")
-        st.plotly_chart(fig_proj, use_container_width=True, key="rev_projection")
+        st.plotly_chart(fig_proj, use_container_width=True, key="rev_projection", config=PLOTLY_CONFIG)
 
     with right2:
         section("Projection Summary")

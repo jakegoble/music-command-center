@@ -138,25 +138,41 @@ def get_page_accent(page_name: str) -> str:
 # Plotly shared layout
 # ---------------------------------------------------------------------------
 PLOTLY_LAYOUT = dict(
+    template="plotly_dark",
     paper_bgcolor="rgba(0,0,0,0)",
     plot_bgcolor="rgba(0,0,0,0)",
-    font=dict(color=TEXT, family="'Inter', system-ui, -apple-system, sans-serif", size=13),
-    margin=dict(l=0, r=0, t=36, b=0),
-    hoverlabel=dict(bgcolor="#21262d", font_color=TEXT, font_size=13),
+    font=dict(color="rgba(255,255,255,0.7)", family="Inter, -apple-system, sans-serif", size=12),
+    margin=dict(l=40, r=20, t=30, b=40),
+    hoverlabel=dict(
+        bgcolor="rgba(30,30,30,0.95)",
+        bordercolor="rgba(255,255,255,0.1)",
+        font=dict(family="Inter, sans-serif", size=12, color="white"),
+    ),
     xaxis=dict(
         showgrid=True,
-        gridcolor="rgba(255,255,255,0.08)",
-        gridwidth=1,
+        gridcolor="rgba(255,255,255,0.06)",
         griddash="dot",
-        zerolinecolor="rgba(255,255,255,0.06)",
+        zeroline=False,
     ),
     yaxis=dict(
         showgrid=True,
-        gridcolor="rgba(255,255,255,0.08)",
-        gridwidth=1,
-        zerolinecolor="rgba(255,255,255,0.06)",
+        gridcolor="rgba(255,255,255,0.06)",
+        griddash="dot",
+        zeroline=False,
+    ),
+    legend=dict(
+        orientation="h",
+        yanchor="top",
+        y=-0.15,
+        xanchor="center",
+        x=0.5,
+        font=dict(size=11),
+        bgcolor="rgba(0,0,0,0)",
     ),
 )
+
+# Pass to every st.plotly_chart(fig, config=PLOTLY_CONFIG)
+PLOTLY_CONFIG: dict[str, bool] = {"displayModeBar": False}
 
 # Pie/donut chart layout additions (merge into update_layout calls)
 PIE_LAYOUT = dict(
@@ -443,21 +459,26 @@ def time_range_selector(key: str, options: list[str] | None = None,
 # ---------------------------------------------------------------------------
 # Page accent CSS injection
 # ---------------------------------------------------------------------------
+def render_page_title(title: str, subtitle: str = "", accent_color: str = "") -> None:
+    """Render a styled page title with accent underline bar."""
+    color = accent_color or ACCENT_BLUE
+    sub_html = (
+        f'<p style="color:rgba(255,255,255,0.5);margin:4px 0 0;font-size:0.85rem">{subtitle}</p>'
+        if subtitle else ""
+    )
+    st.markdown(f"""
+    <div style="margin-bottom:1.5rem">
+        <h1 style="color:{color};margin:0;font-size:1.75rem;font-weight:700">{title}</h1>
+        {sub_html}
+        <div style="width:40px;height:3px;background:{color};margin-top:8px;border-radius:2px"></div>
+    </div>
+    """, unsafe_allow_html=True)
+
+
 def inject_page_accent(page_name: str) -> None:
     """Inject CSS that themes the current page with its accent color."""
-    accent = get_page_accent(page_name)
-    st.markdown(f"""
-    <style>
-        /* Page accent border on headers */
-        .page-accent-bar {{
-            height: 3px;
-            background: {accent};
-            border-radius: 2px;
-            margin-bottom: 16px;
-        }}
-    </style>
-    """, unsafe_allow_html=True)
-    st.markdown(f'<div class="page-accent-bar"></div>', unsafe_allow_html=True)
+    # Kept for backward compat — now a no-op since render_page_title handles accent.
+    pass
 
 
 # ---------------------------------------------------------------------------

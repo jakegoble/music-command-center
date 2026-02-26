@@ -10,7 +10,7 @@ import streamlit as st
 
 from theme import (
     SPOTIFY_GREEN, ACCENT_BLUE, AMBER, GOLD, MUTED, PLOTLY_LAYOUT,
-    kpi_row, section, spacer, genre_pill, inject_page_accent,
+    kpi_row, section, spacer, genre_pill, render_page_title, PLOTLY_CONFIG,
     get_platform_icon_html, time_range_selector, chart_layout,
 )
 
@@ -22,16 +22,7 @@ def render() -> None:
     recent = load_songs_recent()
     ss = load_songstats_jakke()
 
-    inject_page_accent("streaming")
-
-    st.markdown(f"""
-    <div style="margin-bottom:28px">
-        <h1 style="margin:0;font-size:1.8rem;font-weight:700;color:#f0f6fc">
-            {get_platform_icon_html("spotify", 24)} Streaming
-        </h1>
-        <p style="color:#8b949e;margin:4px 0 0 0;font-size:0.9rem">Deep dive into streaming performance across all songs</p>
-    </div>
-    """, unsafe_allow_html=True)
+    render_page_title("Streaming", "Deep dive into streaming performance across all songs", "#1DB954")
 
     # --- KPIs with Songstats data ---
     total = songs["streams"].sum()
@@ -79,7 +70,7 @@ def render() -> None:
         fig1.update_layout(**PLOTLY_LAYOUT, height=480, yaxis_title="", xaxis_title="")
         fig1.update_xaxes(tickformat=",")
         fig1.update_traces(hovertemplate="%{y}<br><b>%{x:,.0f}</b> streams<extra></extra>")
-        st.plotly_chart(fig1, use_container_width=True, key="stream_alltime")
+        st.plotly_chart(fig1, use_container_width=True, key="stream_alltime", config=PLOTLY_CONFIG)
 
     with right:
         section("Recent 3-Year — Top 15")
@@ -88,7 +79,7 @@ def render() -> None:
         fig2.update_layout(**PLOTLY_LAYOUT, height=480, yaxis_title="", xaxis_title="")
         fig2.update_xaxes(tickformat=",")
         fig2.update_traces(hovertemplate="%{y}<br><b>%{x:,.0f}</b> streams<extra></extra>")
-        st.plotly_chart(fig2, use_container_width=True, key="stream_recent")
+        st.plotly_chart(fig2, use_container_width=True, key="stream_recent", config=PLOTLY_CONFIG)
 
     spacer(28)
 
@@ -103,7 +94,7 @@ def render() -> None:
         )
         fig_pop.update_layout(**PLOTLY_LAYOUT, height=max(300, len(pop_data) * 30), yaxis_title="", xaxis_title="Popularity Score (0-100)", coloraxis_showscale=False)
         fig_pop.update_traces(hovertemplate="%{y}<br>Popularity: <b>%{x}</b>/100<extra></extra>")
-        st.plotly_chart(fig_pop, use_container_width=True, key="stream_popularity")
+        st.plotly_chart(fig_pop, use_container_width=True, key="stream_popularity", config=PLOTLY_CONFIG)
     else:
         st.caption("No popularity scores available for this filter.")
 
@@ -124,7 +115,7 @@ def render() -> None:
         fig3 = px.bar(top_vel, x="streams_per_day", y="song", orientation="h", color_discrete_sequence=[AMBER])
         fig3.update_layout(**PLOTLY_LAYOUT, height=400, yaxis_title="", xaxis_title="Streams / Day")
         fig3.update_traces(hovertemplate="%{y}<br><b>%{x:.1f}</b> streams/day<extra></extra>")
-        st.plotly_chart(fig3, use_container_width=True, key="stream_velocity")
+        st.plotly_chart(fig3, use_container_width=True, key="stream_velocity", config=PLOTLY_CONFIG)
 
     with right2:
         section("Release Impact")
@@ -138,7 +129,7 @@ def render() -> None:
         fig4.update_layout(**PLOTLY_LAYOUT, height=400, xaxis_title="", yaxis_title="Total Streams")
         fig4.update_yaxes(tickformat=",")
         fig4.update_traces(hovertemplate="%{hovertext}<br>%{x|%b %Y}<br><b>%{y:,.0f}</b> streams<extra></extra>")
-        st.plotly_chart(fig4, use_container_width=True, key="stream_impact")
+        st.plotly_chart(fig4, use_container_width=True, key="stream_impact", config=PLOTLY_CONFIG)
 
     spacer(24)
 
@@ -166,7 +157,7 @@ def render() -> None:
             legend=dict(orientation="h", y=1.15),
         ))
         fig_dual.update_xaxes(tickformat=",", selector=dict(side="bottom"))
-        st.plotly_chart(fig_dual, use_container_width=True, key="stream_dual_axis")
+        st.plotly_chart(fig_dual, use_container_width=True, key="stream_dual_axis", config=PLOTLY_CONFIG)
     else:
         st.caption("No songs with popularity scores in current filter.")
 

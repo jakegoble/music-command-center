@@ -8,8 +8,8 @@ import streamlit as st
 
 from theme import (
     SPOTIFY_GREEN, ACCENT_BLUE, GOLD, AMBER, MUTED, IG_PINK,
-    PLOTLY_LAYOUT, kpi_row, section, spacer, genre_pill,
-    GENRE_COLORS, inject_page_accent, track_row,
+    PLOTLY_LAYOUT, PLOTLY_CONFIG, kpi_row, section, spacer, genre_pill,
+    GENRE_COLORS, render_page_title, track_row,
 )
 
 
@@ -22,14 +22,7 @@ def render() -> None:
     ss = load_songstats_jakke()
     enjune = load_songstats_enjune()
 
-    inject_page_accent("catalog")
-
-    st.markdown("""
-    <div style="margin-bottom:28px">
-        <h1 style="margin:0;font-size:1.8rem;font-weight:700;color:#f0f6fc">Catalog</h1>
-        <p style="color:#8b949e;margin:4px 0 0 0;font-size:0.9rem">Complete library — metadata, revenue estimates, rights, and release history</p>
-    </div>
-    """, unsafe_allow_html=True)
+    render_page_title("Catalog", "Complete library — metadata, revenue estimates, rights, and release history", "#58a6ff")
 
     # --- Build unified catalog ---
     recordings = catalog_raw[catalog_raw["Type"] == "Recording"].copy()
@@ -229,7 +222,7 @@ def render() -> None:
             fig_rev.update_layout(**PLOTLY_LAYOUT, height=480, yaxis_title="", xaxis_title="Estimated Revenue ($)")
             fig_rev.update_xaxes(tickprefix="$", tickformat=",")
             fig_rev.update_traces(hovertemplate="%{y}<br><b>$%{x:,.2f}</b><extra></extra>")
-            st.plotly_chart(fig_rev, use_container_width=True, key="cat_revenue_track")
+            st.plotly_chart(fig_rev, use_container_width=True, key="cat_revenue_track", config=PLOTLY_CONFIG)
 
         with right:
             section("Revenue by Platform (Estimated Split)")
@@ -256,7 +249,7 @@ def render() -> None:
             fig_plat.update_traces(textinfo="label+percent", textfont_color="#f0f6fc",
                                    textposition="auto", insidetextorientation="radial",
                                    hovertemplate="%{label}<br><b>$%{value:,.0f}</b><br>%{percent}<extra></extra>")
-            st.plotly_chart(fig_plat, use_container_width=True, key="cat_revenue_platform")
+            st.plotly_chart(fig_plat, use_container_width=True, key="cat_revenue_platform", config=PLOTLY_CONFIG)
 
         spacer(16)
         st.caption("Revenue estimates use industry-average per-stream rates across platforms. Actual payouts vary by territory, subscription type, and distributor terms.")
@@ -357,4 +350,4 @@ def render() -> None:
         fig.update_layout(**PLOTLY_LAYOUT, height=400, xaxis_title="", yaxis_title="All-Time Streams")
         fig.update_yaxes(tickformat=",")
         fig.update_traces(hovertemplate="%{hovertext}<br>Released %{x|%b %Y}<br><b>%{y:,.0f}</b> streams<extra></extra>")
-        st.plotly_chart(fig, use_container_width=True, key="cat_timeline")
+        st.plotly_chart(fig, use_container_width=True, key="cat_timeline", config=PLOTLY_CONFIG)

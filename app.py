@@ -1,4 +1,4 @@
-"""Music Command Center v5.0 — Songstats-inspired design."""
+"""Music Command Center v5.1 — Compact sidebar, polished design."""
 from __future__ import annotations
 
 import streamlit as st
@@ -14,23 +14,23 @@ st.set_page_config(
 )
 
 # ---------------------------------------------------------------------------
-# Navigation definition
+# Navigation definition (no emojis — clean text labels)
 # ---------------------------------------------------------------------------
 NAV_GROUPS = {
     "MUSIC": [
-        ("🏠", "Dashboard", "dashboard"),
-        ("📊", "Streaming", "streaming"),
-        ("🎵", "Catalog", "catalog"),
-        ("💰", "Revenue", "revenue"),
+        ("Dashboard", "dashboard"),
+        ("Streaming", "streaming"),
+        ("Catalog", "catalog"),
+        ("Revenue", "revenue"),
     ],
     "SOCIAL & GROWTH": [
-        ("📱", "Instagram", "instagram"),
-        ("🤝", "Collaborators", "collaborators"),
-        ("📈", "Growth", "growth"),
+        ("Instagram", "instagram"),
+        ("Collaborators", "collaborators"),
+        ("Growth", "growth"),
     ],
     "TOOLS & INSIGHTS": [
-        ("🌐", "Cross-Platform", "cross_platform"),
-        ("🧠", "AI Insights", "ai_insights"),
+        ("Cross-Platform", "cross_platform"),
+        ("AI Insights", "ai_insights"),
     ],
 }
 
@@ -41,7 +41,7 @@ st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-    /* Collapse header to zero height but let sidebar button escape */
+    /* ── Header: collapse but rescue sidebar toggle ── */
     header[data-testid="stHeader"] {
         visibility: hidden;
         height: 0 !important;
@@ -50,8 +50,6 @@ st.markdown("""
         overflow: visible !important;
         pointer-events: none !important;
     }
-
-    /* Re-show the expand-sidebar button as a fixed overlay */
     [data-testid="stExpandSidebarButton"] {
         visibility: visible !important;
         pointer-events: auto !important;
@@ -60,7 +58,6 @@ st.markdown("""
         left: 0.6rem !important;
         z-index: 999995 !important;
     }
-
     div[data-testid="stDecoration"] { display: none !important; }
     div[data-testid="stStatusWidget"] { display: none !important; }
     #MainMenu { display: none !important; }
@@ -70,46 +67,80 @@ st.markdown("""
     [data-testid="stSidebarNav"] { display: none !important; }
     [data-testid="stSidebarNavSeparator"] { display: none !important; }
 
-    /* Layout */
-    .stApp > div:first-child { padding-top: 0 !important; }
-    .block-container { padding-top: 2rem !important; }
-
-    /* Base font */
+    /* ── Base font ── */
     html, body, [class*="css"] {
-        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
     }
 
-    /* Dark backgrounds */
+    /* ── Layout ── */
+    .stApp > div:first-child { padding-top: 0 !important; }
+    .main .block-container {
+        padding: 1.5rem 2rem !important;
+        max-width: 1200px !important;
+    }
+
+    /* Tighter spacing between elements */
+    h1 { margin-bottom: 0.5rem !important; font-size: 1.75rem !important; }
+    h2 { margin-bottom: 0.4rem !important; font-size: 1.3rem !important; }
+    h3 { margin-bottom: 0.3rem !important; font-size: 1.1rem !important; }
+
+    /* ── Dark backgrounds ── */
     .stApp { background-color: #0e1117; }
     section[data-testid="stSidebar"] {
         background-color: #0d1117;
         border-right: 1px solid #161b22;
     }
 
-    /* Sidebar nav buttons — style as nav items */
+    /* ── Sidebar: kill all vertical bloat ── */
+    [data-testid="stSidebar"] > div:first-child {
+        padding-top: 1rem !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stVerticalBlock"] > div {
+        gap: 0px !important;
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+    }
+
+    /* Sidebar nav buttons — compact, left-aligned */
     section[data-testid="stSidebar"] .stButton > button {
         background: transparent !important;
         border: none !important;
-        color: #c9d1d9 !important;
+        border-left: 3px solid transparent !important;
+        border-radius: 0 6px 6px 0 !important;
+        color: rgba(255,255,255,0.7) !important;
         text-align: left !important;
-        padding: 9px 0 !important;
-        margin: 1px 0 !important;
-        font-size: 0.88rem !important;
+        justify-content: flex-start !important;
+        padding: 7px 12px 7px 12px !important;
+        margin: 0 !important;
+        font-size: 0.85rem !important;
         font-weight: 500 !important;
         width: 100% !important;
-        border-radius: 8px !important;
         cursor: pointer !important;
-        transition: all 0.15s ease !important;
+        transition: background 0.15s ease, color 0.15s ease !important;
+        min-height: 0 !important;
+        line-height: 1.4 !important;
     }
     section[data-testid="stSidebar"] .stButton > button:hover {
-        background: rgba(255,255,255,0.04) !important;
-        color: #f0f6fc !important;
+        background: rgba(255,255,255,0.05) !important;
+        color: rgba(255,255,255,0.95) !important;
     }
     section[data-testid="stSidebar"] .stButton > button:focus {
         box-shadow: none !important;
     }
 
-    /* Metric cards — depth + hover */
+    /* Section headers in sidebar */
+    .sidebar-section {
+        font-size: 10px;
+        font-weight: 600;
+        color: rgba(255,255,255,0.35);
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        padding: 14px 12px 4px 12px;
+        margin: 0;
+        line-height: 1;
+    }
+
+    /* ── Metric cards ── */
     [data-testid="stMetric"] {
         background: #161b22;
         border: 1px solid #21262d;
@@ -125,8 +156,13 @@ st.markdown("""
     [data-testid="stMetricLabel"] { color: #8b949e; font-size: 0.8rem; font-weight: 500; }
     [data-testid="stMetricValue"] { color: #f0f6fc; font-size: 1.5rem; font-weight: 700; }
 
-    /* Tabs — left-aligned, no extra margin */
-    .stTabs [data-baseweb="tab-list"] { gap: 4px; border-bottom: 1px solid #21262d; justify-content: flex-start; padding-left: 0 !important; margin-left: 0 !important; }
+    /* ── Tabs — left-aligned ── */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 4px;
+        border-bottom: 1px solid #21262d;
+        justify-content: flex-start;
+        padding-left: 0 !important;
+    }
     .stTabs [data-baseweb="tab"] {
         background: transparent;
         border-radius: 8px 8px 0 0;
@@ -144,7 +180,7 @@ st.markdown("""
         font-weight: 600;
     }
 
-    /* Expanders — depth */
+    /* ── Expanders ── */
     details[data-testid="stExpander"] {
         background: #161b22;
         border: 1px solid #21262d;
@@ -160,39 +196,37 @@ st.markdown("""
         padding: 12px 16px;
     }
 
-    /* Dataframes */
+    /* ── Dataframes ── */
     .stDataFrame {
         border-radius: 10px;
         overflow: hidden;
         box-shadow: 0 2px 8px rgba(0,0,0,0.25);
     }
 
-    /* Selectbox */
+    /* ── Selectbox ── */
     .stSelectbox > div > div { background: #161b22; border-color: #21262d; }
 
-    /* Alerts */
+    /* ── Alerts ── */
     div[data-testid="stAlert"] { border-radius: 10px; font-size: 0.9rem; }
 
-    /* Plotly — depth + hover */
+    /* ── Plotly charts — subtle border ── */
     .stPlotlyChart {
-        margin-bottom: -12px;
-        border-radius: 10px;
-        transition: transform 0.15s ease;
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 8px;
+        padding: 4px;
+        margin-bottom: 0;
     }
-    .stPlotlyChart:hover { transform: translateY(-1px); }
 
-    /* Divider */
-    hr { border-color: #161b22 !important; margin: 1.5rem 0 !important; }
+    /* ── Dividers ── */
+    hr { border-color: rgba(255,255,255,0.08) !important; margin: 1rem 0 !important; }
 
-    /* Section headers in sidebar */
-    .sidebar-section {
-        font-size: 0.65rem;
-        font-weight: 700;
-        color: #484f58;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        padding: 16px 0 4px 0;
-        margin: 0;
+    /* ── Utility: data-card ── */
+    .data-card {
+        background: rgba(20,20,25,0.5);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 12px;
     }
 
     /* Genre pill badges */
@@ -227,7 +261,7 @@ if "active_artist" not in st.session_state:
     st.session_state.active_artist = "jakke"
 
 # ---------------------------------------------------------------------------
-# Sidebar — artist identity + switcher + navigation
+# Sidebar — artist identity + switcher + compact navigation
 # ---------------------------------------------------------------------------
 from theme import (
     load_artist_profile, get_platform_icon_html, get_platform_badge_row,
@@ -249,21 +283,21 @@ with st.sidebar:
     verified_badge = ' <span style="color:#1DB954;font-size:0.85rem" title="Verified">&#10003;</span>' if verified else ""
     flag_html = f' <span style="font-size:0.95rem">{flag}</span>' if flag else ""
 
-    # Avatar with gradient
+    # Avatar + name
     hue = sum(ord(c) for c in name) % 360
     st.markdown(f"""
-    <div style="padding:12px 0 8px 0;display:flex;align-items:center;gap:12px">
+    <div style="padding:8px 12px 6px 12px;display:flex;align-items:center;gap:10px">
         <div style="display:inline-flex;align-items:center;justify-content:center;
-            width:44px;height:44px;border-radius:50%;
+            width:36px;height:36px;border-radius:50%;
             background:linear-gradient(135deg, hsl({hue},50%,35%), hsl({(hue+60)%360},40%,25%));
-            color:#f0f6fc;font-size:17px;font-weight:700;flex-shrink:0">
+            color:#f0f6fc;font-size:14px;font-weight:700;flex-shrink:0">
             {name[0].upper()}{name[1].upper() if len(name) > 1 else ''}
         </div>
         <div>
-            <div style="font-size:1.1rem;font-weight:700;color:#f0f6fc;letter-spacing:-0.02em">
+            <div style="font-size:0.95rem;font-weight:700;color:#f0f6fc;letter-spacing:-0.02em;line-height:1.2">
                 {name}{verified_badge}{flag_html}
             </div>
-            <div style="font-size:0.65rem;color:{MUTED};font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-top:1px">
+            <div style="font-size:0.6rem;color:rgba(255,255,255,0.35);font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-top:1px">
                 {subtitle}
             </div>
         </div>
@@ -274,19 +308,19 @@ with st.sidebar:
     if socials:
         icons_html = []
         for platform, url in list(socials.items())[:6]:
-            icon = get_platform_icon_html(platform, 14)
+            icon = get_platform_icon_html(platform, 13)
             icons_html.append(
                 f'<a href="{url}" target="_blank" rel="noopener" '
-                f'style="text-decoration:none;opacity:0.6;transition:opacity 0.15s" '
-                f'onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">'
+                f'style="text-decoration:none;opacity:0.5;transition:opacity 0.15s" '
+                f'onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.5">'
                 f'{icon}</a>'
             )
         st.markdown(
-            f'<div style="display:flex;gap:6px;align-items:center;margin:2px 0 8px 0">{"".join(icons_html)}</div>',
+            f'<div style="display:flex;gap:5px;align-items:center;padding:0 12px;margin:0 0 6px 0">{"".join(icons_html)}</div>',
             unsafe_allow_html=True,
         )
 
-    # Performance snapshot (sidebar mini-stats)
+    # Performance snapshot (compact)
     if perf:
         stats_html = []
         key_metrics = ["streams", "monthly_listeners", "followers", "playlists"]
@@ -296,27 +330,21 @@ with st.sidebar:
                 continue
             label = key.replace("_", " ").title()
             value = data.get("display", "")
-            platforms = data.get("platforms", [])
-            badges = get_platform_badge_row(platforms, 10, 2) if platforms else ""
             stats_html.append(
                 f'<div style="display:flex;justify-content:space-between;align-items:center;'
-                f'padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04)">'
-                f'<div style="display:flex;align-items:center;gap:4px">'
-                f'{badges}'
-                f'<span style="color:{MUTED};font-size:0.7rem;font-weight:500">{label}</span>'
-                f'</div>'
-                f'<span style="color:#f0f6fc;font-size:0.78rem;font-weight:700">{value}</span>'
+                f'padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04)">'
+                f'<span style="color:rgba(255,255,255,0.4);font-size:0.68rem;font-weight:500">{label}</span>'
+                f'<span style="color:#f0f6fc;font-size:0.75rem;font-weight:700">{value}</span>'
                 f'</div>'
             )
         if stats_html:
             st.markdown(
-                f'<div style="background:{CARD_BG};border:1px solid {BORDER};border-radius:8px;'
-                f'padding:8px 12px;margin-bottom:12px">{"".join(stats_html)}</div>',
+                f'<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;'
+                f'padding:6px 12px;margin:0 12px 8px 12px">{"".join(stats_html)}</div>',
                 unsafe_allow_html=True,
             )
 
     # Artist switcher
-    st.markdown('<div style="margin-bottom:8px"></div>', unsafe_allow_html=True)
     artist_labels = {"jakke": "Jakke", "enjune": "Enjune"}
     current_idx = ARTIST_KEYS.index(st.session_state.active_artist)
     selected = st.selectbox(
@@ -328,31 +356,28 @@ with st.sidebar:
         st.session_state.active_artist = selected
         st.rerun()
 
-    st.markdown('<div style="height:4px"></div>', unsafe_allow_html=True)
-
-    # ── Navigation ──
+    # ── Compact Navigation ──
     for group_name, group_pages in NAV_GROUPS.items():
         st.markdown(f'<p class="sidebar-section">{group_name}</p>', unsafe_allow_html=True)
-        for icon, label, page_key in group_pages:
+        for label, page_key in group_pages:
             is_active = (st.session_state.current_page == page_key)
             if is_active:
                 st.markdown(
-                    f'<div style="background:rgba(29,185,84,0.12);border-left:3px solid #1DB954;'
-                    f'border-radius:8px;padding:9px 0;margin:1px 0;">'
-                    f'<span style="color:#f0f6fc;font-weight:600;font-size:0.88rem">'
-                    f'{icon}  {label}</span></div>',
+                    f'<div style="background:rgba(29,185,84,0.15);border-left:3px solid #1DB954;'
+                    f'border-radius:0 6px 6px 0;padding:7px 12px;margin:0;'
+                    f'font-size:0.85rem;font-weight:600;color:#1DB954;line-height:1.4">'
+                    f'{label}</div>',
                     unsafe_allow_html=True,
                 )
             else:
-                if st.button(f"{icon}  {label}", key=f"nav_{page_key}", use_container_width=True):
+                if st.button(label, key=f"nav_{page_key}", use_container_width=True):
                     st.session_state.current_page = page_key
                     st.rerun()
 
-    # Bottom
-    st.markdown('<div style="height:40px"></div>', unsafe_allow_html=True)
+    # Version footer
     st.markdown(
-        '<div style="font-size:0.7rem;color:#484f58;padding:0 14px">'
-        'v5.0 · Songstats design</div>',
+        '<div style="font-size:0.65rem;color:rgba(255,255,255,0.2);padding:20px 12px 0 12px">'
+        'v5.1</div>',
         unsafe_allow_html=True,
     )
 

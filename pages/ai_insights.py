@@ -5,7 +5,7 @@ import streamlit as st
 
 from theme import (
     SPOTIFY_GREEN, IG_PINK, GOLD, MUTED, ACCENT_BLUE, AMBER,
-    kpi_row, section, spacer, inject_page_accent,
+    kpi_row, section, spacer, render_page_title,
 )
 
 
@@ -20,14 +20,7 @@ def render() -> None:
     top_song = songs.loc[songs["streams"].idxmax()]
     combined_streams = ss["cross_platform"]["total_streams"] + enjune["spotify"]["total_streams"]
 
-    inject_page_accent("ai_insights")
-
-    st.markdown("""
-    <div style="margin-bottom:28px">
-        <h1 style="margin:0;font-size:1.8rem;font-weight:700;color:#f0f6fc">AI Insights</h1>
-        <p style="color:#8b949e;margin:4px 0 0 0;font-size:0.9rem">Strategic recommendations derived from cross-platform data analysis</p>
-    </div>
-    """, unsafe_allow_html=True)
+    render_page_title("AI Insights", "Strategic recommendations derived from cross-platform data analysis", "#E74C3C")
 
     # --- Key numbers to watch (top) ---
     kpi_row([

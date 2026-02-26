@@ -8,8 +8,8 @@ import streamlit as st
 
 from theme import (
     IG_PINK, SPOTIFY_GREEN, ACCENT_BLUE, GOLD, AMBER, MUTED,
-    PLOTLY_LAYOUT, kpi_row, section, spacer, avatar,
-    inject_page_accent, collab_chip, collab_chips,
+    PLOTLY_LAYOUT, PLOTLY_CONFIG, kpi_row, section, spacer, avatar,
+    render_page_title, collab_chip, collab_chips,
 )
 
 TIER_COLORS = {1: GOLD, 2: ACCENT_BLUE, 3: MUTED}
@@ -22,14 +22,7 @@ def render() -> None:
     collabs = load_ig_collaborators()
     music_collabs = load_music_collaborators()
 
-    inject_page_accent("collaborators")
-
-    st.markdown("""
-    <div style="margin-bottom:28px">
-        <h1 style="margin:0;font-size:1.8rem;font-weight:700;color:#f0f6fc">Collaborators</h1>
-        <p style="color:#8b949e;margin:4px 0 0 0;font-size:0.9rem">Creative network — music collaborators and Instagram engagement</p>
-    </div>
-    """, unsafe_allow_html=True)
+    render_page_title("Collaborators", "Creative network — music collaborators and Instagram engagement", "#9B59B6")
 
     # ─── MUSIC COLLABORATORS ───
     section("Music Collaborators")
@@ -59,7 +52,7 @@ def render() -> None:
         fig_mc.update_layout(**PLOTLY_LAYOUT, height=max(340, len(mc_sorted) * 32), yaxis_title="", xaxis_title="Total Streams")
         fig_mc.update_xaxes(tickformat=",")
         fig_mc.update_traces(hovertemplate="%{y}<br><b>%{x:,.0f}</b> streams<extra></extra>")
-        st.plotly_chart(fig_mc, use_container_width=True, key="music_collab_streams")
+        st.plotly_chart(fig_mc, use_container_width=True, key="music_collab_streams", config=PLOTLY_CONFIG)
 
     with right:
         section("Collaborators by Role")
@@ -88,7 +81,7 @@ def render() -> None:
         ))
         fig_role.update_layout(**PLOTLY_LAYOUT, height=280, yaxis_title="", xaxis_title="Total Streams")
         fig_role.update_xaxes(tickformat=",")
-        st.plotly_chart(fig_role, use_container_width=True, key="music_collab_roles")
+        st.plotly_chart(fig_role, use_container_width=True, key="music_collab_roles", config=PLOTLY_CONFIG)
 
     spacer(16)
 
@@ -128,7 +121,7 @@ def render() -> None:
         ))
         fig.add_annotation(x=1, y=285, text="2.2x higher", showarrow=False, font=dict(color=SPOTIFY_GREEN, size=13))
         fig.update_layout(**PLOTLY_LAYOUT, height=340, yaxis_title="Avg Likes / Post")
-        st.plotly_chart(fig, use_container_width=True, key="collab_solo_vs")
+        st.plotly_chart(fig, use_container_width=True, key="collab_solo_vs", config=PLOTLY_CONFIG)
 
     with right:
         section("Avg Likes by Collaborator")
@@ -145,7 +138,7 @@ def render() -> None:
         for tier, label, color, xpos in [(1, "Tier 1", GOLD, 0.98), (2, "Tier 2", ACCENT_BLUE, 0.85), (3, "Tier 3", MUTED, 0.72)]:
             fig3.add_annotation(x=xpos, y=1.06, xref="paper", yref="paper", text=f"<b>{label}</b>",
                                 font=dict(color=color, size=11), showarrow=False)
-        st.plotly_chart(fig3, use_container_width=True, key="collab_tier_chart")
+        st.plotly_chart(fig3, use_container_width=True, key="collab_tier_chart", config=PLOTLY_CONFIG)
 
     spacer(24)
 
