@@ -8,7 +8,7 @@ import streamlit as st
 
 from theme import (
     SPOTIFY_GREEN, ACCENT_BLUE, GOLD, AMBER, MUTED, IG_PINK,
-    PLOTLY_LAYOUT, PLOTLY_CONFIG, kpi_row, section, spacer, platform_icon,
+    PLOTLY_CONFIG, apply_theme, kpi_row, section, spacer, platform_icon,
     render_page_title,
 )
 
@@ -55,7 +55,7 @@ def render() -> None:
         {"label": "Blended Rate", "value": f"${combined_rev.blended_rate:.4f}", "sub": "Per stream (all platforms)"},
     ])
 
-    spacer(28)
+    spacer(16)
 
     # --- Revenue by platform ---
     left, right = st.columns(2, gap="large")
@@ -80,7 +80,7 @@ def render() -> None:
             plat_df, x="Revenue", y="Platform", orientation="h",
             color="Platform", color_discrete_map=colors,
         )
-        fig.update_layout(**PLOTLY_LAYOUT, height=340, yaxis_title="", xaxis_title="Estimated Revenue ($)", showlegend=False)
+        apply_theme(fig, height=340, yaxis_title="", xaxis_title="Estimated Revenue ($)", showlegend=False)
         fig.update_xaxes(tickprefix="$", tickformat=",")
         fig.update_traces(hovertemplate="%{y}<br><b>$%{x:,.0f}</b><extra></extra>")
         st.plotly_chart(fig, use_container_width=True, key="rev_by_platform", config=PLOTLY_CONFIG)
@@ -94,12 +94,12 @@ def render() -> None:
             rate_df, x="Rate", y="Platform", orientation="h",
             color_discrete_sequence=[ACCENT_BLUE],
         )
-        fig_rates.update_layout(**PLOTLY_LAYOUT, height=340, yaxis_title="", xaxis_title="$/Stream")
+        apply_theme(fig_rates, height=340, yaxis_title="", xaxis_title="$/Stream")
         fig_rates.update_xaxes(tickprefix="$")
         fig_rates.update_traces(hovertemplate="%{y}<br><b>$%{x:.4f}</b>/stream<extra></extra>")
         st.plotly_chart(fig_rates, use_container_width=True, key="rev_rates", config=PLOTLY_CONFIG)
 
-    spacer(28)
+    spacer(16)
 
     # --- Top earners (Jake's share) ---
     section("Top Earning Tracks — Jake's Share")
@@ -107,16 +107,16 @@ def render() -> None:
     fig_top = go.Figure()
     fig_top.add_trace(go.Bar(
         x=top_earners["jake_revenue"], y=top_earners["song"], orientation="h",
-        marker_color=[GOLD if s >= 1.0 else AMBER for s in top_earners["jake_split"]],
+        marker_color=GOLD,
         text=top_earners["jake_split"].apply(lambda x: f"{x:.0%}"),
         textposition="outside", textfont=dict(color=MUTED, size=10),
         hovertemplate="%{y}<br>Jake's share: <b>$%{x:,.2f}</b><extra></extra>",
     ))
-    fig_top.update_layout(**PLOTLY_LAYOUT, height=480, yaxis_title="", xaxis_title="Jake's Revenue ($)")
+    apply_theme(fig_top, height=480, yaxis_title="", xaxis_title="Jake's Revenue ($)")
     fig_top.update_xaxes(tickprefix="$", tickformat=",")
     st.plotly_chart(fig_top, use_container_width=True, key="rev_top_earners", config=PLOTLY_CONFIG)
 
-    spacer(28)
+    spacer(16)
 
     # --- Revenue table with splits ---
     section("Revenue by Track")
@@ -131,7 +131,7 @@ def render() -> None:
     rev_display.columns = ["Song", "Artist", "Spotify Streams", "Est. Total", "Total Rev", "Jake's %", "Jake's Share"]
     st.dataframe(rev_display, use_container_width=True, hide_index=True, height=400)
 
-    spacer(32)
+    spacer(12)
 
     # --- Projection tool ---
     section("Revenue Projection Tool")
@@ -180,7 +180,7 @@ def render() -> None:
             marker=dict(size=6), fill="tozeroy", fillcolor="rgba(240,192,64,0.08)",
             hovertemplate="Month %{x}<br><b>$%{y:,.0f}</b><extra></extra>",
         ))
-        fig_proj.update_layout(**PLOTLY_LAYOUT, height=340, xaxis_title="Month", yaxis_title="Cumulative Revenue ($)")
+        apply_theme(fig_proj, height=340, xaxis_title="Month", yaxis_title="Cumulative Revenue ($)")
         fig_proj.update_yaxes(tickprefix="$", tickformat=",")
         st.plotly_chart(fig_proj, use_container_width=True, key="rev_projection", config=PLOTLY_CONFIG)
 
@@ -200,5 +200,5 @@ def render() -> None:
             {"label": "Final Total Revenue", "value": f"${final['Cumulative Revenue']:,.0f}", "accent": GOLD},
         ])
 
-    spacer(20)
+    spacer(12)
     st.caption("Revenue estimates use industry-average per-stream rates. Splits are default assumptions (50/50 for co-writes) — adjust in revenue_estimator.py. Actual payouts vary by territory, subscription type, and distributor terms.")

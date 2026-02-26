@@ -8,7 +8,7 @@ import streamlit as st
 
 from theme import (
     SPOTIFY_GREEN, IG_PINK, ACCENT_BLUE, GOLD, AMBER, MUTED,
-    PLOTLY_LAYOUT, PLOTLY_CONFIG, kpi_row, section, spacer,
+    PLOTLY_CONFIG, apply_theme, kpi_row, section, spacer,
     render_page_title, get_platform_icon_html,
 )
 
@@ -38,7 +38,7 @@ def render() -> None:
         {"label": "Total Playlists", "value": f"{combined_playlists:,}", "sub": f"Reach: {ss['spotify']['playlist_reach'] + enjune['spotify']['playlist_reach']:,.0f}", "accent": SPOTIFY_GREEN},
     ])
 
-    spacer(28)
+    spacer(16)
 
     # --- Platform breakdown chart ---
     left, right = st.columns(2, gap="large")
@@ -54,7 +54,7 @@ def render() -> None:
             textposition="outside", textfont=dict(color="#f0f6fc", size=11),
             hovertemplate="%{x}<br><b>%{y:,.0f}</b> streams<extra></extra>",
         ))
-        fig.update_layout(**PLOTLY_LAYOUT, height=360, yaxis_title="Streams")
+        apply_theme(fig, height=360, yaxis_title="Streams")
         fig.update_yaxes(tickformat=",")
         st.plotly_chart(fig, use_container_width=True, config=PLOTLY_CONFIG, key="xp_streams_artist")
 
@@ -68,15 +68,15 @@ def render() -> None:
         colors_map = {"Instagram": IG_PINK, "Spotify (Jakke)": SPOTIFY_GREEN, "Spotify (Enjune)": AMBER}
         fig2 = px.pie(follower_data, values="Followers", names="Platform", color="Platform",
                       color_discrete_map=colors_map, hole=0.45)
-        fig2.update_layout(**PLOTLY_LAYOUT, height=360, showlegend=True,
-                           uniformtext_minsize=10, uniformtext_mode="hide",
-                           legend=dict(orientation="h", y=-0.05))
+        apply_theme(fig2, height=360, showlegend=True,
+                    uniformtext_minsize=10, uniformtext_mode="hide",
+                    legend=dict(orientation="h", y=-0.05))
         fig2.update_traces(textinfo="label+percent", textfont_color="#f0f6fc",
                            textposition="auto", insidetextorientation="radial",
                            hovertemplate="%{label}<br><b>%{value:,}</b> followers<extra></extra>")
         st.plotly_chart(fig2, use_container_width=True, config=PLOTLY_CONFIG, key="xp_followers")
 
-    spacer(28)
+    spacer(16)
 
     # --- Playlist intelligence ---
     section("Top Playlists Across All Projects")
@@ -91,12 +91,12 @@ def render() -> None:
             pl_sorted, x="followers", y="name", orientation="h",
             color="artist", color_discrete_map={"Jakke": SPOTIFY_GREEN, "Enjune": AMBER},
         )
-        fig_pl.update_layout(**PLOTLY_LAYOUT, height=max(360, len(all_playlists) * 28), yaxis_title="", xaxis_title="Playlist Followers")
+        apply_theme(fig_pl, height=max(360, len(all_playlists) * 28), yaxis_title="", xaxis_title="Playlist Followers")
         fig_pl.update_xaxes(tickformat=",")
         fig_pl.update_traces(hovertemplate="%{y}<br><b>%{x:,}</b> followers<extra></extra>")
         st.plotly_chart(fig_pl, use_container_width=True, config=PLOTLY_CONFIG, key="xp_playlists")
 
-    spacer(28)
+    spacer(16)
 
     # --- YouTube (live data if configured) ---
     section("YouTube")
@@ -129,7 +129,7 @@ YouTube data requires a free API key. Set <code>YOUTUBE_API_KEY</code> and <code
 </div></div>
         """, unsafe_allow_html=True)
 
-    spacer(28)
+    spacer(16)
 
     # --- Last.fm (live data if configured) ---
     section("Last.fm")
@@ -152,7 +152,7 @@ YouTube data requires a free API key. Set <code>YOUTUBE_API_KEY</code> and <code
                     sim_df.sort_values("match_pct"), x="match_pct", y="name",
                     orientation="h", color_discrete_sequence=[ACCENT_BLUE],
                 )
-                fig_sim.update_layout(**PLOTLY_LAYOUT, height=max(280, len(similar) * 32), yaxis_title="", xaxis_title="Match %")
+                apply_theme(fig_sim, height=max(280, len(similar) * 32), yaxis_title="", xaxis_title="Match %")
                 fig_sim.update_traces(hovertemplate="%{y}<br><b>%{x:.1f}%</b> match<extra></extra>")
                 st.plotly_chart(fig_sim, use_container_width=True, config=PLOTLY_CONFIG, key="xp_lastfm_similar")
     else:
@@ -163,7 +163,7 @@ Last.fm data requires a free API key. Set <code>LASTFM_API_KEY</code> in secrets
 </div></div>
         """, unsafe_allow_html=True)
 
-    spacer(28)
+    spacer(16)
 
     # --- API Connection Status (collapsed to one line) ---
     statuses = get_all_api_status()

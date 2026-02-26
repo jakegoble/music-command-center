@@ -7,7 +7,7 @@ import streamlit as st
 
 from theme import (
     SPOTIFY_GREEN, IG_PINK, ACCENT_BLUE, MUTED, GOLD, AMBER,
-    PLOTLY_LAYOUT, PLOTLY_CONFIG, kpi_row, section, spacer,
+    PLOTLY_CONFIG, apply_theme, kpi_row, section, spacer,
     genre_pill, genre_tag, genre_tags,
     performance_sidebar, track_row,
     get_platform_icon_html, load_artist_profile, render_page_title,
@@ -86,7 +86,7 @@ def render() -> None:
             {"label": "Combined Universe", "value": f"{combined_streams:,.0f}", "sub": "Jakke + Enjune streams", "accent": GOLD},
         ])
 
-        spacer(20)
+        spacer(12)
 
         # --- Charts row 1 ---
         left, right = st.columns(2, gap="large")
@@ -95,7 +95,7 @@ def render() -> None:
             section("Top 10 Songs — All-Time Streams")
             top10 = songs.nlargest(10, "streams").sort_values("streams")
             fig = px.bar(top10, x="streams", y="song", orientation="h", color_discrete_sequence=[SPOTIFY_GREEN])
-            fig.update_layout(**PLOTLY_LAYOUT, height=380, yaxis_title="", xaxis_title="")
+            apply_theme(fig, height=380, yaxis_title="", xaxis_title="")
             fig.update_xaxes(tickformat=",")
             fig.update_traces(hovertemplate="%{y}<br><b>%{x:,.0f}</b> streams<extra></extra>")
             st.plotly_chart(fig, use_container_width=True, config=PLOTLY_CONFIG, key="dash_top10")
@@ -114,7 +114,7 @@ def render() -> None:
                 hovertemplate="<b>%{x}</b><br>Avg %{y:.0f} likes/post<extra></extra>",
             ))
             fig2.add_annotation(x=2017, y=470, text="Peak: 470", showarrow=True, arrowhead=0, arrowcolor=GOLD, font=dict(color=GOLD, size=11))
-            fig2.update_layout(**PLOTLY_LAYOUT, height=380, yaxis_title="Avg Likes / Post", xaxis_title="")
+            apply_theme(fig2, height=380, yaxis_title="Avg Likes / Post", xaxis_title="")
             st.plotly_chart(fig2, use_container_width=True, config=PLOTLY_CONFIG, key="dash_ig_yearly")
 
         spacer(16)
@@ -126,7 +126,7 @@ def render() -> None:
             section("Top 10 Recent Songs (3-Year)")
             top_recent = recent.nlargest(10, "Streams").sort_values("Streams")
             fig3 = px.bar(top_recent, x="Streams", y="Song Name", orientation="h", color_discrete_sequence=[ACCENT_BLUE])
-            fig3.update_layout(**PLOTLY_LAYOUT, height=380, yaxis_title="", xaxis_title="")
+            apply_theme(fig3, height=380, yaxis_title="", xaxis_title="")
             fig3.update_xaxes(tickformat=",")
             fig3.update_traces(hovertemplate="%{y}<br><b>%{x:,.0f}</b> streams<extra></extra>")
             st.plotly_chart(fig3, use_container_width=True, config=PLOTLY_CONFIG, key="dash_recent")
@@ -137,7 +137,7 @@ def render() -> None:
             pl_names = [p["name"][:30] for p in reversed(playlists)]
             pl_followers = [p["followers"] for p in reversed(playlists)]
             fig4 = px.bar(x=pl_followers, y=pl_names, orientation="h", color_discrete_sequence=[SPOTIFY_GREEN])
-            fig4.update_layout(**PLOTLY_LAYOUT, height=380, yaxis_title="", xaxis_title="")
+            apply_theme(fig4, height=380, yaxis_title="", xaxis_title="")
             fig4.update_xaxes(tickformat=",")
             fig4.update_traces(hovertemplate="%{y}<br><b>%{x:,}</b> followers<extra></extra>")
             st.plotly_chart(fig4, use_container_width=True, config=PLOTLY_CONFIG, key="dash_playlists")

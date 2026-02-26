@@ -8,7 +8,7 @@ import streamlit as st
 
 from theme import (
     IG_PINK, IG_PURPLE, IG_ORANGE, ACCENT_BLUE, MUTED, GOLD,
-    PLOTLY_LAYOUT, PLOTLY_CONFIG, chart_layout, kpi_row, section, spacer, platform_icon,
+    PLOTLY_CONFIG, chart_layout, apply_theme, kpi_row, section, spacer, platform_icon,
     render_page_title, get_platform_icon_html,
 )
 
@@ -54,7 +54,7 @@ def render() -> None:
             {"label": "Profile Visits", "value": f"{ov['profile_visits']:,}", "sub": f"{ov['external_link_taps']} link taps"},
         ])
 
-        spacer(28)
+        spacer(16)
         left, right = st.columns(2, gap="large")
 
         with left:
@@ -67,7 +67,7 @@ def render() -> None:
             ])
             fig = px.bar(views_df, x="Type", y="Views", color="Type",
                          color_discrete_map={"Stories": IG_PURPLE, "Reels": IG_PINK, "Posts": IG_ORANGE})
-            fig.update_layout(**PLOTLY_LAYOUT, height=320, showlegend=False, xaxis_title="", yaxis_title="")
+            apply_theme(fig, height=320, showlegend=False, xaxis_title="", yaxis_title="")
             fig.update_yaxes(tickformat=",")
             fig.update_traces(hovertemplate="%{x}<br><b>%{y:,}</b> views<extra></extra>")
             st.plotly_chart(fig, use_container_width=True, key="ig_views_type", config=PLOTLY_CONFIG)
@@ -82,11 +82,11 @@ def render() -> None:
             ])
             fig2 = px.bar(inter_df, x="Type", y="Interactions", color="Type",
                           color_discrete_map={"Stories": IG_PURPLE, "Reels": IG_PINK, "Posts": IG_ORANGE})
-            fig2.update_layout(**PLOTLY_LAYOUT, height=320, showlegend=False, xaxis_title="", yaxis_title="")
+            apply_theme(fig2, height=320, showlegend=False, xaxis_title="", yaxis_title="")
             fig2.update_traces(hovertemplate="%{x}<br><b>%{y:,}</b> interactions<extra></extra>")
             st.plotly_chart(fig2, use_container_width=True, key="ig_inter_type", config=PLOTLY_CONFIG)
 
-        spacer(20)
+        spacer(12)
         section("Follower Active Hours (Eastern Time)")
         hours = ig["follower_active_hours"]
         # Convert UTC hours to ET
@@ -103,7 +103,7 @@ def render() -> None:
         peak_labels = ", ".join(peak["Label"].tolist())
 
         fig3 = px.bar(hours_df, x="Label", y="Active", color_discrete_sequence=[IG_PINK])
-        fig3.update_layout(**PLOTLY_LAYOUT, height=260, xaxis_title="", yaxis_title="")
+        apply_theme(fig3, height=260, xaxis_title="", yaxis_title="")
         fig3.update_traces(hovertemplate="%{x} ET<br><b>%{y:,}</b> active<extra></extra>")
         st.plotly_chart(fig3, use_container_width=True, key="ig_active_hours", config=PLOTLY_CONFIG)
         st.caption(f"Peak hours (ET): {peak_labels}")
@@ -129,7 +129,7 @@ def render() -> None:
             {"label": "Top Post", "value": f"{year_data['top_likes']:,}", "sub": "likes"},
         ])
 
-        spacer(24)
+        spacer(16)
         year_monthly = monthly[monthly["month"].dt.year == selected_year].sort_values("month")
         if not year_monthly.empty:
             left, right = st.columns(2, gap="large")
@@ -159,14 +159,14 @@ def render() -> None:
                 section("Content Type Breakdown")
                 ct_fig = px.pie(content_type, values="posts", names="type", color="type",
                                 color_discrete_map={"Video/Reel": IG_PINK, "Carousel": ACCENT_BLUE, "Photo": MUTED}, hole=0.45)
-                ct_fig.update_layout(**PLOTLY_LAYOUT, height=340, showlegend=True,
-                                     uniformtext_minsize=10, uniformtext_mode="hide",
-                                     legend=dict(orientation="h", y=-0.05))
+                apply_theme(ct_fig, height=340, showlegend=True,
+                            uniformtext_minsize=10, uniformtext_mode="hide",
+                            legend=dict(orientation="h", y=-0.05))
                 ct_fig.update_traces(textinfo="label+percent", textfont_color="#f0f6fc",
                                      textposition="auto", insidetextorientation="radial")
                 st.plotly_chart(ct_fig, use_container_width=True, key="ig_ct_pie", config=PLOTLY_CONFIG)
 
-        spacer(20)
+        spacer(12)
         left2, right2 = st.columns(2, gap="large")
         with left2:
             section("Day-of-Week Performance")
@@ -174,7 +174,7 @@ def render() -> None:
             dow_sorted = dow.set_index("day").reindex(day_order).reset_index()
             fig_dow = px.bar(dow_sorted, x="day", y="avg_likes", color="avg_likes",
                              color_continuous_scale=[[0, MUTED], [1, IG_PINK]])
-            fig_dow.update_layout(**PLOTLY_LAYOUT, height=300, coloraxis_showscale=False, xaxis_title="", yaxis_title="Avg Likes")
+            apply_theme(fig_dow, height=300, coloraxis_showscale=False, xaxis_title="", yaxis_title="Avg Likes")
             fig_dow.update_traces(hovertemplate="%{x}<br>Avg <b>%{y:.0f}</b> likes<extra></extra>")
             st.plotly_chart(fig_dow, use_container_width=True, key="ig_dow", config=PLOTLY_CONFIG)
 
@@ -186,7 +186,7 @@ def render() -> None:
                 marker_color=[MUTED, IG_PINK], text=[121, 261], textposition="outside", textfont_color="#f0f6fc",
                 hovertemplate="%{x}<br>Avg <b>%{y}</b> likes<extra></extra>",
             ))
-            fig_sc.update_layout(**PLOTLY_LAYOUT, height=300, yaxis_title="Avg Likes/Post")
+            apply_theme(fig_sc, height=300, yaxis_title="Avg Likes/Post")
             st.plotly_chart(fig_sc, use_container_width=True, key="ig_solo_collab", config=PLOTLY_CONFIG)
 
     # ── TAB C: Top Posts ──
@@ -205,14 +205,14 @@ def render() -> None:
             column_config={"Link": st.column_config.LinkColumn("Post", display_text="Open")},
         )
 
-        spacer(20)
+        spacer(12)
         section("Top Post Likes by Year")
         top_by_year = top_posts.copy()
         top_by_year["year"] = top_by_year["date"].dt.year
         yearly_top = top_by_year.groupby("year")["likes"].max().reset_index()
 
         fig_trend = px.line(yearly_top, x="year", y="likes", markers=True, color_discrete_sequence=[IG_PINK])
-        fig_trend.update_layout(**PLOTLY_LAYOUT, height=280, xaxis_title="", yaxis_title="Likes")
+        apply_theme(fig_trend, height=280, xaxis_title="", yaxis_title="Likes")
         fig_trend.update_traces(line=dict(width=3), marker=dict(size=9))
         fig_trend.update_yaxes(tickformat=",")
         st.plotly_chart(fig_trend, use_container_width=True, key="ig_top_trend", config=PLOTLY_CONFIG)
@@ -225,12 +225,12 @@ def render() -> None:
         hist_display.columns = ["Year", "Posts", "Total Likes", "Avg Likes", "Top Likes", "Comments", "Photos", "Videos", "Carousels"]
         st.dataframe(hist_display, use_container_width=True, hide_index=True)
 
-        spacer(20)
+        spacer(12)
         left, right = st.columns(2, gap="large")
         with left:
             section("Posting Frequency")
             fig_freq = px.bar(yearly.sort_values("year"), x="year", y="posts", color_discrete_sequence=[IG_PINK])
-            fig_freq.update_layout(**PLOTLY_LAYOUT, height=320, xaxis_title="", yaxis_title="Posts")
+            apply_theme(fig_freq, height=320, xaxis_title="", yaxis_title="Posts")
             fig_freq.update_traces(hovertemplate="%{x}<br><b>%{y}</b> posts<extra></extra>")
             st.plotly_chart(fig_freq, use_container_width=True, key="ig_freq", config=PLOTLY_CONFIG)
 
@@ -241,6 +241,6 @@ def render() -> None:
             fig_fmt.add_trace(go.Bar(x=format_data["year"], y=format_data["photos"], name="Photos", marker_color=MUTED))
             fig_fmt.add_trace(go.Bar(x=format_data["year"], y=format_data["videos"], name="Videos/Reels", marker_color=IG_PINK))
             fig_fmt.add_trace(go.Bar(x=format_data["year"], y=format_data["carousels"], name="Carousels", marker_color=ACCENT_BLUE))
-            fig_fmt.update_layout(**PLOTLY_LAYOUT, height=320, barmode="stack", xaxis_title="", yaxis_title="Posts",
-                                  legend=dict(orientation="h", y=1.1))
+            apply_theme(fig_fmt, height=320, barmode="stack", xaxis_title="", yaxis_title="Posts",
+                        legend=dict(orientation="h", y=1.1))
             st.plotly_chart(fig_fmt, use_container_width=True, key="ig_format_evo", config=PLOTLY_CONFIG)

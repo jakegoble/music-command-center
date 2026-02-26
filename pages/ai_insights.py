@@ -30,7 +30,7 @@ def render() -> None:
         {"label": "Playlist Reach", "value": f"{ss['cross_platform']['playlist_reach']:,.0f}", "sub": f"{ss['spotify']['current_playlists']} playlists", "accent": SPOTIFY_GREEN},
     ])
 
-    spacer(32)
+    spacer(12)
 
     # ── What's Working ──
     section("What's Working")
@@ -72,7 +72,7 @@ Allen Blickle: <b>6 tracks, 2.29M streams</b>. Most prolific music partner.
 </div></div>
         """, unsafe_allow_html=True)
 
-    spacer(28)
+    spacer(16)
 
     # ── Opportunities ──
     section("Opportunities")
@@ -114,7 +114,7 @@ Could be used for release teasers, behind-the-scenes, session clips.
 </div></div>
         """, unsafe_allow_html=True)
 
-    spacer(28)
+    spacer(16)
 
     # ── Risks ──
     section("Risks")
@@ -154,7 +154,7 @@ lower-performing solo posts get less reach — negative feedback loop.
 </div></div>
         """, unsafe_allow_html=True)
 
-    spacer(32)
+    spacer(12)
 
     # ── Action Items ──
     section("Action Items")
@@ -179,5 +179,5 @@ lower-performing solo posts get less reach — negative feedback loop.
             c3.markdown(f"**Impact:** {a['impact']}")
             st.markdown(f"{a['rationale']}")
 
-    spacer(20)
+    spacer(12)
     st.caption("These insights are generated from static data analysis. Connect live APIs (Spotify for Artists, IG Graph API) for real-time recommendations.")

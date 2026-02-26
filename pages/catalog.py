@@ -8,7 +8,7 @@ import streamlit as st
 
 from theme import (
     SPOTIFY_GREEN, ACCENT_BLUE, GOLD, AMBER, MUTED, IG_PINK,
-    PLOTLY_LAYOUT, PLOTLY_CONFIG, kpi_row, section, spacer, genre_pill,
+    PLOTLY_CONFIG, apply_theme, kpi_row, section, spacer, genre_pill,
     GENRE_COLORS, render_page_title, track_row,
 )
 
@@ -137,7 +137,7 @@ def render() -> None:
         ]
         st.dataframe(display, use_container_width=True, hide_index=True, height=520)
 
-        spacer(20)
+        spacer(12)
 
         # Track list with artwork placeholders (D9)
         section("Track Details")
@@ -219,7 +219,7 @@ def render() -> None:
                 top_rev, x="est_revenue", y="song", orientation="h",
                 color_discrete_sequence=[GOLD],
             )
-            fig_rev.update_layout(**PLOTLY_LAYOUT, height=480, yaxis_title="", xaxis_title="Estimated Revenue ($)")
+            apply_theme(fig_rev, height=480, yaxis_title="", xaxis_title="Estimated Revenue ($)")
             fig_rev.update_xaxes(tickprefix="$", tickformat=",")
             fig_rev.update_traces(hovertemplate="%{y}<br><b>$%{x:,.2f}</b><extra></extra>")
             st.plotly_chart(fig_rev, use_container_width=True, key="cat_revenue_track", config=PLOTLY_CONFIG)
@@ -243,9 +243,9 @@ def render() -> None:
                 platform_df, values="Revenue", names="Platform",
                 color="Platform", color_discrete_map=colors, hole=0.45,
             )
-            fig_plat.update_layout(**PLOTLY_LAYOUT, height=480, showlegend=True,
-                                   uniformtext_minsize=10, uniformtext_mode="hide",
-                                   legend=dict(orientation="h", y=-0.05))
+            apply_theme(fig_plat, height=480, showlegend=True,
+                        uniformtext_minsize=10, uniformtext_mode="hide",
+                        legend=dict(orientation="h", y=-0.05))
             fig_plat.update_traces(textinfo="label+percent", textfont_color="#f0f6fc",
                                    textposition="auto", insidetextorientation="radial",
                                    hovertemplate="%{label}<br><b>$%{value:,.0f}</b><br>%{percent}<extra></extra>")
@@ -289,7 +289,7 @@ def render() -> None:
 {items}{extra}
 </div>""", unsafe_allow_html=True)
 
-        spacer(20)
+        spacer(12)
 
         # Currently playlisted indicator
         playlisted_list = ss.get("currently_playlisted", [])
@@ -347,7 +347,7 @@ def render() -> None:
             color_discrete_map={"Jakke": SPOTIFY_GREEN, "iLÜ": "#a78bfa"},
             hover_name="song", size_max=40,
         )
-        fig.update_layout(**PLOTLY_LAYOUT, height=400, xaxis_title="", yaxis_title="All-Time Streams")
+        apply_theme(fig, height=400, xaxis_title="", yaxis_title="All-Time Streams")
         fig.update_yaxes(tickformat=",")
         fig.update_traces(hovertemplate="%{hovertext}<br>Released %{x|%b %Y}<br><b>%{y:,.0f}</b> streams<extra></extra>")
         st.plotly_chart(fig, use_container_width=True, key="cat_timeline", config=PLOTLY_CONFIG)

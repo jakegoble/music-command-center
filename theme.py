@@ -141,24 +141,26 @@ PLOTLY_LAYOUT = dict(
     template="plotly_dark",
     paper_bgcolor="rgba(0,0,0,0)",
     plot_bgcolor="rgba(0,0,0,0)",
-    font=dict(color="rgba(255,255,255,0.7)", family="Inter, -apple-system, sans-serif", size=12),
+    font=dict(color="rgba(255,255,255,0.65)", family="Inter, -apple-system, sans-serif", size=12),
     margin=dict(l=40, r=20, t=30, b=40),
     hoverlabel=dict(
-        bgcolor="rgba(30,30,30,0.95)",
-        bordercolor="rgba(255,255,255,0.1)",
+        bgcolor="rgba(25,25,30,0.95)",
+        bordercolor="rgba(255,255,255,0.08)",
         font=dict(family="Inter, sans-serif", size=12, color="white"),
     ),
     xaxis=dict(
         showgrid=True,
-        gridcolor="rgba(255,255,255,0.06)",
+        gridcolor="rgba(255,255,255,0.05)",
         griddash="dot",
         zeroline=False,
+        tickfont=dict(size=11),
     ),
     yaxis=dict(
         showgrid=True,
-        gridcolor="rgba(255,255,255,0.06)",
+        gridcolor="rgba(255,255,255,0.05)",
         griddash="dot",
         zeroline=False,
+        tickfont=dict(size=11),
     ),
     legend=dict(
         orientation="h",
@@ -179,6 +181,17 @@ PIE_LAYOUT = dict(
     uniformtext_minsize=10,
     uniformtext_mode="hide",
 )
+
+
+def apply_theme(fig, **overrides):
+    """Apply the standard Plotly theme to a figure, safely merging overrides.
+
+    Filters out base-theme keys that conflict with overrides to prevent
+    'got multiple values for keyword argument' errors.
+    """
+    theme = {k: v for k, v in PLOTLY_LAYOUT.items() if k not in overrides}
+    fig.update_layout(**theme, **overrides)
+    return fig
 
 
 def chart_layout(**overrides) -> dict:
@@ -236,10 +249,10 @@ def kpi_row(cards: list[dict]) -> None:
 # ---------------------------------------------------------------------------
 def section(title: str, accent: str = "") -> None:
     """Render a subtle uppercase section header."""
-    color = accent or MUTED
+    color = accent or "rgba(255,255,255,0.4)"
     st.markdown(
-        f'<p style="color:{color};font-size:0.72rem;font-weight:600;letter-spacing:0.1em;'
-        f'text-transform:uppercase;margin:28px 0 8px 0">{title}</p>',
+        f'<p style="color:{color};font-size:11px;font-weight:700;letter-spacing:1px;'
+        f'text-transform:uppercase;margin:16px 0 4px 0">{title}</p>',
         unsafe_allow_html=True,
     )
 
@@ -463,14 +476,14 @@ def render_page_title(title: str, subtitle: str = "", accent_color: str = "") ->
     """Render a styled page title with accent underline bar."""
     color = accent_color or ACCENT_BLUE
     sub_html = (
-        f'<p style="color:rgba(255,255,255,0.5);margin:4px 0 0;font-size:0.85rem">{subtitle}</p>'
+        f'<p style="color:rgba(255,255,255,0.45);margin:3px 0 0;font-size:0.8rem">{subtitle}</p>'
         if subtitle else ""
     )
     st.markdown(f"""
-    <div style="margin-bottom:1.5rem">
-        <h1 style="color:{color};margin:0;font-size:1.75rem;font-weight:700">{title}</h1>
+    <div style="margin-bottom:1rem">
+        <h1 style="color:{color};margin:0;font-size:1.6rem;font-weight:700;line-height:1.2">{title}</h1>
         {sub_html}
-        <div style="width:40px;height:3px;background:{color};margin-top:8px;border-radius:2px"></div>
+        <div style="width:32px;height:2.5px;background:{color};margin-top:6px;border-radius:2px"></div>
     </div>
     """, unsafe_allow_html=True)
 

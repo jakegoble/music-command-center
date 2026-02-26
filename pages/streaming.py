@@ -9,8 +9,8 @@ import pandas as pd
 import streamlit as st
 
 from theme import (
-    SPOTIFY_GREEN, ACCENT_BLUE, AMBER, GOLD, MUTED, PLOTLY_LAYOUT,
-    kpi_row, section, spacer, genre_pill, render_page_title, PLOTLY_CONFIG,
+    SPOTIFY_GREEN, ACCENT_BLUE, AMBER, GOLD, MUTED,
+    apply_theme, kpi_row, section, spacer, genre_pill, render_page_title, PLOTLY_CONFIG,
     get_platform_icon_html, time_range_selector, chart_layout,
 )
 
@@ -37,7 +37,7 @@ def render() -> None:
         {"label": "Playlists", "value": f"{ss['spotify']['current_playlists']}", "sub": f"Reach: {ss['spotify']['playlist_reach']:,.0f}", "accent": GOLD},
     ])
 
-    spacer(20)
+    spacer(12)
 
     # --- Filters row ---
     filter_left, filter_right = st.columns([1, 2])
@@ -67,7 +67,7 @@ def render() -> None:
         section("All-Time — Top 15")
         top15 = filtered.nlargest(15, "streams").sort_values("streams")
         fig1 = px.bar(top15, x="streams", y="song", orientation="h", color_discrete_sequence=[SPOTIFY_GREEN])
-        fig1.update_layout(**PLOTLY_LAYOUT, height=480, yaxis_title="", xaxis_title="")
+        apply_theme(fig1, height=480, yaxis_title="", xaxis_title="")
         fig1.update_xaxes(tickformat=",")
         fig1.update_traces(hovertemplate="%{y}<br><b>%{x:,.0f}</b> streams<extra></extra>")
         st.plotly_chart(fig1, use_container_width=True, key="stream_alltime", config=PLOTLY_CONFIG)
@@ -76,12 +76,12 @@ def render() -> None:
         section("Recent 3-Year — Top 15")
         top15_recent = recent.nlargest(15, "Streams").sort_values("Streams")
         fig2 = px.bar(top15_recent, x="Streams", y="Song Name", orientation="h", color_discrete_sequence=[ACCENT_BLUE])
-        fig2.update_layout(**PLOTLY_LAYOUT, height=480, yaxis_title="", xaxis_title="")
+        apply_theme(fig2, height=480, yaxis_title="", xaxis_title="")
         fig2.update_xaxes(tickformat=",")
         fig2.update_traces(hovertemplate="%{y}<br><b>%{x:,.0f}</b> streams<extra></extra>")
         st.plotly_chart(fig2, use_container_width=True, key="stream_recent", config=PLOTLY_CONFIG)
 
-    spacer(28)
+    spacer(16)
 
     # --- Popularity scores ---
     section("Spotify Popularity Scores")
@@ -92,13 +92,13 @@ def render() -> None:
             pop_data, x="popularity", y="song", orientation="h",
             color="popularity", color_continuous_scale=[[0, MUTED], [0.5, ACCENT_BLUE], [1, SPOTIFY_GREEN]],
         )
-        fig_pop.update_layout(**PLOTLY_LAYOUT, height=max(300, len(pop_data) * 30), yaxis_title="", xaxis_title="Popularity Score (0-100)", coloraxis_showscale=False)
+        apply_theme(fig_pop, height=max(300, len(pop_data) * 30), yaxis_title="", xaxis_title="Popularity Score (0-100)", coloraxis_showscale=False)
         fig_pop.update_traces(hovertemplate="%{y}<br>Popularity: <b>%{x}</b>/100<extra></extra>")
         st.plotly_chart(fig_pop, use_container_width=True, key="stream_popularity", config=PLOTLY_CONFIG)
     else:
         st.caption("No popularity scores available for this filter.")
 
-    spacer(28)
+    spacer(16)
 
     # --- Velocity analysis ---
     section("Velocity — Streams per Day Since Release")
@@ -113,7 +113,7 @@ def render() -> None:
     with left2:
         top_vel = velocity.head(12).sort_values("streams_per_day")
         fig3 = px.bar(top_vel, x="streams_per_day", y="song", orientation="h", color_discrete_sequence=[AMBER])
-        fig3.update_layout(**PLOTLY_LAYOUT, height=400, yaxis_title="", xaxis_title="Streams / Day")
+        apply_theme(fig3, height=400, yaxis_title="", xaxis_title="Streams / Day")
         fig3.update_traces(hovertemplate="%{y}<br><b>%{x:.1f}</b> streams/day<extra></extra>")
         st.plotly_chart(fig3, use_container_width=True, key="stream_velocity", config=PLOTLY_CONFIG)
 
@@ -126,12 +126,12 @@ def render() -> None:
             color_discrete_map={"Jakke": SPOTIFY_GREEN, "iLÜ": "#a78bfa"},
             color_discrete_sequence=[SPOTIFY_GREEN], size_max=45,
         )
-        fig4.update_layout(**PLOTLY_LAYOUT, height=400, xaxis_title="", yaxis_title="Total Streams")
+        apply_theme(fig4, height=400, xaxis_title="", yaxis_title="Total Streams")
         fig4.update_yaxes(tickformat=",")
         fig4.update_traces(hovertemplate="%{hovertext}<br>%{x|%b %Y}<br><b>%{y:,.0f}</b> streams<extra></extra>")
         st.plotly_chart(fig4, use_container_width=True, key="stream_impact", config=PLOTLY_CONFIG)
 
-    spacer(24)
+    spacer(16)
 
     # --- Dual-axis: Streams vs Popularity (D7) ---
     section("Streams vs Popularity (Dual Axis)")
@@ -161,7 +161,7 @@ def render() -> None:
     else:
         st.caption("No songs with popularity scores in current filter.")
 
-    spacer(24)
+    spacer(16)
 
     # --- Song detail expanders ---
     section("Song Details — Top 10")

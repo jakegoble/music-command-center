@@ -1,4 +1,4 @@
-"""Music Command Center v5.1 — Compact sidebar, polished design."""
+"""Music Command Center v5.2 — Compact sidebar, polished design, consistent charts."""
 from __future__ import annotations
 
 import streamlit as st
@@ -41,7 +41,12 @@ st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-    /* ── Header: collapse but rescue sidebar toggle ── */
+    /* === GLOBAL FONT === */
+    html, body, [class*="css"], .stApp {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+    }
+
+    /* === Header: collapse but rescue sidebar toggle === */
     header[data-testid="stHeader"] {
         visibility: hidden;
         height: 0 !important;
@@ -67,135 +72,158 @@ st.markdown("""
     [data-testid="stSidebarNav"] { display: none !important; }
     [data-testid="stSidebarNavSeparator"] { display: none !important; }
 
-    /* ── Base font ── */
-    html, body, [class*="css"] {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
-    }
-
-    /* ── Layout ── */
+    /* === MAIN CONTENT LAYOUT === */
     .stApp > div:first-child { padding-top: 0 !important; }
     .main .block-container {
-        padding: 1.5rem 2rem !important;
+        padding: 1.5rem 2rem 2rem !important;
         max-width: 1200px !important;
     }
 
-    /* Tighter spacing between elements */
-    h1 { margin-bottom: 0.5rem !important; font-size: 1.75rem !important; }
-    h2 { margin-bottom: 0.4rem !important; font-size: 1.3rem !important; }
-    h3 { margin-bottom: 0.3rem !important; font-size: 1.1rem !important; }
+    /* === TIGHTER HEADER SPACING === */
+    h1 { margin-bottom: 0.3rem !important; }
+    h2 { margin-bottom: 0.2rem !important; }
+    h3 { margin-bottom: 0.15rem !important; }
 
-    /* ── Dark backgrounds ── */
+    /* === TIGHTER ELEMENT GAPS IN MAIN CONTENT === */
+    .main [data-testid="stVerticalBlock"] > div {
+        margin-bottom: 0 !important;
+    }
+    .main [data-testid="stVerticalBlock"] > [data-testid="stElementContainer"] {
+        margin-bottom: 0 !important;
+    }
+
+    /* === DARK BACKGROUNDS === */
     .stApp { background-color: #0e1117; }
     section[data-testid="stSidebar"] {
         background-color: #0d1117;
         border-right: 1px solid #161b22;
     }
 
-    /* ── Sidebar: kill all vertical bloat ── */
-    [data-testid="stSidebarContent"] {
-        padding-left: 12px !important;
-        padding-right: 12px !important;
-        padding-top: 1rem !important;
-    }
+    /* === SIDEBAR: Kill the 16px gap between ALL sidebar elements === */
     [data-testid="stSidebar"] [data-testid="stVerticalBlock"] {
         gap: 2px !important;
     }
-    [data-testid="stSidebar"] [data-testid="stVerticalBlock"] > div {
-        padding-top: 0px !important;
-        padding-bottom: 0px !important;
+
+    /* === SIDEBAR: Remove extra margin/padding on element containers === */
+    [data-testid="stSidebar"] [data-testid="stElementContainer"] {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
     }
 
-    /* Zero out all wrapper margins in sidebar */
+    /* === SIDEBAR: Remove extra margin on stMarkdown wrappers === */
     [data-testid="stSidebar"] [data-testid="stMarkdown"] {
         margin: 0 !important;
         padding: 0 !important;
     }
-    [data-testid="stSidebar"] [data-testid="stElementContainer"] {
-        margin: 0 !important;
-        padding: 0 !important;
+
+    /* === SIDEBAR PADDING: Tighter overall === */
+    [data-testid="stSidebarContent"] {
+        padding: 1rem 0.75rem !important;
     }
 
-    /* Sidebar nav buttons — compact, left-aligned */
+    /* === NAV BUTTONS: Full-width, left-aligned, compact === */
     [data-testid="stSidebar"] [data-testid="stButton"] {
+        width: 100% !important;
         margin: 0 !important;
         padding: 0 !important;
     }
     [data-testid="stSidebar"] [data-testid="stButton"] button {
-        background: transparent !important;
-        border: none !important;
-        border-left: 3px solid transparent !important;
-        border-radius: 0 6px 6px 0 !important;
-        color: rgba(255,255,255,0.7) !important;
+        width: 100% !important;
         text-align: left !important;
         justify-content: flex-start !important;
-        padding: 7px 12px !important;
+        padding: 7px 10px 7px 14px !important;
         margin: 0 !important;
-        font-size: 14px !important;
+        border: none !important;
+        border-left: 3px solid transparent !important;
+        border-radius: 0 4px 4px 0 !important;
+        background: transparent !important;
+        color: rgba(255, 255, 255, 0.6) !important;
+        font-size: 13.5px !important;
         font-weight: 400 !important;
-        width: 100% !important;
-        cursor: pointer !important;
-        transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease !important;
+        line-height: 1.3 !important;
+        transition: all 0.15s ease !important;
         min-height: 0 !important;
-        line-height: 1.4 !important;
     }
     [data-testid="stSidebar"] [data-testid="stButton"] button:hover {
-        background: rgba(255,255,255,0.05) !important;
-        color: rgba(255,255,255,0.95) !important;
-        border-left-color: rgba(29,185,84,0.4) !important;
+        background: rgba(255, 255, 255, 0.04) !important;
+        color: rgba(255, 255, 255, 0.9) !important;
+        border-left-color: rgba(255, 255, 255, 0.15) !important;
     }
     [data-testid="stSidebar"] [data-testid="stButton"] button:focus {
         box-shadow: none !important;
     }
 
-    /* Active nav item */
-    .nav-active {
-        background: rgba(29,185,84,0.15);
-        border-left: 3px solid #1DB954;
-        border-radius: 0 6px 6px 0;
-        padding: 7px 12px;
-        margin: 0;
-        font-size: 14px;
-        font-weight: 600;
-        color: #1DB954;
-        line-height: 1.4;
+    /* === ACTIVE NAV ITEM: Green left border, subtle bg === */
+    [data-testid="stSidebar"] .nav-active {
+        display: block !important;
+        text-align: left !important;
+        padding: 7px 10px 7px 11px !important;
+        margin: 0 !important;
+        background: rgba(29, 185, 84, 0.10) !important;
+        border-left: 3px solid #1DB954 !important;
+        border-radius: 0 4px 4px 0 !important;
+        color: #1DB954 !important;
+        font-weight: 600 !important;
+        font-size: 13.5px !important;
+        line-height: 1.3 !important;
     }
 
-    /* Section headers in sidebar */
-    .sidebar-section {
-        font-size: 10px;
-        font-weight: 600;
-        color: rgba(255,255,255,0.35);
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-        padding: 16px 0 4px 0;
-        margin: 0;
-        line-height: 1;
+    /* === SECTION HEADERS: Tiny, muted, left-aligned === */
+    [data-testid="stSidebar"] .sidebar-section {
+        text-align: left !important;
+        font-size: 9.5px !important;
+        font-weight: 700 !important;
+        letter-spacing: 1.5px !important;
+        text-transform: uppercase !important;
+        color: rgba(255, 255, 255, 0.25) !important;
+        padding: 12px 0 3px 14px !important;
+        margin: 0 !important;
+        line-height: 1 !important;
     }
 
-    /* Artist profile header in sidebar */
-    .artist-profile-header {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 8px 0 6px 0;
+    /* === SELECTBOX (artist switcher): Compact === */
+    [data-testid="stSidebar"] [data-testid="stSelectbox"] {
+        margin-top: 4px !important;
+        margin-bottom: 6px !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stSelectbox"] label {
+        display: none !important;
     }
 
-    /* Sidebar stats block */
+    /* === PROFILE HEADER: Left-aligned flex row === */
+    [data-testid="stSidebar"] .artist-profile-header {
+        text-align: left !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        padding: 4px 0 6px 0 !important;
+        margin: 0 !important;
+    }
+
+    /* === STATS TABLE: Compact === */
     .sidebar-stats {
         background: rgba(255,255,255,0.03);
         border: 1px solid rgba(255,255,255,0.06);
         border-radius: 6px;
-        padding: 6px 12px;
-        margin: 0 0 8px 0;
+        padding: 6px 10px;
+        margin: 2px 0 4px 0;
     }
 
-    /* Tighten selectbox wrapper in sidebar */
-    [data-testid="stSidebar"] .stSelectbox {
-        margin-top: 0 !important;
-        margin-bottom: 4px !important;
+    /* === SOCIAL ICONS ROW === */
+    .social-icons-row {
+        margin: 2px 0 4px 0 !important;
+        padding: 0 !important;
     }
 
-    /* ── Metric cards ── */
+    /* === SIDEBAR DIVIDERS === */
+    [data-testid="stSidebar"] hr {
+        margin: 6px 0 !important;
+        border-color: rgba(255, 255, 255, 0.06) !important;
+    }
+
+    /* === METRIC CARDS === */
     [data-testid="stMetric"] {
         background: #161b22;
         border: 1px solid #21262d;
@@ -211,7 +239,12 @@ st.markdown("""
     [data-testid="stMetricLabel"] { color: #8b949e; font-size: 0.8rem; font-weight: 500; }
     [data-testid="stMetricValue"] { color: #f0f6fc; font-size: 1.5rem; font-weight: 700; }
 
-    /* ── Tabs — left-aligned ── */
+    /* === HORIZONTAL BLOCKS (KPI rows) === */
+    [data-testid="stHorizontalBlock"] {
+        gap: 12px !important;
+    }
+
+    /* === TABS — left-aligned === */
     .stTabs [data-baseweb="tab-list"] {
         gap: 4px;
         border-bottom: 1px solid #21262d;
@@ -235,7 +268,7 @@ st.markdown("""
         font-weight: 600;
     }
 
-    /* ── Expanders ── */
+    /* === EXPANDERS === */
     details[data-testid="stExpander"] {
         background: #161b22;
         border: 1px solid #21262d;
@@ -251,31 +284,44 @@ st.markdown("""
         padding: 12px 16px;
     }
 
-    /* ── Dataframes ── */
+    /* === DATAFRAMES === */
     .stDataFrame {
         border-radius: 10px;
         overflow: hidden;
         box-shadow: 0 2px 8px rgba(0,0,0,0.25);
     }
 
-    /* ── Selectbox ── */
+    /* === SELECTBOX (main content) === */
     .stSelectbox > div > div { background: #161b22; border-color: #21262d; }
 
-    /* ── Alerts ── */
+    /* === ALERTS === */
     div[data-testid="stAlert"] { border-radius: 10px; font-size: 0.9rem; }
 
-    /* ── Plotly charts — subtle border ── */
-    .stPlotlyChart {
-        border: 1px solid rgba(255,255,255,0.06);
+    /* === CHART CONTAINERS: Subtle border === */
+    [data-testid="stPlotlyChart"] {
+        border: 1px solid rgba(255, 255, 255, 0.05);
         border-radius: 8px;
         padding: 4px;
-        margin-bottom: 0;
+        margin-bottom: 4px !important;
     }
 
-    /* ── Dividers ── */
-    hr { border-color: rgba(255,255,255,0.08) !important; margin: 1rem 0 !important; }
+    /* === DIVIDERS === */
+    hr {
+        border-color: rgba(255, 255, 255, 0.06) !important;
+        margin: 0.75rem 0 !important;
+    }
 
-    /* ── Utility: data-card ── */
+    /* === CHART SECTION HEADERS === */
+    .chart-header {
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        letter-spacing: 1px !important;
+        text-transform: uppercase !important;
+        color: rgba(255, 255, 255, 0.4) !important;
+        margin-bottom: 4px !important;
+    }
+
+    /* === Utility: data-card === */
     .data-card {
         background: rgba(20,20,25,0.5);
         border: 1px solid rgba(255,255,255,0.06);
@@ -371,7 +417,7 @@ with st.sidebar:
                 f'{icon}</a>'
             )
         st.markdown(
-            f'<div style="display:flex;gap:5px;align-items:center;padding:0;margin:0 0 6px 0">{"".join(icons_html)}</div>',
+            f'<div class="social-icons-row" style="display:flex;gap:5px;align-items:center">{"".join(icons_html)}</div>',
             unsafe_allow_html=True,
         )
 
@@ -387,7 +433,7 @@ with st.sidebar:
             value = data.get("display", "")
             stats_html.append(
                 f'<div style="display:flex;justify-content:space-between;align-items:center;'
-                f'padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04)">'
+                f'padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.04)">'
                 f'<span style="color:rgba(255,255,255,0.4);font-size:0.68rem;font-weight:500">{label}</span>'
                 f'<span style="color:#f0f6fc;font-size:0.75rem;font-weight:700">{value}</span>'
                 f'</div>'
@@ -427,8 +473,8 @@ with st.sidebar:
 
     # Version footer
     st.markdown(
-        '<div style="font-size:0.65rem;color:rgba(255,255,255,0.2);padding:20px 0 0 0">'
-        'v5.1</div>',
+        '<div style="font-size:0.65rem;color:rgba(255,255,255,0.2);padding:12px 0 0 0">'
+        'v5.2</div>',
         unsafe_allow_html=True,
     )
 

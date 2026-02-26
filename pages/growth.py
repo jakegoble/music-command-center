@@ -7,7 +7,7 @@ import streamlit as st
 
 from theme import (
     IG_PINK, SPOTIFY_GREEN, ACCENT_BLUE, GOLD, MUTED,
-    PLOTLY_LAYOUT, chart_layout, section, spacer, render_page_title, PLOTLY_CONFIG,
+    apply_theme, chart_layout, section, spacer, render_page_title, PLOTLY_CONFIG,
 )
 
 MILESTONES = [
@@ -49,7 +49,7 @@ def render() -> None:
         </div>
         """, unsafe_allow_html=True)
 
-    spacer(28)
+    spacer(16)
 
     # --- Engagement over time ---
     section("Engagement Over Time — Avg Likes by Year")
@@ -63,10 +63,10 @@ def render() -> None:
     ))
     fig1.add_annotation(x=2017, y=470, text="Peak: 470", showarrow=True, arrowhead=0, arrowcolor=GOLD, font=dict(color=GOLD, size=11))
     fig1.add_annotation(x=2024, y=216, text="Music breakout", showarrow=True, arrowhead=0, arrowcolor=SPOTIFY_GREEN, font=dict(color=SPOTIFY_GREEN, size=11))
-    fig1.update_layout(**PLOTLY_LAYOUT, height=380, yaxis_title="Avg Likes / Post", xaxis_title="")
+    apply_theme(fig1, height=380, yaxis_title="Avg Likes / Post", xaxis_title="")
     st.plotly_chart(fig1, use_container_width=True, key="growth_yearly", config=PLOTLY_CONFIG)
 
-    spacer(24)
+    spacer(16)
 
     # --- Monthly engagement (music era) ---
     section("Monthly Engagement (Music Era: 2022–2026)")
@@ -91,7 +91,7 @@ def render() -> None:
     ))
     st.plotly_chart(fig2, use_container_width=True, key="growth_monthly", config=PLOTLY_CONFIG)
 
-    spacer(24)
+    spacer(16)
 
     # --- Cumulative growth ---
     left, right = st.columns(2, gap="large")
@@ -100,7 +100,7 @@ def render() -> None:
         ys_cum = ys.copy()
         ys_cum["cumulative_likes"] = ys_cum["total_likes"].cumsum()
         fig4 = px.area(ys_cum, x="year", y="cumulative_likes", color_discrete_sequence=[IG_PINK])
-        fig4.update_layout(**PLOTLY_LAYOUT, height=300, xaxis_title="", yaxis_title="")
+        apply_theme(fig4, height=300, xaxis_title="", yaxis_title="")
         fig4.update_yaxes(tickformat=",")
         fig4.update_traces(hovertemplate="<b>%{x}</b><br>%{y:,} total likes<extra></extra>")
         st.plotly_chart(fig4, use_container_width=True, key="growth_cum_likes", config=PLOTLY_CONFIG)
@@ -109,6 +109,6 @@ def render() -> None:
         section("Cumulative Posts")
         ys_cum["cumulative_posts"] = ys_cum["posts"].cumsum()
         fig5 = px.area(ys_cum, x="year", y="cumulative_posts", color_discrete_sequence=[ACCENT_BLUE])
-        fig5.update_layout(**PLOTLY_LAYOUT, height=300, xaxis_title="", yaxis_title="")
+        apply_theme(fig5, height=300, xaxis_title="", yaxis_title="")
         fig5.update_traces(hovertemplate="<b>%{x}</b><br>%{y:,} total posts<extra></extra>")
         st.plotly_chart(fig5, use_container_width=True, key="growth_cum_posts", config=PLOTLY_CONFIG)

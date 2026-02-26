@@ -8,7 +8,7 @@ import streamlit as st
 
 from theme import (
     IG_PINK, SPOTIFY_GREEN, ACCENT_BLUE, GOLD, AMBER, MUTED,
-    PLOTLY_LAYOUT, PLOTLY_CONFIG, kpi_row, section, spacer, avatar,
+    PLOTLY_CONFIG, apply_theme, kpi_row, section, spacer, avatar,
     render_page_title, collab_chip, collab_chips,
 )
 
@@ -38,7 +38,7 @@ def render() -> None:
         {"label": "Unique Roles", "value": str(unique_roles), "sub": "Writer, Producer, Featured, Remix"},
     ])
 
-    spacer(20)
+    spacer(12)
 
     left, right = st.columns(2, gap="large")
 
@@ -49,7 +49,7 @@ def render() -> None:
             mc_sorted, x="total_streams", y="collaborator", orientation="h",
             color_discrete_sequence=[SPOTIFY_GREEN],
         )
-        fig_mc.update_layout(**PLOTLY_LAYOUT, height=max(340, len(mc_sorted) * 32), yaxis_title="", xaxis_title="Total Streams")
+        apply_theme(fig_mc, height=max(340, len(mc_sorted) * 32), yaxis_title="", xaxis_title="Total Streams")
         fig_mc.update_xaxes(tickformat=",")
         fig_mc.update_traces(hovertemplate="%{y}<br><b>%{x:,.0f}</b> streams<extra></extra>")
         st.plotly_chart(fig_mc, use_container_width=True, key="music_collab_streams", config=PLOTLY_CONFIG)
@@ -79,7 +79,7 @@ def render() -> None:
             textposition="outside", textfont=dict(color="#8b949e", size=11),
             hovertemplate="%{y}<br><b>%{x:,.0f}</b> streams<extra></extra>",
         ))
-        fig_role.update_layout(**PLOTLY_LAYOUT, height=280, yaxis_title="", xaxis_title="Total Streams")
+        apply_theme(fig_role, height=280, yaxis_title="", xaxis_title="Total Streams")
         fig_role.update_xaxes(tickformat=",")
         st.plotly_chart(fig_role, use_container_width=True, key="music_collab_roles", config=PLOTLY_CONFIG)
 
@@ -93,7 +93,7 @@ def render() -> None:
     mc_display.columns = ["Collaborator", "Tracks", "Role", "Total Streams", "Avg Streams/Track"]
     st.dataframe(mc_display, use_container_width=True, hide_index=True)
 
-    spacer(32)
+    spacer(12)
 
     # ─── INSTAGRAM COLLABORATORS ───
     section("Instagram Collaborators")
@@ -106,7 +106,7 @@ def render() -> None:
         {"label": "Top IG Collab", "value": f"@{top_collab['collaborator']}", "sub": f"Avg {top_collab['avg_likes']:,} likes", "accent": GOLD},
     ])
 
-    spacer(20)
+    spacer(12)
 
     left, right = st.columns(2, gap="large")
 
@@ -120,7 +120,7 @@ def render() -> None:
             hovertemplate="%{x}<br>Avg <b>%{y}</b> likes/post<extra></extra>",
         ))
         fig.add_annotation(x=1, y=285, text="2.2x higher", showarrow=False, font=dict(color=SPOTIFY_GREEN, size=13))
-        fig.update_layout(**PLOTLY_LAYOUT, height=340, yaxis_title="Avg Likes / Post")
+        apply_theme(fig, height=340, yaxis_title="Avg Likes / Post")
         st.plotly_chart(fig, use_container_width=True, key="collab_solo_vs", config=PLOTLY_CONFIG)
 
     with right:
@@ -134,13 +134,13 @@ def render() -> None:
             orientation="h", marker_color=colors,
             hovertemplate="@%{y}<br>Avg <b>%{x:,}</b> likes<extra></extra>",
         ))
-        fig3.update_layout(**PLOTLY_LAYOUT, height=max(340, len(collabs) * 28), yaxis_title="", xaxis_title="Avg Likes")
+        apply_theme(fig3, height=max(340, len(collabs) * 28), yaxis_title="", xaxis_title="Avg Likes")
         for tier, label, color, xpos in [(1, "Tier 1", GOLD, 0.98), (2, "Tier 2", ACCENT_BLUE, 0.85), (3, "Tier 3", MUTED, 0.72)]:
             fig3.add_annotation(x=xpos, y=1.06, xref="paper", yref="paper", text=f"<b>{label}</b>",
                                 font=dict(color=color, size=11), showarrow=False)
         st.plotly_chart(fig3, use_container_width=True, key="collab_tier_chart", config=PLOTLY_CONFIG)
 
-    spacer(24)
+    spacer(16)
 
     # --- Leaderboard ---
     section("IG Collaborator Leaderboard")
@@ -152,7 +152,7 @@ def render() -> None:
     display_table["Collaborator"] = display_table["Collaborator"].apply(lambda x: f"@{x}")
     st.dataframe(display_table, use_container_width=True, hide_index=True)
 
-    spacer(24)
+    spacer(16)
 
     # --- Deep dives ---
     section("Key Collaborator Deep Dives")
@@ -185,7 +185,7 @@ Jake's music brand account. Cross-posts between personal and brand.
         st.markdown(avatar("Curt Reynolds", 32) + ' <span style="font-weight:600;color:#f0f6fc;vertical-align:middle">Curt Reynolds</span>', unsafe_allow_html=True)
         st.markdown("Consistent performer, slightly above solo average. Reliable but not a breakout multiplier.")
 
-    spacer(20)
+    spacer(12)
 
     # --- Recommendations ---
     section("Recommendations")
