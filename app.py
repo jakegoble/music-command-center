@@ -41,8 +41,11 @@ st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-    /* Kill Streamlit chrome */
-    header[data-testid="stHeader"] { display: none !important; }
+    /* Kill Streamlit chrome but keep sidebar toggle */
+    header[data-testid="stHeader"] {
+        background: transparent !important;
+        height: auto !important;
+    }
     div[data-testid="stToolbar"] { display: none !important; }
     div[data-testid="stDecoration"] { display: none !important; }
     div[data-testid="stStatusWidget"] { display: none !important; }
