@@ -14,6 +14,27 @@ st.set_page_config(
 )
 
 # ---------------------------------------------------------------------------
+# Navigation definition
+# ---------------------------------------------------------------------------
+NAV_GROUPS = {
+    "MUSIC": [
+        ("🏠", "Dashboard", "dashboard"),
+        ("📊", "Streaming", "streaming"),
+        ("🎵", "Catalog", "catalog"),
+        ("💰", "Revenue", "revenue"),
+    ],
+    "SOCIAL & GROWTH": [
+        ("📱", "Instagram", "instagram"),
+        ("🤝", "Collaborators", "collaborators"),
+        ("📈", "Growth", "growth"),
+    ],
+    "TOOLS & INSIGHTS": [
+        ("🌐", "Cross-Platform", "cross_platform"),
+        ("🧠", "AI Insights", "ai_insights"),
+    ],
+}
+
+# ---------------------------------------------------------------------------
 # Global CSS
 # ---------------------------------------------------------------------------
 st.markdown("""
@@ -28,7 +49,7 @@ st.markdown("""
     #MainMenu { display: none !important; }
     footer { display: none !important; }
 
-    /* Kill auto-generated page nav (belt-and-suspenders with config.toml) */
+    /* Kill auto-generated page nav */
     [data-testid="stSidebarNav"] { display: none !important; }
     [data-testid="stSidebarNavSeparator"] { display: none !important; }
 
@@ -48,41 +69,28 @@ st.markdown("""
         border-right: 1px solid #161b22;
     }
 
-    /* Sidebar radio nav — hide circles, style as nav items */
-    section[data-testid="stSidebar"] .stRadio > div[role="radiogroup"] > label {
-        background: transparent;
-        border: none;
-        border-radius: 8px;
-        padding: 9px 14px;
-        margin: 1px 0;
-        cursor: pointer;
-        transition: all 0.15s ease;
-        display: flex;
-        align-items: center;
-        gap: 8px;
+    /* Sidebar nav buttons — style as nav items */
+    section[data-testid="stSidebar"] .stButton > button {
+        background: transparent !important;
+        border: none !important;
+        color: #c9d1d9 !important;
+        text-align: left !important;
+        padding: 9px 14px !important;
+        margin: 1px 0 !important;
+        font-size: 0.88rem !important;
+        font-weight: 500 !important;
+        width: 100% !important;
+        border-radius: 8px !important;
+        cursor: pointer !important;
+        transition: all 0.15s ease !important;
     }
-    section[data-testid="stSidebar"] .stRadio > div[role="radiogroup"] > label:hover {
-        background: rgba(255,255,255,0.04);
+    section[data-testid="stSidebar"] .stButton > button:hover {
+        background: rgba(255,255,255,0.04) !important;
+        color: #f0f6fc !important;
     }
-    section[data-testid="stSidebar"] .stRadio > div[role="radiogroup"] > label > div:first-child {
-        display: none;
+    section[data-testid="stSidebar"] .stButton > button:focus {
+        box-shadow: none !important;
     }
-    section[data-testid="stSidebar"] .stRadio > div[role="radiogroup"] > label[data-checked="true"],
-    section[data-testid="stSidebar"] .stRadio > div[role="radiogroup"] > label:has(input:checked) {
-        background: rgba(29, 185, 84, 0.12);
-        border-left: 3px solid #1DB954;
-        padding-left: 11px;
-    }
-    section[data-testid="stSidebar"] .stRadio > div[role="radiogroup"] > label p {
-        font-size: 0.88rem;
-        font-weight: 500;
-        color: #c9d1d9;
-    }
-    section[data-testid="stSidebar"] .stRadio > div[role="radiogroup"] > label:has(input:checked) p {
-        color: #f0f6fc;
-        font-weight: 600;
-    }
-    section[data-testid="stSidebar"] .stRadio > label { display: none; }
 
     /* Metric cards */
     [data-testid="stMetric"] {
@@ -152,7 +160,13 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------------------------
-# Sidebar — grouped navigation
+# Initialize current page in session state
+# ---------------------------------------------------------------------------
+if "current_page" not in st.session_state:
+    st.session_state.current_page = "dashboard"
+
+# ---------------------------------------------------------------------------
+# Sidebar — button-based navigation (exactly one active at a time)
 # ---------------------------------------------------------------------------
 with st.sidebar:
     # Brand header
@@ -167,45 +181,24 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
 
-    # Section: Music
-    st.markdown('<p class="sidebar-section">Music</p>', unsafe_allow_html=True)
-    page = st.radio(
-        "Navigate",
-        [
-            "🏠  Dashboard",
-            "📊  Streaming",
-            "🎵  Catalog",
-            "📦  Catalog Manager",
-            "💰  Revenue",
-        ],
-        label_visibility="collapsed",
-        key="nav_music",
-    )
-
-    # Section: Social & Growth
-    st.markdown('<p class="sidebar-section">Social & Growth</p>', unsafe_allow_html=True)
-    page2 = st.radio(
-        "Social",
-        [
-            "📱  Instagram",
-            "🤝  Collaborators",
-            "📈  Growth",
-        ],
-        label_visibility="collapsed",
-        key="nav_social",
-    )
-
-    # Section: Tools & Insights
-    st.markdown('<p class="sidebar-section">Tools & Insights</p>', unsafe_allow_html=True)
-    page3 = st.radio(
-        "Tools",
-        [
-            "🌐  Cross-Platform",
-            "🧠  AI Insights",
-        ],
-        label_visibility="collapsed",
-        key="nav_tools",
-    )
+    for group_name, group_pages in NAV_GROUPS.items():
+        st.markdown(f'<p class="sidebar-section">{group_name}</p>', unsafe_allow_html=True)
+        for icon, label, page_key in group_pages:
+            is_active = (st.session_state.current_page == page_key)
+            if is_active:
+                # Active item — styled HTML (not a button)
+                st.markdown(
+                    f'<div style="background:rgba(29,185,84,0.12);border-left:3px solid #1DB954;'
+                    f'border-radius:8px;padding:9px 11px;margin:1px 0;">'
+                    f'<span style="color:#f0f6fc;font-weight:600;font-size:0.88rem">'
+                    f'{icon}  {label}</span></div>',
+                    unsafe_allow_html=True,
+                )
+            else:
+                # Inactive item — clickable button
+                if st.button(f"{icon}  {label}", key=f"nav_{page_key}", use_container_width=True):
+                    st.session_state.current_page = page_key
+                    st.rerun()
 
     # Bottom
     st.markdown('<div style="height:40px"></div>', unsafe_allow_html=True)
@@ -215,61 +208,23 @@ with st.sidebar:
         unsafe_allow_html=True,
     )
 
-# Resolve which radio group was clicked
-# Only one can change at a time; default to Dashboard
-active_page = "🏠  Dashboard"
-for key, default_idx in [("nav_music", 0), ("nav_social", 0), ("nav_tools", 0)]:
-    pass  # Streamlit handles radio state
-
-# Combine: whichever was most recently clicked
-# Use session state to track last-clicked group
-if "last_nav_group" not in st.session_state:
-    st.session_state.last_nav_group = "nav_music"
-
-# Detect which group changed
-for key in ["nav_music", "nav_social", "nav_tools"]:
-    if key in st.session_state:
-        current_val = st.session_state[key]
-        prev_key = f"_prev_{key}"
-        if prev_key not in st.session_state:
-            st.session_state[prev_key] = current_val
-        if current_val != st.session_state[prev_key]:
-            st.session_state.last_nav_group = key
-            st.session_state[prev_key] = current_val
-
-# Get the active page from the last-clicked group
-group = st.session_state.last_nav_group
-if group == "nav_music":
-    active_page = page
-elif group == "nav_social":
-    active_page = page2
-elif group == "nav_tools":
-    active_page = page3
-
 # ---------------------------------------------------------------------------
 # Page routing
 # ---------------------------------------------------------------------------
-if active_page == "🏠  Dashboard":
-    from pages.dashboard import render
-elif active_page == "📊  Streaming":
-    from pages.streaming import render
-elif active_page == "🎵  Catalog":
-    from pages.catalog import render
-elif active_page == "📦  Catalog Manager":
-    from pages.catalog_manager import render
-elif active_page == "💰  Revenue":
-    from pages.revenue import render
-elif active_page == "📱  Instagram":
-    from pages.instagram import render
-elif active_page == "🤝  Collaborators":
-    from pages.collaborators import render
-elif active_page == "📈  Growth":
-    from pages.growth import render
-elif active_page == "🌐  Cross-Platform":
-    from pages.cross_platform import render
-elif active_page == "🧠  AI Insights":
-    from pages.ai_insights import render
-else:
-    from pages.dashboard import render
+PAGE_MODULES = {
+    "dashboard": "pages.dashboard",
+    "streaming": "pages.streaming",
+    "catalog": "pages.catalog",
+    "revenue": "pages.revenue",
+    "instagram": "pages.instagram",
+    "collaborators": "pages.collaborators",
+    "growth": "pages.growth",
+    "cross_platform": "pages.cross_platform",
+    "ai_insights": "pages.ai_insights",
+}
 
-render()
+import importlib
+
+module_name = PAGE_MODULES.get(st.session_state.current_page, "pages.dashboard")
+page_module = importlib.import_module(module_name)
+page_module.render()

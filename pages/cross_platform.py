@@ -72,8 +72,11 @@ def render() -> None:
         colors_map = {"Instagram": IG_PINK, "Spotify (Jakke)": SPOTIFY_GREEN, "Spotify (Enjune)": AMBER}
         fig2 = px.pie(follower_data, values="Followers", names="Platform", color="Platform",
                       color_discrete_map=colors_map, hole=0.45)
-        fig2.update_layout(**PLOTLY_LAYOUT, height=360, showlegend=True, legend=dict(orientation="h", y=-0.05))
+        fig2.update_layout(**PLOTLY_LAYOUT, height=360, showlegend=True,
+                           uniformtext_minsize=10, uniformtext_mode="hide",
+                           legend=dict(orientation="h", y=-0.05))
         fig2.update_traces(textinfo="label+percent", textfont_color="#f0f6fc",
+                           textposition="auto", insidetextorientation="radial",
                            hovertemplate="%{label}<br><b>%{value:,}</b> followers<extra></extra>")
         st.plotly_chart(fig2, use_container_width=True, key="xp_followers")
 

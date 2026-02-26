@@ -42,8 +42,25 @@ PLOTLY_LAYOUT = dict(
     font=dict(color=TEXT, family="'Inter', system-ui, -apple-system, sans-serif", size=13),
     margin=dict(l=0, r=0, t=36, b=0),
     hoverlabel=dict(bgcolor="#21262d", font_color=TEXT, font_size=13),
-    xaxis=dict(gridcolor="rgba(255,255,255,0.04)", zerolinecolor="rgba(255,255,255,0.06)"),
-    yaxis=dict(gridcolor="rgba(255,255,255,0.04)", zerolinecolor="rgba(255,255,255,0.06)"),
+    xaxis=dict(
+        showgrid=True,
+        gridcolor="rgba(255,255,255,0.08)",
+        gridwidth=1,
+        griddash="dot",
+        zerolinecolor="rgba(255,255,255,0.06)",
+    ),
+    yaxis=dict(
+        showgrid=True,
+        gridcolor="rgba(255,255,255,0.08)",
+        gridwidth=1,
+        zerolinecolor="rgba(255,255,255,0.06)",
+    ),
+)
+
+# Pie/donut chart layout additions (merge into update_layout calls)
+PIE_LAYOUT = dict(
+    uniformtext_minsize=10,
+    uniformtext_mode="hide",
 )
 
 

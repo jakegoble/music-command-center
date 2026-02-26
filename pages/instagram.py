@@ -165,8 +165,11 @@ def render() -> None:
                 section("Content Type Breakdown")
                 ct_fig = px.pie(content_type, values="posts", names="type", color="type",
                                 color_discrete_map={"Video/Reel": IG_PINK, "Carousel": ACCENT_BLUE, "Photo": MUTED}, hole=0.45)
-                ct_fig.update_layout(**PLOTLY_LAYOUT, height=340, showlegend=True, legend=dict(orientation="h", y=-0.05))
-                ct_fig.update_traces(textinfo="label+percent", textfont_color="#f0f6fc")
+                ct_fig.update_layout(**PLOTLY_LAYOUT, height=340, showlegend=True,
+                                     uniformtext_minsize=10, uniformtext_mode="hide",
+                                     legend=dict(orientation="h", y=-0.05))
+                ct_fig.update_traces(textinfo="label+percent", textfont_color="#f0f6fc",
+                                     textposition="auto", insidetextorientation="radial")
                 st.plotly_chart(ct_fig, use_container_width=True, key="ig_ct_pie")
 
         spacer(20)
