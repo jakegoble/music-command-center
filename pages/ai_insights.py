@@ -3,215 +3,168 @@ from __future__ import annotations
 
 import streamlit as st
 
-SPOTIFY_GREEN = "#1DB954"
-IG_PINK = "#E1306C"
+from theme import SPOTIFY_GREEN, IG_PINK, GOLD, MUTED, ACCENT_BLUE, kpi_row, section, spacer
 
 
 def render() -> None:
-    st.markdown("# 🧠 AI Insights")
-    st.caption("Strategic recommendations derived from data analysis across all platforms")
+    st.markdown("""
+    <div style="margin-bottom:28px">
+        <h1 style="margin:0;font-size:1.8rem;font-weight:700;color:#f0f6fc">AI Insights</h1>
+        <p style="color:#8b949e;margin:4px 0 0 0;font-size:0.9rem">Strategic recommendations derived from cross-platform data analysis</p>
+    </div>
+    """, unsafe_allow_html=True)
 
-    # =====================================================================
-    # What's Working
-    # =====================================================================
-    st.markdown("## ✅ What's Working")
+    # --- Key numbers to watch (top) ---
+    kpi_row([
+        {"label": "Solo Avg Likes", "value": "121", "delta": "-55% vs 2024", "accent": IG_PINK},
+        {"label": "Collab Multiplier", "value": "2.2x", "sub": "Collab avg / Solo avg", "accent": SPOTIFY_GREEN},
+        {"label": "@ontout Multiplier", "value": "13x", "sub": "1,570 avg vs 121 solo", "accent": GOLD},
+        {"label": "Link Conversion", "value": "0.5%", "delta": "Needs 5-10%", "accent": IG_PINK},
+    ])
 
-    col1, col2 = st.columns(2)
+    spacer(32)
+
+    # ── What's Working ──
+    section("What's Working")
+    col1, col2 = st.columns(2, gap="large")
 
     with col1:
-        st.success("""
-**Video/Reels dominate engagement**
-- Reels average **202 likes/post** — 3.2x photos (64 avg)
-- Reels drive **51.3%** of interactions despite being a smaller % of posts
-- Every music release post that hit 500+ likes was a Video/Reel
-        """)
+        st.markdown("""
+<div style="background:#0d2818;border:1px solid #1a4a2e;border-radius:10px;padding:18px 20px;margin-bottom:12px">
+<div style="font-weight:600;color:#3fb950;margin-bottom:8px">Video/Reels dominate engagement</div>
+<div style="color:#c9d1d9;font-size:0.88rem;line-height:1.6">
+Reels average <b>202 likes/post</b> — 3.2x photos (64 avg). Drive 51.3% of interactions.
+Every music release post that hit 500+ likes was a Reel.
+</div></div>
 
-        st.success("""
-**Collaborations are a cheat code**
-- Collab posts average **261 likes** (2.2x solo at 121)
-- @ontout sessions average **1,570 likes** (13x solo!)
-- @enjune.music cross-posts average **404 likes** (3.3x solo)
-        """)
+<div style="background:#0d2818;border:1px solid #1a4a2e;border-radius:10px;padding:18px 20px">
+<div style="font-weight:600;color:#3fb950;margin-bottom:8px">Collaborations are a cheat code</div>
+<div style="color:#c9d1d9;font-size:0.88rem;line-height:1.6">
+Collab posts average <b>261 likes</b> (2.2x solo). @ontout sessions average <b>1,570 likes</b> (13x solo).
+@enjune.music cross-posts average <b>404 likes</b> (3.3x solo).
+</div></div>
+        """, unsafe_allow_html=True)
 
     with col2:
-        st.success("""
-**Music releases drive peak engagement**
-- Top 5 posts all-time are music release Reels
-- "HOW DO YOU LOVE" EP release: 3,997 likes
-- "WAIT" release: 3,992 likes
-- "HURRICANE" release: 3,694 likes
-        """)
+        st.markdown("""
+<div style="background:#0d2818;border:1px solid #1a4a2e;border-radius:10px;padding:18px 20px;margin-bottom:12px">
+<div style="font-weight:600;color:#3fb950;margin-bottom:8px">Music releases drive peak engagement</div>
+<div style="color:#c9d1d9;font-size:0.88rem;line-height:1.6">
+Top 5 posts all-time are music release Reels. HOW DO YOU LOVE EP: 3,997 likes.
+WAIT: 3,992 likes. HURRICANE: 3,694 likes.
+</div></div>
 
-        st.success("""
-**Optimal posting days identified**
-- **Thursday** (193 avg likes) and **Sunday** (187 avg) are clear winners
-- Monday is the weakest day (64 avg likes)
-- Weekend posting generally outperforms weekday
-        """)
+<div style="background:#0d2818;border:1px solid #1a4a2e;border-radius:10px;padding:18px 20px">
+<div style="font-weight:600;color:#3fb950;margin-bottom:8px">Optimal posting days identified</div>
+<div style="color:#c9d1d9;font-size:0.88rem;line-height:1.6">
+<b>Thursday</b> (193 avg) and <b>Sunday</b> (187 avg) are clear winners.
+Monday is weakest (64 avg). Weekend posting outperforms weekday.
+</div></div>
+        """, unsafe_allow_html=True)
 
-    st.divider()
+    spacer(28)
 
-    # =====================================================================
-    # Opportunities
-    # =====================================================================
-    st.markdown("## 🎯 Opportunities")
-
-    col3, col4 = st.columns(2)
+    # ── Opportunities ──
+    section("Opportunities")
+    col3, col4 = st.columns(2, gap="large")
 
     with col3:
-        st.info("""
-**Collab ratio is way too low**
-- Only **55 collab posts** out of 451 music-era posts (12%)
-- Collabs get 2.2x engagement but represent a tiny fraction
-- Increasing to 25%+ collab ratio could lift overall engagement by 15-20%
-        """)
+        st.markdown("""
+<div style="background:#0d1d2d;border:1px solid #1a3a5c;border-radius:10px;padding:18px 20px;margin-bottom:12px">
+<div style="font-weight:600;color:#58a6ff;margin-bottom:8px">Collab ratio is way too low</div>
+<div style="color:#c9d1d9;font-size:0.88rem;line-height:1.6">
+Only <b>55 collab posts</b> out of 451 music-era posts (12%). Collabs get 2.2x engagement but
+represent a tiny fraction. Increasing to 25%+ could lift overall engagement 15-20%.
+</div></div>
 
-        st.info("""
-**@ontout is massively under-leveraged**
-- Only **3 posts** with @timjck despite averaging 1,570 likes each
-- This is a 13x multiplier sitting on the shelf
-- Even 2 sessions per quarter = 8 high-engagement posts/year
-        """)
+<div style="background:#0d1d2d;border:1px solid #1a3a5c;border-radius:10px;padding:18px 20px">
+<div style="font-weight:600;color:#58a6ff;margin-bottom:8px">@ontout is massively under-leveraged</div>
+<div style="color:#c9d1d9;font-size:0.88rem;line-height:1.6">
+Only <b>3 posts</b> with @timjck despite averaging 1,570 likes each. This is a 13x multiplier
+sitting on the shelf. Even 2 sessions/quarter = 8 high-engagement posts/year.
+</div></div>
+        """, unsafe_allow_html=True)
 
     with col4:
-        st.info("""
-**Karma Response is the hidden recent leader**
-- **36,024 streams** in the recent 3-year period (vs YLNW's 2,569 recent)
-- This song has current momentum but is under-promoted on IG
-- Cross-platform push could accelerate it further
-        """)
+        st.markdown("""
+<div style="background:#0d1d2d;border:1px solid #1a3a5c;border-radius:10px;padding:18px 20px;margin-bottom:12px">
+<div style="font-weight:600;color:#58a6ff;margin-bottom:8px">Karma Response is the hidden leader</div>
+<div style="color:#c9d1d9;font-size:0.88rem;line-height:1.6">
+<b>36,024 streams</b> in the recent 3-year period (vs YLNW's 2,569 recent). This song has current
+momentum but is under-promoted on IG. Cross-platform push could accelerate it.
+</div></div>
 
-        st.info("""
-**Stories are 84.3% of views but underutilized for music**
-- Massive reach channel (43,641 views in 30 days)
-- Could be used for release teasers, behind-the-scenes, session clips
-- Currently seems more lifestyle/ephemeral than strategic music content
-        """)
+<div style="background:#0d1d2d;border:1px solid #1a3a5c;border-radius:10px;padding:18px 20px">
+<div style="font-weight:600;color:#58a6ff;margin-bottom:8px">Stories are 84.3% of views</div>
+<div style="color:#c9d1d9;font-size:0.88rem;line-height:1.6">
+Massive reach channel (43,641 views in 30 days) but underutilized for music promotion.
+Could be used for release teasers, behind-the-scenes, session clips.
+</div></div>
+        """, unsafe_allow_html=True)
 
-    st.divider()
+    spacer(28)
 
-    # =====================================================================
-    # Risks
-    # =====================================================================
-    st.markdown("## ⚠️ Risks")
-
-    col5, col6 = st.columns(2)
+    # ── Risks ──
+    section("Risks")
+    col5, col6 = st.columns(2, gap="large")
 
     with col5:
-        st.warning("""
-**2025 engagement dropped 55% from 2024**
-- 2024 avg: **216 likes/post** → 2025 avg: **98 likes/post**
-- Volume went up (89 → 106 posts) but quality/engagement ratio fell
-- Could indicate algorithm changes, audience fatigue, or content mix shift
-        """)
+        st.markdown("""
+<div style="background:#2d1b0e;border:1px solid #5c3a1a;border-radius:10px;padding:18px 20px;margin-bottom:12px">
+<div style="font-weight:600;color:#f0883e;margin-bottom:8px">2025 engagement dropped 55%</div>
+<div style="color:#c9d1d9;font-size:0.88rem;line-height:1.6">
+2024 avg: <b>216 likes/post</b> → 2025: <b>98 likes/post</b>. Volume went up (89 → 106 posts)
+but quality/engagement ratio fell. Algorithm changes, audience fatigue, or content mix shift.
+</div></div>
 
-        st.warning("""
-**Link-in-bio conversion is abysmal**
-- Only **5 external link taps** in 30 days
-- Despite **936 profile visits** (0.5% conversion)
-- The funnel from IG → streaming/website is effectively broken
-        """)
+<div style="background:#2d1b0e;border:1px solid #5c3a1a;border-radius:10px;padding:18px 20px">
+<div style="font-weight:600;color:#f0883e;margin-bottom:8px">Link-in-bio conversion is broken</div>
+<div style="color:#c9d1d9;font-size:0.88rem;line-height:1.6">
+Only <b>5 external link taps</b> in 30 days despite 936 profile visits (0.5% conversion).
+The funnel from IG → streaming/website is effectively non-functional.
+</div></div>
+        """, unsafe_allow_html=True)
 
     with col6:
-        st.warning("""
-**Your Love's Not Wasted streams are mostly legacy**
-- 1.9M all-time but only **2,569** in the recent 3-year window
-- Current velocity may be near-zero (playlist-driven tail)
-- Don't over-index on total numbers — focus on recent momentum songs
-        """)
+        st.markdown("""
+<div style="background:#2d1b0e;border:1px solid #5c3a1a;border-radius:10px;padding:18px 20px;margin-bottom:12px">
+<div style="font-weight:600;color:#f0883e;margin-bottom:8px">YLNW streams are mostly legacy</div>
+<div style="color:#c9d1d9;font-size:0.88rem;line-height:1.6">
+1.9M all-time but only <b>2,569</b> in the recent 3-year window. Current velocity may be near-zero
+(playlist-driven tail). Don't over-index on total numbers — focus on recent momentum.
+</div></div>
 
-        st.warning("""
-**Solo post engagement is declining**
-- Solo posts average only **121 likes** (vs 261 for collabs)
-- As the algorithm favors engagement, lower-performing solo posts get less reach
-- This creates a negative feedback loop without intervention
-        """)
+<div style="background:#2d1b0e;border:1px solid #5c3a1a;border-radius:10px;padding:18px 20px">
+<div style="font-weight:600;color:#f0883e;margin-bottom:8px">Solo post engagement declining</div>
+<div style="color:#c9d1d9;font-size:0.88rem;line-height:1.6">
+Solo posts average only <b>121 likes</b> (vs 261 for collabs). As the algorithm favors engagement,
+lower-performing solo posts get less reach — negative feedback loop.
+</div></div>
+        """, unsafe_allow_html=True)
 
-    st.divider()
+    spacer(32)
 
-    # =====================================================================
-    # Action Items
-    # =====================================================================
-    st.markdown("## 🎬 Action Items")
+    # ── Action Items ──
+    section("Action Items")
 
     actions = [
-        {
-            "priority": "P0",
-            "action": "Schedule 2+ @ontout sessions per quarter",
-            "rationale": "13x engagement multiplier. Highest-leverage activity available.",
-            "effort": "Medium",
-            "impact": "Very High",
-        },
-        {
-            "priority": "P0",
-            "action": "Create release-day Reels for every new single",
-            "rationale": "Every 500+ like post is a music release Reel. This is the proven format.",
-            "effort": "Low",
-            "impact": "High",
-        },
-        {
-            "priority": "P1",
-            "action": "Test Thursday/Sunday posting schedule",
-            "rationale": "2-3x engagement vs worst days (Monday/Friday). Easy scheduling change.",
-            "effort": "Low",
-            "impact": "Medium",
-        },
-        {
-            "priority": "P1",
-            "action": "Fix link-in-bio conversion",
-            "rationale": "0.5% conversion from 936 monthly profile visits = wasted traffic. Try Linktree or custom landing page.",
-            "effort": "Low",
-            "impact": "Medium",
-        },
-        {
-            "priority": "P1",
-            "action": "Cross-promote Karma Response on IG",
-            "rationale": "Top recent streamer (36K in 3yr) but under-represented on Instagram.",
-            "effort": "Low",
-            "impact": "Medium",
-        },
-        {
-            "priority": "P2",
-            "action": "Increase collab ratio to 25%+",
-            "rationale": "Currently 12% collab posts. Each collab gets 2.2x engagement. More collabs = more reach.",
-            "effort": "Medium",
-            "impact": "High",
-        },
-        {
-            "priority": "P2",
-            "action": "Use Stories strategically for music promotion",
-            "rationale": "84.3% of views but appears underutilized for music content. Add teasers, studio clips, countdowns.",
-            "effort": "Low",
-            "impact": "Medium",
-        },
-        {
-            "priority": "P3",
-            "action": "Diagnose 2025 engagement drop",
-            "rationale": "55% drop YoY needs investigation — content mix, posting time, format changes?",
-            "effort": "Medium",
-            "impact": "High",
-        },
+        {"p": "P0", "color": "#f85149", "action": "Schedule 2+ @ontout sessions per quarter", "effort": "Medium", "impact": "Very High", "rationale": "13x engagement multiplier. Highest-leverage activity available."},
+        {"p": "P0", "color": "#f85149", "action": "Create release-day Reels for every new single", "effort": "Low", "impact": "High", "rationale": "Every 500+ like post is a music release Reel. This is the proven format."},
+        {"p": "P1", "color": "#f0c040", "action": "Test Thursday/Sunday posting schedule", "effort": "Low", "impact": "Medium", "rationale": "2-3x engagement vs worst days. Easy scheduling change."},
+        {"p": "P1", "color": "#f0c040", "action": "Fix link-in-bio conversion", "effort": "Low", "impact": "Medium", "rationale": "0.5% conversion from 936 monthly visits = wasted traffic. Try Linktree or custom landing."},
+        {"p": "P1", "color": "#f0c040", "action": "Cross-promote Karma Response on IG", "effort": "Low", "impact": "Medium", "rationale": "Top recent streamer (36K in 3yr) but under-represented on Instagram."},
+        {"p": "P2", "color": "#58a6ff", "action": "Increase collab ratio to 25%+", "effort": "Medium", "impact": "High", "rationale": "Currently 12% collab posts. Each collab gets 2.2x engagement."},
+        {"p": "P2", "color": "#58a6ff", "action": "Use Stories for strategic music promotion", "effort": "Low", "impact": "Medium", "rationale": "84.3% of views. Add teasers, studio clips, countdowns."},
+        {"p": "P3", "color": "#8b949e", "action": "Diagnose 2025 engagement drop", "effort": "Medium", "impact": "High", "rationale": "55% YoY drop needs investigation — content mix, posting time, format changes?"},
     ]
 
     for a in actions:
-        priority_colors = {"P0": "🔴", "P1": "🟡", "P2": "🔵", "P3": "⚪"}
-        icon = priority_colors.get(a["priority"], "⚪")
+        with st.expander(f"[{a['p']}] {a['action']}"):
+            c1, c2, c3 = st.columns(3)
+            c1.markdown(f"**Priority:** <span style='color:{a['color']}'>{a['p']}</span>", unsafe_allow_html=True)
+            c2.markdown(f"**Effort:** {a['effort']}")
+            c3.markdown(f"**Impact:** {a['impact']}")
+            st.markdown(f"{a['rationale']}")
 
-        with st.expander(f"{icon} [{a['priority']}] {a['action']}"):
-            c1, c2 = st.columns(2)
-            c1.markdown(f"**Effort:** {a['effort']}")
-            c2.markdown(f"**Impact:** {a['impact']}")
-            st.markdown(f"**Rationale:** {a['rationale']}")
-
-    st.divider()
-
-    # --- Key numbers summary ---
-    st.markdown("## 📊 Key Numbers to Watch")
-
-    m1, m2, m3, m4 = st.columns(4)
-    m1.metric("Current Solo Avg", "121 likes", delta="-55% vs 2024", delta_color="inverse")
-    m2.metric("Collab Multiplier", "2.2x", help="Collab avg / Solo avg")
-    m3.metric("@ontout Multiplier", "13x", help="1,570 avg vs 121 solo avg")
-    m4.metric("Link Conversion", "0.5%", delta="Needs 5-10%", delta_color="inverse")
-
-    st.caption("💡 These insights are generated from static data analysis. Connect live APIs (Spotify for Artists, IG Graph API) for real-time recommendations.")
+    spacer(20)
+    st.caption("These insights are generated from static data analysis. Connect live APIs (Spotify for Artists, IG Graph API) for real-time recommendations.")

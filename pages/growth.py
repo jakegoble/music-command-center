@@ -3,21 +3,9 @@ from __future__ import annotations
 
 import plotly.express as px
 import plotly.graph_objects as go
-import pandas as pd
 import streamlit as st
 
-IG_PINK = "#E1306C"
-SPOTIFY_GREEN = "#1DB954"
-ACCENT_BLUE = "#58a6ff"
-GOLD = "#f0c040"
-MUTED = "#8b949e"
-PLOTLY_LAYOUT = dict(
-    paper_bgcolor="rgba(0,0,0,0)",
-    plot_bgcolor="rgba(0,0,0,0)",
-    font=dict(color="#f0f6fc", family="system-ui, -apple-system, sans-serif"),
-    margin=dict(l=0, r=0, t=40, b=0),
-    hoverlabel=dict(bgcolor="#21262d", font_color="#f0f6fc"),
-)
+from theme import IG_PINK, SPOTIFY_GREEN, ACCENT_BLUE, GOLD, MUTED, PLOTLY_LAYOUT, section, spacer
 
 MILESTONES = [
     {"year": 2012, "event": "First Instagram post", "icon": "📸", "detail": "27 posts, 12 avg likes — the beginning"},
@@ -40,116 +28,86 @@ def render() -> None:
     yearly = load_ig_yearly()
     monthly = load_ig_monthly()
 
-    st.markdown("# 📈 Growth")
-    st.caption("Timeline view of the entire career arc")
+    st.markdown("""
+    <div style="margin-bottom:28px">
+        <h1 style="margin:0;font-size:1.8rem;font-weight:700;color:#f0f6fc">Growth</h1>
+        <p style="color:#8b949e;margin:4px 0 0 0;font-size:0.9rem">Timeline view of the entire career arc</p>
+    </div>
+    """, unsafe_allow_html=True)
 
-    # --- Career milestones ---
-    st.markdown('<p class="section-header">Career Milestones</p>', unsafe_allow_html=True)
+    # --- Career milestones as a styled timeline ---
+    section("Career Milestones")
+    for i, ms in enumerate(MILESTONES):
+        is_last = i == len(MILESTONES) - 1
+        border_style = "border-left:2px solid #21262d;" if not is_last else "border-left:2px solid #1DB954;"
+        st.markdown(f"""
+        <div style="display:flex;gap:16px;{border_style}padding:0 0 16px 20px;margin-left:8px">
+            <div>
+                <span style="font-size:0.75rem;color:#8b949e;font-weight:600">{ms['year']}</span>
+                <span style="margin:0 8px">{ms['icon']}</span>
+                <span style="color:#f0f6fc;font-weight:600">{ms['event']}</span>
+                <br><span style="font-size:0.82rem;color:#8b949e">{ms['detail']}</span>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
-    for ms in MILESTONES:
-        col_icon, col_text = st.columns([0.08, 0.92])
-        with col_icon:
-            st.markdown(f"### {ms['icon']}")
-        with col_text:
-            st.markdown(f"**{ms['year']}** — {ms['event']}")
-            st.caption(ms["detail"])
+    spacer(28)
 
-    st.divider()
-
-    # --- Engagement over time (yearly) ---
-    st.markdown('<p class="section-header">Engagement Over Time — Avg Likes by Year</p>', unsafe_allow_html=True)
-
+    # --- Engagement over time ---
+    section("Engagement Over Time — Avg Likes by Year")
     fig1 = go.Figure()
+    ys = yearly.sort_values("year")
     fig1.add_trace(go.Scatter(
-        x=yearly.sort_values("year")["year"],
-        y=yearly.sort_values("year")["avg_likes"],
-        mode="lines+markers",
-        line=dict(color=IG_PINK, width=3),
-        marker=dict(size=10, color=IG_PINK),
-        fill="tozeroy",
-        fillcolor="rgba(225,48,108,0.1)",
-        hovertemplate="Year %{x}<br>Avg %{y:.0f} likes/post<extra></extra>",
+        x=ys["year"], y=ys["avg_likes"], mode="lines+markers",
+        line=dict(color=IG_PINK, width=3), marker=dict(size=8, color=IG_PINK),
+        fill="tozeroy", fillcolor="rgba(225,48,108,0.08)",
+        hovertemplate="<b>%{x}</b><br>Avg %{y:.0f} likes/post<extra></extra>",
     ))
-    # Annotate key moments
-    fig1.add_annotation(x=2017, y=470, text="Peak: 470 avg", showarrow=True, arrowhead=2, font=dict(color=GOLD, size=12))
-    fig1.add_annotation(x=2024, y=216, text="Music breakout", showarrow=True, arrowhead=2, font=dict(color=SPOTIFY_GREEN, size=12))
-    fig1.update_layout(**PLOTLY_LAYOUT, height=400, xaxis_title="Year", yaxis_title="Avg Likes / Post")
+    fig1.add_annotation(x=2017, y=470, text="Peak: 470", showarrow=True, arrowhead=0, arrowcolor=GOLD, font=dict(color=GOLD, size=11))
+    fig1.add_annotation(x=2024, y=216, text="Music breakout", showarrow=True, arrowhead=0, arrowcolor=SPOTIFY_GREEN, font=dict(color=SPOTIFY_GREEN, size=11))
+    fig1.update_layout(**PLOTLY_LAYOUT, height=380, yaxis_title="Avg Likes / Post", xaxis_title="")
     st.plotly_chart(fig1, use_container_width=True, key="growth_yearly")
 
-    st.divider()
+    spacer(24)
 
-    # --- Monthly engagement (2022-2026) ---
-    st.markdown('<p class="section-header">Monthly Engagement (Music Era: 2022–2026)</p>', unsafe_allow_html=True)
-
+    # --- Monthly engagement (music era) ---
+    section("Monthly Engagement (Music Era: 2022–2026)")
     music_era = monthly[monthly["month"] >= "2022-01-01"].sort_values("month")
 
     fig2 = go.Figure()
     fig2.add_trace(go.Bar(
-        x=music_era["month"],
-        y=music_era["likes"],
-        name="Total Likes",
-        marker_color=IG_PINK,
-        opacity=0.7,
-        hovertemplate="%{x|%b %Y}<br>%{y:,} likes<extra></extra>",
+        x=music_era["month"], y=music_era["likes"], name="Total Likes",
+        marker_color=IG_PINK, opacity=0.7,
+        hovertemplate="%{x|%b %Y}<br><b>%{y:,}</b> likes<extra></extra>",
     ))
     fig2.add_trace(go.Scatter(
-        x=music_era["month"],
-        y=music_era["avg_likes"],
-        name="Avg Likes",
-        mode="lines+markers",
-        line=dict(color=ACCENT_BLUE, width=2),
-        yaxis="y2",
-        hovertemplate="%{x|%b %Y}<br>Avg %{y:.0f} likes<extra></extra>",
+        x=music_era["month"], y=music_era["avg_likes"], name="Avg Likes",
+        mode="lines+markers", line=dict(color=ACCENT_BLUE, width=2), yaxis="y2",
+        hovertemplate="%{x|%b %Y}<br>Avg <b>%{y:.0f}</b> likes<extra></extra>",
     ))
-    fig2.update_layout(
-        **PLOTLY_LAYOUT,
-        height=400,
-        yaxis=dict(title="Total Likes"),
-        yaxis2=dict(title="Avg Likes", overlaying="y", side="right", showgrid=False),
-        legend=dict(orientation="h", y=1.1),
-    )
+    fig2.update_layout(**PLOTLY_LAYOUT, height=380,
+                        yaxis=dict(title="Total Likes"), yaxis2=dict(title="Avg Likes", overlaying="y", side="right", showgrid=False),
+                        legend=dict(orientation="h", y=1.08))
     st.plotly_chart(fig2, use_container_width=True, key="growth_monthly")
 
-    st.divider()
+    spacer(24)
 
-    # --- Posting cadence ---
-    st.markdown('<p class="section-header">Posting Cadence — Monthly Post Counts</p>', unsafe_allow_html=True)
-
-    fig3 = px.bar(
-        music_era, x="month", y="posts",
-        color_discrete_sequence=[ACCENT_BLUE],
-    )
-    fig3.update_layout(**PLOTLY_LAYOUT, height=300, xaxis_title="Month", yaxis_title="Posts")
-    fig3.update_traces(hovertemplate="%{x|%b %Y}<br>%{y} posts<extra></extra>")
-    st.plotly_chart(fig3, use_container_width=True, key="growth_cadence")
-
-    st.divider()
-
-    # --- Platform growth trajectory (placeholder) ---
-    st.markdown('<p class="section-header">Platform Growth Trajectory</p>', unsafe_allow_html=True)
-
-    left, right = st.columns(2)
+    # --- Cumulative growth ---
+    left, right = st.columns(2, gap="large")
     with left:
-        # Total likes per year
-        yearly_sorted = yearly.sort_values("year")
-        yearly_sorted["cumulative_likes"] = yearly_sorted["total_likes"].cumsum()
-        fig4 = px.area(
-            yearly_sorted, x="year", y="cumulative_likes",
-            color_discrete_sequence=[IG_PINK],
-        )
-        fig4.update_layout(**PLOTLY_LAYOUT, height=300, xaxis_title="Year", yaxis_title="Cumulative Likes")
-        fig4.update_traces(hovertemplate="Year %{x}<br>%{y:,} total likes<extra></extra>")
+        section("Cumulative Likes")
+        ys_cum = ys.copy()
+        ys_cum["cumulative_likes"] = ys_cum["total_likes"].cumsum()
+        fig4 = px.area(ys_cum, x="year", y="cumulative_likes", color_discrete_sequence=[IG_PINK])
+        fig4.update_layout(**PLOTLY_LAYOUT, height=300, xaxis_title="", yaxis_title="")
+        fig4.update_yaxes(tickformat=",")
+        fig4.update_traces(hovertemplate="<b>%{x}</b><br>%{y:,} total likes<extra></extra>")
         st.plotly_chart(fig4, use_container_width=True, key="growth_cum_likes")
 
     with right:
-        # Total posts per year
-        yearly_sorted["cumulative_posts"] = yearly_sorted["posts"].cumsum()
-        fig5 = px.area(
-            yearly_sorted, x="year", y="cumulative_posts",
-            color_discrete_sequence=[ACCENT_BLUE],
-        )
-        fig5.update_layout(**PLOTLY_LAYOUT, height=300, xaxis_title="Year", yaxis_title="Cumulative Posts")
-        fig5.update_traces(hovertemplate="Year %{x}<br>%{y:,} total posts<extra></extra>")
+        section("Cumulative Posts")
+        ys_cum["cumulative_posts"] = ys_cum["posts"].cumsum()
+        fig5 = px.area(ys_cum, x="year", y="cumulative_posts", color_discrete_sequence=[ACCENT_BLUE])
+        fig5.update_layout(**PLOTLY_LAYOUT, height=300, xaxis_title="", yaxis_title="")
+        fig5.update_traces(hovertemplate="<b>%{x}</b><br>%{y:,} total posts<extra></extra>")
         st.plotly_chart(fig5, use_container_width=True, key="growth_cum_posts")
-
-    st.info("🔮 **Future**: When Spotify for Artists API is connected, this page will overlay streaming growth with social growth for a unified trajectory view.")
