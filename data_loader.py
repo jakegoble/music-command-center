@@ -65,3 +65,20 @@ def load_ig_content_type() -> pd.DataFrame:
 @st.cache_data
 def load_ig_day_of_week() -> pd.DataFrame:
     return pd.read_csv(DATA_DIR / "ig_day_of_week.csv")
+
+
+@st.cache_data
+def load_songstats_jakke() -> dict:
+    with open(DATA_DIR / "songstats_jakke.json") as f:
+        return json.load(f)
+
+
+@st.cache_data
+def load_songstats_enjune() -> dict:
+    with open(DATA_DIR / "songstats_enjune.json") as f:
+        return json.load(f)
+
+
+@st.cache_data
+def load_music_collaborators() -> pd.DataFrame:
+    return pd.read_csv(DATA_DIR / "music_collaborators.csv")

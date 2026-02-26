@@ -1,0 +1,43 @@
+{
+  "artist": "Jakke",
+  "last_updated": "2026-02-25",
+  "spotify": {
+    "total_streams": 3320000,
+    "monthly_listeners": 32100,
+    "followers": 27100,
+    "popularity_score": 23,
+    "artist_rank": 165000,
+    "current_playlists": 84,
+    "playlist_reach": 1720000
+  },
+  "cross_platform": {
+    "total_followers": 142000,
+    "total_streams": 4610000,
+    "total_playlists": 820,
+    "playlist_reach": 15700000,
+    "radio_plays": 640
+  },
+  "track_popularity": {
+    "Your Love's Not Wasted": 36,
+    "Late Night": 31,
+    "Brick by Brick": 30,
+    "Peace Of Mind": 23,
+    "Without Peace": 20,
+    "Delicate": 15,
+    "Karma Response": 13,
+    "WAIT": 13,
+    "Hurricane": 10,
+    "Sugar Tide": 9
+  },
+  "currently_playlisted": ["Delicate", "Brick by Brick", "Late Night"],
+  "top_playlists": [
+    {"name": "frank ocean best songs", "followers": 277000},
+    {"name": "Organic House 2026", "followers": 169000},
+    {"name": "Electronic Chill & Deep House", "followers": 157000},
+    {"name": "70s 80s 90s Smash Hits", "followers": 150000},
+    {"name": "No Stress Chill", "followers": 132000},
+    {"name": "Beach Lounge 2026 IBIZA", "followers": 104000},
+    {"name": "Summer Chill 2026", "followers": 56200},
+    {"name": "Melodic House 2026 Berlin", "followers": 50600}
+  ]
+}

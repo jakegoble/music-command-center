@@ -3,10 +3,20 @@ from __future__ import annotations
 
 import streamlit as st
 
-from theme import SPOTIFY_GREEN, IG_PINK, GOLD, MUTED, ACCENT_BLUE, kpi_row, section, spacer
+from theme import SPOTIFY_GREEN, IG_PINK, GOLD, MUTED, ACCENT_BLUE, AMBER, kpi_row, section, spacer
 
 
 def render() -> None:
+    from data_loader import load_songstats_jakke, load_songstats_enjune, load_songs_all
+
+    ss = load_songstats_jakke()
+    enjune = load_songstats_enjune()
+    songs = load_songs_all()
+
+    # Compute key metrics
+    top_song = songs.loc[songs["streams"].idxmax()]
+    combined_streams = ss["cross_platform"]["total_streams"] + enjune["spotify"]["total_streams"]
+
     st.markdown("""
     <div style="margin-bottom:28px">
         <h1 style="margin:0;font-size:1.8rem;font-weight:700;color:#f0f6fc">AI Insights</h1>
@@ -16,10 +26,10 @@ def render() -> None:
 
     # --- Key numbers to watch (top) ---
     kpi_row([
-        {"label": "Solo Avg Likes", "value": "121", "delta": "-55% vs 2024", "accent": IG_PINK},
-        {"label": "Collab Multiplier", "value": "2.2x", "sub": "Collab avg / Solo avg", "accent": SPOTIFY_GREEN},
+        {"label": "Cross-Platform Streams", "value": f"{ss['cross_platform']['total_streams']:,.0f}", "sub": f"+ {enjune['spotify']['total_streams']:,.0f} Enjune", "accent": SPOTIFY_GREEN},
+        {"label": "Collab Multiplier", "value": "2.2x", "sub": "Collab avg / Solo avg", "accent": IG_PINK},
         {"label": "@ontout Multiplier", "value": "13x", "sub": "1,570 avg vs 121 solo", "accent": GOLD},
-        {"label": "Link Conversion", "value": "0.5%", "delta": "Needs 5-10%", "accent": IG_PINK},
+        {"label": "Playlist Reach", "value": f"{ss['cross_platform']['playlist_reach']:,.0f}", "sub": f"{ss['spotify']['current_playlists']} playlists", "accent": SPOTIFY_GREEN},
     ])
 
     spacer(32)
@@ -29,9 +39,28 @@ def render() -> None:
     col1, col2 = st.columns(2, gap="large")
 
     with col1:
+        st.markdown(f"""
+<div style="background:#0d2818;border:1px solid #1a4a2e;border-radius:10px;padding:18px 20px;margin-bottom:12px">
+<div style="font-weight:600;color:#3fb950;margin-bottom:8px">Your Love's Not Wasted is a breakout hit</div>
+<div style="color:#c9d1d9;font-size:0.88rem;line-height:1.6">
+<b>{top_song['streams']:,.0f} all-time streams</b> — more than 5x the next closest song.
+Popularity score of {ss['track_popularity'].get("Your Love's Not Wasted", 'N/A')}/100.
+Driving the majority of catalog discovery.
+</div></div>
+
+<div style="background:#0d2818;border:1px solid #1a4a2e;border-radius:10px;padding:18px 20px">
+<div style="font-weight:600;color:#3fb950;margin-bottom:8px">Currently playlisted songs have momentum</div>
+<div style="color:#c9d1d9;font-size:0.88rem;line-height:1.6">
+<b>{', '.join(ss['currently_playlisted'])}</b> are on active playlists right now.
+Combined playlist reach of <b>{ss['spotify']['playlist_reach']:,.0f}</b> listeners.
+These songs are being pushed by the algorithm — lean into them.
+</div></div>
+        """, unsafe_allow_html=True)
+
+    with col2:
         st.markdown("""
 <div style="background:#0d2818;border:1px solid #1a4a2e;border-radius:10px;padding:18px 20px;margin-bottom:12px">
-<div style="font-weight:600;color:#3fb950;margin-bottom:8px">Video/Reels dominate engagement</div>
+<div style="font-weight:600;color:#3fb950;margin-bottom:8px">Video/Reels dominate IG engagement</div>
 <div style="color:#c9d1d9;font-size:0.88rem;line-height:1.6">
 Reels average <b>202 likes/post</b> — 3.2x photos (64 avg). Drive 51.3% of interactions.
 Every music release post that hit 500+ likes was a Reel.
@@ -41,24 +70,7 @@ Every music release post that hit 500+ likes was a Reel.
 <div style="font-weight:600;color:#3fb950;margin-bottom:8px">Collaborations are a cheat code</div>
 <div style="color:#c9d1d9;font-size:0.88rem;line-height:1.6">
 Collab posts average <b>261 likes</b> (2.2x solo). @ontout sessions average <b>1,570 likes</b> (13x solo).
-@enjune.music cross-posts average <b>404 likes</b> (3.3x solo).
-</div></div>
-        """, unsafe_allow_html=True)
-
-    with col2:
-        st.markdown("""
-<div style="background:#0d2818;border:1px solid #1a4a2e;border-radius:10px;padding:18px 20px;margin-bottom:12px">
-<div style="font-weight:600;color:#3fb950;margin-bottom:8px">Music releases drive peak engagement</div>
-<div style="color:#c9d1d9;font-size:0.88rem;line-height:1.6">
-Top 5 posts all-time are music release Reels. HOW DO YOU LOVE EP: 3,997 likes.
-WAIT: 3,992 likes. HURRICANE: 3,694 likes.
-</div></div>
-
-<div style="background:#0d2818;border:1px solid #1a4a2e;border-radius:10px;padding:18px 20px">
-<div style="font-weight:600;color:#3fb950;margin-bottom:8px">Optimal posting days identified</div>
-<div style="color:#c9d1d9;font-size:0.88rem;line-height:1.6">
-<b>Thursday</b> (193 avg) and <b>Sunday</b> (187 avg) are clear winners.
-Monday is weakest (64 avg). Weekend posting outperforms weekday.
+Allen Blickle: <b>6 tracks, 2.29M streams</b>. Most prolific music partner.
 </div></div>
         """, unsafe_allow_html=True)
 
@@ -69,12 +81,13 @@ Monday is weakest (64 avg). Weekend posting outperforms weekday.
     col3, col4 = st.columns(2, gap="large")
 
     with col3:
-        st.markdown("""
+        st.markdown(f"""
 <div style="background:#0d1d2d;border:1px solid #1a3a5c;border-radius:10px;padding:18px 20px;margin-bottom:12px">
-<div style="font-weight:600;color:#58a6ff;margin-bottom:8px">Collab ratio is way too low</div>
+<div style="font-weight:600;color:#58a6ff;margin-bottom:8px">Enjune catalog is underleveraged</div>
 <div style="color:#c9d1d9;font-size:0.88rem;line-height:1.6">
-Only <b>55 collab posts</b> out of 451 music-era posts (12%). Collabs get 2.2x engagement but
-represent a tiny fraction. Increasing to 25%+ could lift overall engagement 15-20%.
+<b>{enjune['spotify']['total_streams']:,.0f} streams</b> across {len(enjune['catalog'])} tracks. Lost In The Woods
+alone has popularity 34. Cross-promote Enjune catalog to Jakke's {ss['spotify']['monthly_listeners']:,}
+monthly listeners for quick streaming gains.
 </div></div>
 
 <div style="background:#0d1d2d;border:1px solid #1a3a5c;border-radius:10px;padding:18px 20px">
@@ -86,16 +99,17 @@ sitting on the shelf. Even 2 sessions/quarter = 8 high-engagement posts/year.
         """, unsafe_allow_html=True)
 
     with col4:
-        st.markdown("""
+        st.markdown(f"""
 <div style="background:#0d1d2d;border:1px solid #1a3a5c;border-radius:10px;padding:18px 20px;margin-bottom:12px">
-<div style="font-weight:600;color:#58a6ff;margin-bottom:8px">Karma Response is the hidden leader</div>
+<div style="font-weight:600;color:#58a6ff;margin-bottom:8px">Brick by Brick + Late Night rising</div>
 <div style="color:#c9d1d9;font-size:0.88rem;line-height:1.6">
-<b>36,024 streams</b> in the recent 3-year period (vs YLNW's 2,569 recent). This song has current
-momentum but is under-promoted on IG. Cross-platform push could accelerate it.
+Popularity scores of <b>{ss['track_popularity'].get('Brick by Brick', 'N/A')}</b> and
+<b>{ss['track_popularity'].get('Late Night', 'N/A')}</b> respectively. Both currently playlisted.
+These have recent momentum — pitch to more playlists while scores are climbing.
 </div></div>
 
 <div style="background:#0d1d2d;border:1px solid #1a3a5c;border-radius:10px;padding:18px 20px">
-<div style="font-weight:600;color:#58a6ff;margin-bottom:8px">Stories are 84.3% of views</div>
+<div style="font-weight:600;color:#58a6ff;margin-bottom:8px">Stories are 84.3% of IG views</div>
 <div style="color:#c9d1d9;font-size:0.88rem;line-height:1.6">
 Massive reach channel (43,641 views in 30 days) but underutilized for music promotion.
 Could be used for release teasers, behind-the-scenes, session clips.
@@ -111,7 +125,7 @@ Could be used for release teasers, behind-the-scenes, session clips.
     with col5:
         st.markdown("""
 <div style="background:#2d1b0e;border:1px solid #5c3a1a;border-radius:10px;padding:18px 20px;margin-bottom:12px">
-<div style="font-weight:600;color:#f0883e;margin-bottom:8px">2025 engagement dropped 55%</div>
+<div style="font-weight:600;color:#f0883e;margin-bottom:8px">2025 IG engagement dropped 55%</div>
 <div style="color:#c9d1d9;font-size:0.88rem;line-height:1.6">
 2024 avg: <b>216 likes/post</b> → 2025: <b>98 likes/post</b>. Volume went up (89 → 106 posts)
 but quality/engagement ratio fell. Algorithm changes, audience fatigue, or content mix shift.
@@ -150,9 +164,10 @@ lower-performing solo posts get less reach — negative feedback loop.
     actions = [
         {"p": "P0", "color": "#f85149", "action": "Schedule 2+ @ontout sessions per quarter", "effort": "Medium", "impact": "Very High", "rationale": "13x engagement multiplier. Highest-leverage activity available."},
         {"p": "P0", "color": "#f85149", "action": "Create release-day Reels for every new single", "effort": "Low", "impact": "High", "rationale": "Every 500+ like post is a music release Reel. This is the proven format."},
-        {"p": "P1", "color": "#f0c040", "action": "Test Thursday/Sunday posting schedule", "effort": "Low", "impact": "Medium", "rationale": "2-3x engagement vs worst days. Easy scheduling change."},
+        {"p": "P0", "color": "#f85149", "action": "Pitch Delicate, Brick by Brick, Late Night to more playlists", "effort": "Medium", "impact": "High", "rationale": "Currently playlisted with rising popularity scores. Strike while the algorithm is warm."},
+        {"p": "P1", "color": "#f0c040", "action": "Cross-promote Enjune catalog to Jakke audience", "effort": "Low", "impact": "Medium", "rationale": f"2.65M Enjune streams are disconnected from {ss['spotify']['monthly_listeners']:,} Jakke monthly listeners."},
         {"p": "P1", "color": "#f0c040", "action": "Fix link-in-bio conversion", "effort": "Low", "impact": "Medium", "rationale": "0.5% conversion from 936 monthly visits = wasted traffic. Try Linktree or custom landing."},
-        {"p": "P1", "color": "#f0c040", "action": "Cross-promote Karma Response on IG", "effort": "Low", "impact": "Medium", "rationale": "Top recent streamer (36K in 3yr) but under-represented on Instagram."},
+        {"p": "P1", "color": "#f0c040", "action": "Test Thursday/Sunday posting schedule", "effort": "Low", "impact": "Medium", "rationale": "2-3x engagement vs worst days. Easy scheduling change."},
         {"p": "P2", "color": "#58a6ff", "action": "Increase collab ratio to 25%+", "effort": "Medium", "impact": "High", "rationale": "Currently 12% collab posts. Each collab gets 2.2x engagement."},
         {"p": "P2", "color": "#58a6ff", "action": "Use Stories for strategic music promotion", "effort": "Low", "impact": "Medium", "rationale": "84.3% of views. Add teasers, studio clips, countdowns."},
         {"p": "P3", "color": "#8b949e", "action": "Diagnose 2025 engagement drop", "effort": "Medium", "impact": "High", "rationale": "55% YoY drop needs investigation — content mix, posting time, format changes?"},

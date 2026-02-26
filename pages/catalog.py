@@ -5,14 +5,15 @@ import plotly.express as px
 import pandas as pd
 import streamlit as st
 
-from theme import SPOTIFY_GREEN, ACCENT_BLUE, PLOTLY_LAYOUT, kpi_row, section, spacer
+from theme import SPOTIFY_GREEN, ACCENT_BLUE, GOLD, MUTED, PLOTLY_LAYOUT, kpi_row, section, spacer
 
 
 def render() -> None:
-    from data_loader import load_songs_all, load_catalog
+    from data_loader import load_songs_all, load_catalog, load_songstats_jakke
 
     songs = load_songs_all()
     catalog_raw = load_catalog()
+    ss = load_songstats_jakke()
 
     st.markdown("""
     <div style="margin-bottom:28px">
@@ -23,24 +24,37 @@ def render() -> None:
 
     # Merge catalog recordings with streaming data
     recordings = catalog_raw[catalog_raw["Type"] == "Recording"].copy()
-    recordings = recordings.rename(columns={"Title": "song", "Artist/Project": "artist"})
+    recordings = recordings.rename(columns={"Title": "song", "Artist/Project": "artist_cat"})
 
-    merged = songs.merge(recordings[["song", "artist", "Writers", "ISRC", "Dolby Atmos"]], on="song", how="left")
-    merged["artist"] = merged["artist"].fillna("Jakke")
+    merged = songs.merge(recordings[["song", "Writers", "ISRC", "Dolby Atmos"]], on="song", how="left")
     merged["Writers"] = merged["Writers"].fillna("—")
     merged["ISRC"] = merged["ISRC"].fillna("—")
     merged["Dolby Atmos"] = merged["Dolby Atmos"].fillna("No")
+
+    # Use artist column from songs CSV (already has correct Jakke/iLÜ)
+    if "artist" not in merged.columns:
+        merged["artist"] = "Jakke"
+
+    # Add collaborators and popularity from songs CSV
+    merged["collaborators"] = merged["collaborators"].fillna("—")
+    merged["popularity"] = merged["popularity"].fillna(0).astype(int)
+
+    # Mark currently playlisted
+    playlisted = set(ss.get("currently_playlisted", []))
+    merged["Playlisted"] = merged["song"].apply(lambda s: "Yes" if s in playlisted else "")
 
     # --- KPI cards ---
     atmos_count = len(merged[merged["Dolby Atmos"] == "Yes"])
     jakke_count = len(merged[merged["artist"] == "Jakke"])
     ilu_count = len(merged[merged["artist"] == "iLÜ"])
+    playlisted_count = len(merged[merged["Playlisted"] == "Yes"])
 
     kpi_row([
         {"label": "Total Songs", "value": str(len(merged)), "accent": SPOTIFY_GREEN},
         {"label": "Jakke", "value": str(jakke_count), "sub": "Primary artist"},
         {"label": "iLÜ", "value": str(ilu_count), "sub": "Ambient project"},
-        {"label": "Dolby Atmos", "value": str(atmos_count), "sub": "Spatial audio ready"},
+        {"label": "Dolby Atmos", "value": str(atmos_count), "sub": "Spatial audio"},
+        {"label": "Currently Playlisted", "value": str(playlisted_count), "accent": GOLD},
     ])
 
     spacer(24)
@@ -51,13 +65,14 @@ def render() -> None:
         merged = merged[merged["artist"] == artist_filter]
 
     # --- Song table ---
-    display = merged[["song", "artist", "streams", "release_date", "Writers", "ISRC", "Dolby Atmos"]].copy()
-    display.columns = ["Song", "Artist", "Streams", "Release Date", "Writers", "ISRC", "Dolby Atmos"]
+    display = merged[["song", "artist", "streams", "popularity", "collaborators", "release_date", "Playlisted", "Dolby Atmos"]].copy()
+    display.columns = ["Song", "Artist", "Streams", "Popularity", "Collaborators", "Release Date", "Playlisted", "Atmos"]
     display = display.sort_values("Streams", ascending=False).reset_index(drop=True)
     display["Streams"] = display["Streams"].apply(lambda x: f"{x:,}")
     display["Release Date"] = display["Release Date"].dt.strftime("%Y-%m-%d").fillna("—")
+    display["Popularity"] = display["Popularity"].apply(lambda x: f"{x}%" if x > 0 else "—")
 
-    st.dataframe(display, use_container_width=True, hide_index=True, height=460)
+    st.dataframe(display, use_container_width=True, hide_index=True, height=520)
 
     spacer(24)
 
@@ -79,10 +94,13 @@ def render() -> None:
 
     # --- Remix groupings ---
     section("Remix Groupings")
-    base_songs = {}
+    suffixes = [" (Remix)", " (Club Mix)", " (Lofi Remix)", " (Acoustic)",
+                " (TRØVES Remix)", " (Curt Reynolds Remix)", " (Jako Diaz Remix)",
+                " (Jackets Remix)", " (Big Picture Mix)"]
+    base_songs: dict[str, list] = {}
     for _, row in songs.iterrows():
         name = row["song"]
-        for suffix in [" (Remix)", " (Club Mix)", " (Lofi Remix)", " (Acoustic)"]:
+        for suffix in suffixes:
             if suffix in name:
                 base = name.replace(suffix, "")
                 if base not in base_songs:

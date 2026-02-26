@@ -6,19 +6,25 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from theme import (
-    SPOTIFY_GREEN, IG_PINK, ACCENT_BLUE, MUTED, GOLD,
+    SPOTIFY_GREEN, IG_PINK, ACCENT_BLUE, MUTED, GOLD, AMBER,
     PLOTLY_LAYOUT, kpi_row, section, spacer,
 )
 
 
 def render() -> None:
-    from data_loader import load_songs_all, load_songs_recent, load_ig_insights, load_ig_yearly, load_ig_content_type
+    from data_loader import (
+        load_songs_all, load_songs_recent, load_ig_insights,
+        load_ig_yearly, load_ig_content_type,
+        load_songstats_jakke, load_songstats_enjune,
+    )
 
     songs = load_songs_all()
     recent = load_songs_recent()
     ig = load_ig_insights()
     yearly = load_ig_yearly()
     content_type = load_ig_content_type()
+    ss = load_songstats_jakke()
+    enjune = load_songstats_enjune()
 
     # --- Page header ---
     st.markdown("""
@@ -28,24 +34,37 @@ def render() -> None:
     </div>
     """, unsafe_allow_html=True)
 
-    # --- KPI cards ---
-    total_streams = songs["streams"].sum()
+    # --- KPI Row 1: Streaming ---
     top_song = songs.loc[songs["streams"].idxmax()]
-    recent_top = recent.nlargest(1, "Streams").iloc[0]
-
     kpi_row([
-        {"label": "All-Time Streams", "value": f"{total_streams:,.0f}", "accent": SPOTIFY_GREEN},
-        {"label": "IG Followers", "value": f"{ig['account']['followers']:,}", "accent": IG_PINK},
-        {"label": "Catalog", "value": "30 songs", "sub": "7 with Dolby Atmos"},
+        {"label": "Cross-Platform Streams", "value": f"{ss['cross_platform']['total_streams']:,.0f}", "sub": f"Spotify: {ss['spotify']['total_streams']:,.0f}", "accent": SPOTIFY_GREEN},
+        {"label": "Monthly Listeners", "value": f"{ss['spotify']['monthly_listeners']:,}", "accent": SPOTIFY_GREEN},
+        {"label": "Playlists", "value": f"{ss['spotify']['current_playlists']}", "sub": f"Reach: {ss['spotify']['playlist_reach']:,.0f}", "accent": SPOTIFY_GREEN},
+        {"label": "Top Song", "value": top_song["song"], "sub": f"{top_song['streams']:,.0f} streams", "accent": GOLD},
     ])
     spacer(14)
-    kpi_row([
-        {"label": "Top Song (All-Time)", "value": f"{top_song['streams']:,.0f}", "sub": top_song["song"], "accent": SPOTIFY_GREEN},
-        {"label": "Top Song (Recent 3yr)", "value": f"{recent_top['Streams']:,}", "sub": recent_top["Song Name"], "accent": ACCENT_BLUE},
-        {"label": "30-Day IG Views", "value": f"{ig['overview']['views_30d']:,}", "sub": f"{ig['overview']['accounts_reached']:,} accounts reached", "accent": IG_PINK},
-    ])
 
-    spacer(32)
+    # --- KPI Row 2: Social + Enjune ---
+    combined_streams = ss["cross_platform"]["total_streams"] + enjune["spotify"]["total_streams"]
+    currently_playlisted = ", ".join(ss["currently_playlisted"])
+    kpi_row([
+        {"label": "IG Followers", "value": f"{ig['account']['followers']:,}", "accent": IG_PINK},
+        {"label": "30-Day IG Views", "value": f"{ig['overview']['views_30d']:,}", "sub": f"{ig['overview']['accounts_reached']:,} reached", "accent": IG_PINK},
+        {"label": "Enjune (Legacy)", "value": f"{enjune['spotify']['total_streams']:,.0f}", "sub": f"{enjune['spotify']['monthly_listeners']:,} monthly listeners", "accent": AMBER},
+        {"label": "Combined Universe", "value": f"{combined_streams:,.0f}", "sub": "Jakke + Enjune streams", "accent": GOLD},
+    ])
+    spacer(12)
+
+    # --- Currently playlisted indicator ---
+    st.markdown(f"""
+    <div style="background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 18px;margin-bottom:8px">
+        <span style="color:#8b949e;font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Currently Playlisted</span>
+        <span style="color:#1DB954;font-size:0.9rem;margin-left:12px;font-weight:500">{currently_playlisted}</span>
+        <span style="color:#484f58;font-size:0.78rem;margin-left:8px">on {ss['spotify']['current_playlists']} playlists</span>
+    </div>
+    """, unsafe_allow_html=True)
+
+    spacer(24)
 
     # --- Charts row 1 ---
     left, right = st.columns(2, gap="large")
@@ -91,15 +110,12 @@ def render() -> None:
         st.plotly_chart(fig3, use_container_width=True, key="dash_recent")
 
     with right2:
-        section("Content Type Performance (IG)")
-        fig4 = px.pie(
-            content_type, values="avg_likes", names="type", color="type",
-            color_discrete_map={"Video/Reel": IG_PINK, "Carousel": ACCENT_BLUE, "Photo": MUTED},
-            hole=0.5,
-        )
-        fig4.update_layout(**PLOTLY_LAYOUT, height=380, showlegend=True, legend=dict(orientation="h", y=-0.05, font=dict(size=12)))
-        fig4.update_traces(
-            textinfo="label+percent", textfont=dict(color="#f0f6fc", size=13),
-            hovertemplate="%{label}<br>Avg <b>%{value}</b> likes (%{percent})<extra></extra>",
-        )
-        st.plotly_chart(fig4, use_container_width=True, key="dash_content_type")
+        section("Top Playlists by Reach")
+        playlists = ss["top_playlists"][:8]
+        pl_names = [p["name"][:30] for p in reversed(playlists)]
+        pl_followers = [p["followers"] for p in reversed(playlists)]
+        fig4 = px.bar(x=pl_followers, y=pl_names, orientation="h", color_discrete_sequence=[SPOTIFY_GREEN])
+        fig4.update_layout(**PLOTLY_LAYOUT, height=380, yaxis_title="", xaxis_title="")
+        fig4.update_xaxes(tickformat=",")
+        fig4.update_traces(hovertemplate="%{y}<br><b>%{x:,}</b> followers<extra></extra>")
+        st.plotly_chart(fig4, use_container_width=True, key="dash_playlists")

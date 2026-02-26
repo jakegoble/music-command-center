@@ -1,0 +1,56 @@
+{
+  "artist": "Enjune",
+  "last_updated": "2026-02-25",
+  "bio": "Follow @Jakke on Instagram for the latest",
+  "genre_tags": ["Alternative", "Dance", "Alternative Pop", "Indie Chill", "Folk"],
+  "collaborators": ["Jake Goble", "Steven Coyler", "Jakke"],
+  "spotify": {
+    "total_streams": 2650000,
+    "monthly_listeners": 6492,
+    "followers": 1474,
+    "popularity_score": 13,
+    "artist_rank": 383000,
+    "current_playlists": 258,
+    "playlist_reach": 2450000
+  },
+  "cross_platform": {
+    "total_followers": 5740,
+    "total_streams": 2650000,
+    "total_playlists": 258,
+    "playlist_reach": 2450000,
+    "charts": 15
+  },
+  "track_popularity": {
+    "Lost In The Woods": 34,
+    "Fuck Me Up (Clans)": 9,
+    "Sugar Tide": 9,
+    "Waves": 5,
+    "Release": 3,
+    "Fuck Me Up": 1,
+    "imperfect": 1,
+    "Burn Me Up": 1,
+    "Father World (Mama Earth)": 1
+  },
+  "catalog": [
+    {"title": "Lost In The Woods", "artists": "Enjune, Corey Harper", "popularity": 34},
+    {"title": "Fuck Me Up", "artists": "Clans, Amy West, Enjune", "popularity": 9},
+    {"title": "Sugar Tide", "artists": "Jakke, Enjune, Nuage", "popularity": 9},
+    {"title": "Waves", "artists": "Jakke, Enjune", "popularity": 5},
+    {"title": "Release", "artists": "Jakke, Enjune", "popularity": 3},
+    {"title": "Fuck Me Up (solo)", "artists": "Enjune", "popularity": 1},
+    {"title": "imperfect", "artists": "Enjune", "popularity": 1},
+    {"title": "Burn Me Up", "artists": "Jakke, Enjune", "popularity": 1},
+    {"title": "Father World (Mama Earth)", "artists": "Jakke, Enjune", "popularity": 1},
+    {"title": "Yellow Hearts", "artists": "Enjune", "popularity": 0},
+    {"title": "Be Alright", "artists": "Enjune", "popularity": 0}
+  ],
+  "top_playlists": [
+    {"name": "Love songs internacionais", "followers": 10700},
+    {"name": "Cozy Winter Nights", "followers": 5672},
+    {"name": "TheFreshTen: Indie", "followers": 4677},
+    {"name": "Canada Road Trip", "followers": 4210},
+    {"name": "Easy Listening", "followers": 2623},
+    {"name": "Dark Forest - An Indie/Folk/A...", "followers": 2187},
+    {"name": "Dark and Spooky Indie", "followers": 2119}
+  ]
+}

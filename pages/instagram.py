@@ -11,6 +11,14 @@ from theme import (
     PLOTLY_LAYOUT, kpi_row, section, spacer,
 )
 
+# UTC → ET offset (EST = -5)
+UTC_TO_ET_OFFSET = -5
+
+
+def _utc_to_et(hour_utc: int) -> int:
+    """Convert a UTC hour (0-23) to Eastern Time."""
+    return (hour_utc + UTC_TO_ET_OFFSET) % 24
+
 
 def render() -> None:
     from data_loader import (
@@ -25,11 +33,16 @@ def render() -> None:
     content_type = load_ig_content_type()
     dow = load_ig_day_of_week()
 
+    # Calculate engagement rate
+    followers = ig["account"]["followers"]
+    interactions = ig["overview"]["interactions"]
+    engagement_rate = (interactions / followers * 100) if followers > 0 else 0
+
     st.markdown(f"""
     <div style="margin-bottom:28px">
         <h1 style="margin:0;font-size:1.8rem;font-weight:700;color:#f0f6fc">Instagram</h1>
         <p style="color:#8b949e;margin:4px 0 0 0;font-size:0.9rem">
-            @jakke · {ig['account']['followers']:,} followers · {ig['account']['posts_count']:,} posts
+            @jakke · {followers:,} followers · {ig['account']['posts_count']:,} posts
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -42,9 +55,9 @@ def render() -> None:
         kpi_row([
             {"label": "Views", "value": f"{ov['views_30d']:,}", "accent": IG_PINK},
             {"label": "Reach", "value": f"{ov['accounts_reached']:,}"},
-            {"label": "Interactions", "value": f"{ov['interactions']:,}"},
+            {"label": "Engagement Rate", "value": f"{engagement_rate:.2f}%", "sub": f"{interactions:,} interactions / {followers:,} followers", "accent": IG_PINK},
             {"label": "Engaged Accounts", "value": f"{ov['accounts_engaged']:,}"},
-            {"label": "Profile Visits", "value": f"{ov['profile_visits']:,}"},
+            {"label": "Profile Visits", "value": f"{ov['profile_visits']:,}", "sub": f"{ov['external_link_taps']} link taps"},
         ])
 
         spacer(28)
@@ -80,20 +93,31 @@ def render() -> None:
             st.plotly_chart(fig2, use_container_width=True, key="ig_inter_type")
 
         spacer(20)
-        section("Follower Active Hours")
+        section("Follower Active Hours (Eastern Time)")
         hours = ig["follower_active_hours"]
-        hours_df = pd.DataFrame([{"Hour": int(h), "Active": v} for h, v in hours.items()]).sort_values("Hour")
-        hours_df["Label"] = hours_df["Hour"].apply(lambda h: f"{h}:00")
+        # Convert UTC hours to ET
+        hours_df = pd.DataFrame([
+            {"Hour_ET": _utc_to_et(int(h)), "Active": v}
+            for h, v in hours.items()
+        ]).sort_values("Hour_ET")
+        hours_df["Label"] = hours_df["Hour_ET"].apply(
+            lambda h: f"{h % 12 or 12}{'AM' if h < 12 else 'PM'}"
+        )
+
+        # Find peak hours
+        peak = hours_df.nlargest(3, "Active")
+        peak_labels = ", ".join(peak["Label"].tolist())
 
         fig3 = px.bar(hours_df, x="Label", y="Active", color_discrete_sequence=[IG_PINK])
         fig3.update_layout(**PLOTLY_LAYOUT, height=260, xaxis_title="", yaxis_title="")
-        fig3.update_traces(hovertemplate="%{x}<br><b>%{y:,}</b> active<extra></extra>")
+        fig3.update_traces(hovertemplate="%{x} ET<br><b>%{y:,}</b> active<extra></extra>")
         st.plotly_chart(fig3, use_container_width=True, key="ig_active_hours")
+        st.caption(f"Peak hours (ET): {peak_labels}")
 
         spacer(16)
         msg = ig["messaging"]
         kpi_row([
-            {"label": "Conversations Started", "value": str(msg["conversations_started"]), "accent": IG_PINK},
+            {"label": "DMs Started", "value": str(msg["conversations_started"]), "accent": IG_PINK},
             {"label": "Response Rate", "value": f"{msg['response_rate']:.0%}"},
             {"label": "Avg Response Time", "value": f"{msg['avg_response_time_hours']:.1f} hrs"},
         ])
