@@ -99,170 +99,53 @@ st.markdown("""
         border-right: 1px solid #161b22;
     }
 
-    /* === SIDEBAR: Broad catch-all — force left-align on EVERY div === */
-    [data-testid="stSidebar"] div {
-        text-align: left !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-    }
-    [data-testid="stSidebar"] p {
-        text-align: left !important;
-        margin: 0 !important;
-    }
-
-    /* === SIDEBAR: Tighter padding === */
-    [data-testid="stSidebarContent"] {
-        padding: 0.75rem 0.5rem !important;
-    }
-
-    /* === SIDEBAR: Kill gaps at every nesting level === */
-    [data-testid="stSidebar"] [data-testid="stVerticalBlock"] {
-        gap: 1px !important;
+    /* ── Sidebar: kill all vertical bloat ── */
+    [data-testid="stSidebar"] > div:first-child {
+        padding-top: 1rem !important;
     }
     [data-testid="stSidebar"] [data-testid="stVerticalBlock"] > div {
-        margin: 0 !important;
-        padding: 0 !important;
-        gap: 1px !important;
-    }
-    [data-testid="stSidebar"] [data-testid="stHorizontalBlock"] {
-        gap: 1px !important;
+        gap: 0px !important;
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
     }
 
-    /* === SIDEBAR: Element containers — block display, left-aligned === */
-    [data-testid="stSidebar"] [data-testid="stElementContainer"] {
-        margin: 0 !important;
-        padding: 0 !important;
-        display: block !important;
-        text-align: left !important;
-    }
-
-    /* === SIDEBAR: Markdown + inner p tags === */
-    [data-testid="stSidebar"] [data-testid="stMarkdown"] {
-        margin: 0 !important;
-        padding: 0 !important;
-        width: 100% !important;
-    }
-    [data-testid="stSidebar"] [data-testid="stMarkdown"] p {
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-
-    /* === NAV BUTTONS: Full-width, left-aligned, compact === */
-    [data-testid="stSidebar"] [data-testid="stButton"] {
-        width: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        display: block !important;
-        text-align: left !important;
-    }
-    [data-testid="stSidebar"] [data-testid="stButton"] > div {
-        display: block !important;
-        text-align: left !important;
-        width: 100% !important;
-    }
-    [data-testid="stSidebar"] [data-testid="stButton"] button {
-        width: 100% !important;
-        text-align: left !important;
-        justify-content: flex-start !important;
-        padding: 6px 10px 6px 14px !important;
-        margin: 0 !important;
+    /* Sidebar nav buttons — compact, left-aligned */
+    section[data-testid="stSidebar"] .stButton > button {
+        background: transparent !important;
         border: none !important;
         border-left: 3px solid transparent !important;
-        border-radius: 0 4px 4px 0 !important;
-        background: transparent !important;
-        color: rgba(255, 255, 255, 0.6) !important;
-        font-size: 13.5px !important;
-        font-weight: 400 !important;
-        line-height: 1.3 !important;
-        transition: all 0.15s ease !important;
+        border-radius: 0 6px 6px 0 !important;
+        color: rgba(255,255,255,0.7) !important;
+        text-align: left !important;
+        justify-content: flex-start !important;
+        padding: 7px 12px 7px 12px !important;
+        margin: 0 !important;
+        font-size: 0.85rem !important;
+        font-weight: 500 !important;
+        width: 100% !important;
+        cursor: pointer !important;
+        transition: background 0.15s ease, color 0.15s ease !important;
         min-height: 0 !important;
+        line-height: 1.4 !important;
     }
-    [data-testid="stSidebar"] [data-testid="stButton"] button:hover {
-        background: rgba(255, 255, 255, 0.04) !important;
-        color: rgba(255, 255, 255, 0.9) !important;
-        border-left-color: rgba(255, 255, 255, 0.15) !important;
+    section[data-testid="stSidebar"] .stButton > button:hover {
+        background: rgba(255,255,255,0.05) !important;
+        color: rgba(255,255,255,0.95) !important;
     }
-    /* Kill ALL focus/active states — prevents multi-highlight bug */
-    [data-testid="stSidebar"] [data-testid="stButton"] button:focus,
-    [data-testid="stSidebar"] [data-testid="stButton"] button:active,
-    [data-testid="stSidebar"] [data-testid="stButton"] button:focus-visible,
-    [data-testid="stSidebar"] [data-testid="stButton"] button:focus:not(:focus-visible),
-    [data-testid="stSidebar"] button:focus,
-    [data-testid="stSidebar"] button:active,
-    [data-testid="stSidebar"] button:focus-visible {
+    section[data-testid="stSidebar"] .stButton > button:focus {
         box-shadow: none !important;
-        outline: none !important;
-        background: transparent !important;
-        color: rgba(255, 255, 255, 0.6) !important;
-        border-left-color: transparent !important;
     }
 
-    /* === ACTIVE NAV ITEM === */
-    [data-testid="stSidebar"] .nav-active {
-        display: block !important;
-        text-align: left !important;
-        padding: 6px 10px 6px 11px !important;
-        margin: 0 !important;
-        background: rgba(29, 185, 84, 0.10) !important;
-        border-left: 3px solid #1DB954 !important;
-        border-radius: 0 4px 4px 0 !important;
-        color: #1DB954 !important;
-        font-weight: 600 !important;
-        font-size: 13.5px !important;
-        line-height: 1.3 !important;
-    }
-
-    /* === SECTION HEADERS === */
-    [data-testid="stSidebar"] .sidebar-section {
-        text-align: left !important;
-        font-size: 9.5px !important;
-        font-weight: 700 !important;
-        letter-spacing: 1.5px !important;
-        text-transform: uppercase !important;
-        color: rgba(255, 255, 255, 0.2) !important;
-        padding: 10px 0 2px 14px !important;
-        margin: 0 !important;
-        line-height: 1 !important;
-    }
-
-    /* === SELECTBOX (artist switcher): Compact === */
-    [data-testid="stSidebar"] [data-testid="stSelectbox"] {
-        margin-top: 4px !important;
-        margin-bottom: 6px !important;
-    }
-    [data-testid="stSidebar"] [data-testid="stSelectbox"] label {
-        display: none !important;
-    }
-
-    /* === PROFILE HEADER: Left-aligned flex row === */
-    [data-testid="stSidebar"] .artist-profile-header {
-        text-align: left !important;
-        display: flex !important;
-        align-items: center !important;
-        gap: 10px !important;
-        padding: 4px 0 6px 0 !important;
-        margin: 0 !important;
-    }
-
-    /* === STATS TABLE: Compact === */
-    .sidebar-stats {
-        background: rgba(255,255,255,0.03);
-        border: 1px solid rgba(255,255,255,0.06);
-        border-radius: 6px;
-        padding: 6px 10px;
-        margin: 2px 0 4px 0;
-    }
-
-    /* === SOCIAL ICONS ROW === */
-    .social-icons-row {
-        margin: 2px 0 4px 0 !important;
-        padding: 0 !important;
-    }
-
-    /* === SIDEBAR DIVIDERS === */
-    [data-testid="stSidebar"] hr {
-        margin: 6px 0 !important;
-        border-color: rgba(255, 255, 255, 0.06) !important;
+    /* Section headers in sidebar */
+    .sidebar-section {
+        font-size: 10px;
+        font-weight: 600;
+        color: rgba(255,255,255,0.35);
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        padding: 14px 12px 4px 12px;
+        margin: 0;
+        line-height: 1;
     }
 
     /* === METRIC CARDS === */
@@ -429,7 +312,7 @@ with st.sidebar:
     # Avatar + name
     hue = sum(ord(c) for c in name) % 360
     st.markdown(f"""
-    <div class="artist-profile-header">
+    <div style="padding:8px 12px 6px 12px;display:flex;align-items:center;gap:10px">
         <div style="display:inline-flex;align-items:center;justify-content:center;
             width:36px;height:36px;border-radius:50%;
             background:linear-gradient(135deg, hsl({hue},50%,35%), hsl({(hue+60)%360},40%,25%));
@@ -459,7 +342,7 @@ with st.sidebar:
                 f'{icon}</a>'
             )
         st.markdown(
-            f'<div class="social-icons-row" style="display:flex;gap:5px;align-items:center">{"".join(icons_html)}</div>',
+            f'<div style="display:flex;gap:5px;align-items:center;padding:0 12px;margin:0 0 6px 0">{"".join(icons_html)}</div>',
             unsafe_allow_html=True,
         )
 
@@ -482,7 +365,8 @@ with st.sidebar:
             )
         if stats_html:
             st.markdown(
-                f'<div class="sidebar-stats">{"".join(stats_html)}</div>',
+                f'<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;'
+                f'padding:6px 12px;margin:0 12px 8px 12px">{"".join(stats_html)}</div>',
                 unsafe_allow_html=True,
             )
 
@@ -505,7 +389,10 @@ with st.sidebar:
             is_active = (st.session_state.current_page == page_key)
             if is_active:
                 st.markdown(
-                    f'<div class="nav-active">{label}</div>',
+                    f'<div style="background:rgba(29,185,84,0.15);border-left:3px solid #1DB954;'
+                    f'border-radius:0 6px 6px 0;padding:7px 12px;margin:0;'
+                    f'font-size:0.85rem;font-weight:600;color:#1DB954;line-height:1.4">'
+                    f'{label}</div>',
                     unsafe_allow_html=True,
                 )
             else:
@@ -515,7 +402,7 @@ with st.sidebar:
 
     # Version footer
     st.markdown(
-        '<div style="font-size:0.65rem;color:rgba(255,255,255,0.2);padding:12px 0 0 0">'
+        '<div style="font-size:0.65rem;color:rgba(255,255,255,0.2);padding:20px 12px 0 12px">'
         'v5.2</div>',
         unsafe_allow_html=True,
     )
