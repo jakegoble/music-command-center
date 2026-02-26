@@ -8,8 +8,8 @@ import streamlit as st
 
 from theme import (
     SPOTIFY_GREEN, ACCENT_BLUE, GOLD, AMBER, MUTED, IG_PINK,
-    PLOTLY_LAYOUT, kpi_row, section, spacer, genre_pill, genre_pills,
-    GENRE_COLORS, platform_icon, inject_page_accent, track_row,
+    PLOTLY_LAYOUT, kpi_row, section, spacer, genre_pill,
+    GENRE_COLORS, inject_page_accent, track_row,
 )
 
 
@@ -268,45 +268,33 @@ def render() -> None:
         col1, col2, col3 = st.columns(3, gap="large")
 
         with col1:
-            st.markdown("""
+            missing = unified[unified["ISRC"] == "—"][["song", "artist"]].copy()
+            items = "".join(f"<div style='color:#c9d1d9;font-size:0.85rem;padding:2px 0'>• <b>{r['song']}</b> ({r['artist']})</div>" for _, r in missing.iterrows()) if not missing.empty else "<div style='color:#3fb950;font-size:0.85rem'>All tracks have ISRCs</div>"
+            st.markdown(f"""
 <div style="background:#161b22;border:1px solid #21262d;border-radius:10px;padding:18px 20px">
 <div style="font-size:0.78rem;color:#8b949e;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px">Missing ISRCs</div>
-""", unsafe_allow_html=True)
-            missing = unified[unified["ISRC"] == "—"][["song", "artist"]].copy()
-            if not missing.empty:
-                for _, row in missing.iterrows():
-                    st.markdown(f"- **{row['song']}** ({row['artist']})")
-            else:
-                st.markdown("All tracks have ISRCs")
-            st.markdown("</div>", unsafe_allow_html=True)
+{items}
+</div>""", unsafe_allow_html=True)
 
         with col2:
-            st.markdown("""
+            no_date = unified[unified["release_date"].isna()][["song", "artist"]].copy()
+            items = "".join(f"<div style='color:#c9d1d9;font-size:0.85rem;padding:2px 0'>• <b>{r['song']}</b> ({r['artist']})</div>" for _, r in no_date.iterrows()) if not no_date.empty else "<div style='color:#3fb950;font-size:0.85rem'>All tracks have release dates</div>"
+            st.markdown(f"""
 <div style="background:#161b22;border:1px solid #21262d;border-radius:10px;padding:18px 20px">
 <div style="font-size:0.78rem;color:#8b949e;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px">Missing Release Dates</div>
-""", unsafe_allow_html=True)
-            no_date = unified[unified["release_date"].isna()][["song", "artist"]].copy()
-            if not no_date.empty:
-                for _, row in no_date.iterrows():
-                    st.markdown(f"- **{row['song']}** ({row['artist']})")
-            else:
-                st.markdown("All tracks have release dates")
-            st.markdown("</div>", unsafe_allow_html=True)
+{items}
+</div>""", unsafe_allow_html=True)
 
         with col3:
-            st.markdown("""
+            no_atmos = unified[unified["Dolby Atmos"] != "Yes"][["song", "artist"]].copy()
+            rows = no_atmos.head(10)
+            items = "".join(f"<div style='color:#c9d1d9;font-size:0.85rem;padding:2px 0'>• <b>{r['song']}</b> ({r['artist']})</div>" for _, r in rows.iterrows()) if not no_atmos.empty else "<div style='color:#3fb950;font-size:0.85rem'>All tracks have Atmos mixes</div>"
+            extra = f"<div style='color:#484f58;font-size:0.78rem;margin-top:4px'>...and {len(no_atmos) - 10} more</div>" if len(no_atmos) > 10 else ""
+            st.markdown(f"""
 <div style="background:#161b22;border:1px solid #21262d;border-radius:10px;padding:18px 20px">
 <div style="font-size:0.78rem;color:#8b949e;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px">No Dolby Atmos</div>
-""", unsafe_allow_html=True)
-            no_atmos = unified[unified["Dolby Atmos"] != "Yes"][["song", "artist"]].copy()
-            if not no_atmos.empty:
-                for _, row in no_atmos.head(10).iterrows():
-                    st.markdown(f"- **{row['song']}** ({row['artist']})")
-                if len(no_atmos) > 10:
-                    st.caption(f"...and {len(no_atmos) - 10} more")
-            else:
-                st.markdown("All tracks have Atmos mixes")
-            st.markdown("</div>", unsafe_allow_html=True)
+{items}{extra}
+</div>""", unsafe_allow_html=True)
 
         spacer(20)
 

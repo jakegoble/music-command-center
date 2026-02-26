@@ -125,8 +125,8 @@ st.markdown("""
     [data-testid="stMetricLabel"] { color: #8b949e; font-size: 0.8rem; font-weight: 500; }
     [data-testid="stMetricValue"] { color: #f0f6fc; font-size: 1.5rem; font-weight: 700; }
 
-    /* Tabs */
-    .stTabs [data-baseweb="tab-list"] { gap: 4px; border-bottom: 1px solid #21262d; }
+    /* Tabs — left-aligned */
+    .stTabs [data-baseweb="tab-list"] { gap: 4px; border-bottom: 1px solid #21262d; justify-content: flex-start; }
     .stTabs [data-baseweb="tab"] {
         background: transparent;
         border-radius: 8px 8px 0 0;
