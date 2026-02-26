@@ -14,7 +14,7 @@ from theme import (
 
 def render() -> None:
     from data_loader import load_songs_all, load_catalog, load_songstats_jakke, load_songstats_enjune
-    from services.revenue_estimator import estimate_revenue, RATES, PLATFORM_SPLIT
+    from services.revenue_estimator import estimate_revenue, RATES, PLATFORM_SPLIT, get_jake_split
 
     songs = load_songs_all()
     catalog_raw = load_catalog()
@@ -47,6 +47,10 @@ def render() -> None:
     unified["est_revenue"] = unified["streams"].apply(
         lambda s: estimate_revenue(int(s / 0.60)).estimated_revenue if s > 0 else 0
     )
+
+    # Splits
+    unified["jake_split"] = unified["song"].apply(get_jake_split)
+    unified["jake_revenue"] = unified["est_revenue"] * unified["jake_split"]
 
     # Songstats popularity
     track_pop = ss.get("track_popularity", {})
@@ -110,15 +114,19 @@ def render() -> None:
         spacer(8)
         display = filtered[[
             "song", "artist", "streams", "ss_popularity", "est_revenue",
+            "jake_split", "jake_revenue",
             "Writers", "ISRC", "Dolby Atmos", "release_date", "collaborators",
         ]].copy()
         display["release_date"] = display["release_date"].dt.strftime("%Y-%m-%d").fillna("—")
         display["streams"] = display["streams"].apply(lambda x: f"{x:,}")
         display["est_revenue"] = display["est_revenue"].apply(lambda x: f"${x:,.2f}")
+        display["jake_split"] = display["jake_split"].apply(lambda x: f"{x:.0%}")
+        display["jake_revenue"] = display["jake_revenue"].apply(lambda x: f"${x:,.2f}")
         display["ss_popularity"] = display["ss_popularity"].apply(lambda x: str(x) if x > 0 else "—")
         display["collaborators"] = display["collaborators"].fillna("—")
         display.columns = [
             "Song", "Artist", "Streams", "Popularity", "Est. Revenue",
+            "Jake's %", "Jake's Rev",
             "Writers", "ISRC", "Atmos", "Released", "Collaborators",
         ]
         st.dataframe(display, use_container_width=True, hide_index=True, height=520)
@@ -135,12 +143,13 @@ def render() -> None:
 
         if selected_track:
             track = unified[unified["song"] == selected_track].iloc[0]
-            c1, c2, c3, c4, c5 = st.columns(5)
+            c1, c2, c3, c4, c5, c6 = st.columns(6)
             c1.metric("Streams", f"{track['streams']:,}")
             c2.metric("Popularity", str(track["ss_popularity"]) if track["ss_popularity"] > 0 else "—")
             c3.metric("Est. Revenue", f"${track['est_revenue']:,.2f}")
-            c4.metric("Artist", track["artist"])
-            c5.metric("Atmos", track["Dolby Atmos"])
+            c4.metric("Jake's Share", f"${track['jake_revenue']:,.2f}")
+            c5.metric("Split", f"{track['jake_split']:.0%}")
+            c6.metric("Atmos", track["Dolby Atmos"])
 
             spacer(12)
             col_a, col_b = st.columns(2)

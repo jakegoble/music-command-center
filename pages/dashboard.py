@@ -55,14 +55,30 @@ def render() -> None:
     ])
     spacer(12)
 
-    # --- Currently playlisted indicator ---
+    # --- Currently playlisted — interactive ---
+    playlisted_songs = ss.get("currently_playlisted", [])
+    top_playlists = ss.get("top_playlists", [])
+    total_playlists = ss["spotify"]["current_playlists"]
+    total_reach = ss["spotify"]["playlist_reach"]
+
     st.markdown(f"""
     <div style="background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 18px;margin-bottom:8px">
         <span style="color:#8b949e;font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Currently Playlisted</span>
-        <span style="color:#1DB954;font-size:0.9rem;margin-left:12px;font-weight:500">{currently_playlisted}</span>
-        <span style="color:#484f58;font-size:0.78rem;margin-left:8px">on {ss['spotify']['current_playlists']} playlists</span>
+        <span style="color:#484f58;font-size:0.78rem;margin-left:8px">{total_playlists} playlists · {total_reach:,} reach</span>
     </div>
     """, unsafe_allow_html=True)
+    cols = st.columns(len(playlisted_songs)) if playlisted_songs else []
+    for i, song_name in enumerate(playlisted_songs):
+        with cols[i]:
+            song_data = songs[songs["song"] == song_name]
+            streams_text = f"{song_data.iloc[0]['streams']:,} streams" if not song_data.empty else ""
+            with st.expander(f"🎵 **{song_name}**"):
+                if streams_text:
+                    st.caption(streams_text)
+                if top_playlists:
+                    st.markdown("**Top playlists (all tracks):**")
+                    for pl in top_playlists[:5]:
+                        st.markdown(f"- {pl['name']} — {pl['followers']:,} followers")
 
     spacer(24)
 

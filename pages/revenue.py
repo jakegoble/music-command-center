@@ -1,4 +1,4 @@
-"""Revenue — Streaming revenue estimates and projections."""
+"""Revenue — Streaming revenue estimates, splits, and projections."""
 from __future__ import annotations
 
 import plotly.express as px
@@ -14,7 +14,9 @@ from theme import (
 
 def render() -> None:
     from data_loader import load_songs_all, load_songstats_jakke, load_songstats_enjune
-    from services.revenue_estimator import estimate_revenue, monthly_revenue_target, RATES, PLATFORM_SPLIT
+    from services.revenue_estimator import (
+        estimate_revenue, RATES, PLATFORM_SPLIT, get_jake_split,
+    )
 
     songs = load_songs_all()
     ss = load_songstats_jakke()
@@ -23,7 +25,7 @@ def render() -> None:
     st.markdown("""
     <div style="margin-bottom:28px">
         <h1 style="margin:0;font-size:1.8rem;font-weight:700;color:#f0f6fc">Revenue</h1>
-        <p style="color:#8b949e;margin:4px 0 0 0;font-size:0.9rem">Streaming revenue estimates, per-track breakdown, and projections</p>
+        <p style="color:#8b949e;margin:4px 0 0 0;font-size:0.9rem">Streaming revenue estimates, ownership splits, and projections</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -36,17 +38,23 @@ def render() -> None:
     enjune_rev = estimate_revenue(enjune_total)
     combined_rev = estimate_revenue(combined)
 
-    # Per-track revenue
+    # Per-track revenue with splits
     songs_rev = songs.copy()
     songs_rev["est_total_streams"] = (songs_rev["streams"] / 0.60).astype(int)
     songs_rev["est_revenue"] = songs_rev["est_total_streams"].apply(
         lambda s: estimate_revenue(s).estimated_revenue
     )
+    songs_rev["jake_split"] = songs_rev["song"].apply(get_jake_split)
+    songs_rev["jake_revenue"] = songs_rev["est_revenue"] * songs_rev["jake_split"]
+
+    total_jake_revenue = songs_rev["jake_revenue"].sum()
+    total_est_revenue = songs_rev["est_revenue"].sum()
+    avg_split = total_jake_revenue / total_est_revenue if total_est_revenue > 0 else 1.0
 
     # --- KPIs ---
     kpi_row([
         {"label": "Est. Total Revenue", "value": f"${combined_rev.estimated_revenue:,.0f}", "sub": f"From {combined:,.0f} cross-platform streams", "accent": GOLD},
-        {"label": "Jakke Revenue", "value": f"${jakke_rev.estimated_revenue:,.0f}", "sub": f"{jakke_cross:,.0f} streams", "accent": SPOTIFY_GREEN},
+        {"label": "Jake's Net Revenue", "value": f"${total_jake_revenue:,.0f}", "sub": f"After splits (avg {avg_split:.0%} ownership)", "accent": SPOTIFY_GREEN},
         {"label": "Enjune Revenue", "value": f"${enjune_rev.estimated_revenue:,.0f}", "sub": f"{enjune_total:,.0f} streams", "accent": AMBER},
         {"label": "Blended Rate", "value": f"${combined_rev.blended_rate:.4f}", "sub": "Per stream (all platforms)"},
     ])
@@ -97,29 +105,34 @@ def render() -> None:
 
     spacer(28)
 
-    # --- Top earners ---
-    section("Top Earning Tracks")
-    top_earners = songs_rev.nlargest(15, "est_revenue").sort_values("est_revenue")
-    fig_top = px.bar(
-        top_earners, x="est_revenue", y="song", orientation="h",
-        color_discrete_sequence=[GOLD],
-    )
-    fig_top.update_layout(**PLOTLY_LAYOUT, height=480, yaxis_title="", xaxis_title="Estimated Revenue ($)")
+    # --- Top earners (Jake's share) ---
+    section("Top Earning Tracks — Jake's Share")
+    top_earners = songs_rev.nlargest(15, "jake_revenue").sort_values("jake_revenue")
+    fig_top = go.Figure()
+    fig_top.add_trace(go.Bar(
+        x=top_earners["jake_revenue"], y=top_earners["song"], orientation="h",
+        marker_color=[GOLD if s >= 1.0 else AMBER for s in top_earners["jake_split"]],
+        text=top_earners["jake_split"].apply(lambda x: f"{x:.0%}"),
+        textposition="outside", textfont=dict(color=MUTED, size=10),
+        hovertemplate="%{y}<br>Jake's share: <b>$%{x:,.2f}</b><extra></extra>",
+    ))
+    fig_top.update_layout(**PLOTLY_LAYOUT, height=480, yaxis_title="", xaxis_title="Jake's Revenue ($)")
     fig_top.update_xaxes(tickprefix="$", tickformat=",")
-    fig_top.update_traces(hovertemplate="%{y}<br><b>$%{x:,.2f}</b><extra></extra>")
     st.plotly_chart(fig_top, use_container_width=True, key="rev_top_earners")
 
     spacer(28)
 
-    # --- Revenue table ---
+    # --- Revenue table with splits ---
     section("Revenue by Track")
     rev_display = songs_rev[[
-        "song", "artist", "streams", "est_total_streams", "est_revenue",
-    ]].sort_values("est_revenue", ascending=False).copy()
+        "song", "artist", "streams", "est_total_streams", "est_revenue", "jake_split", "jake_revenue",
+    ]].sort_values("jake_revenue", ascending=False).copy()
     rev_display["streams"] = rev_display["streams"].apply(lambda x: f"{x:,}")
     rev_display["est_total_streams"] = rev_display["est_total_streams"].apply(lambda x: f"{x:,}")
     rev_display["est_revenue"] = rev_display["est_revenue"].apply(lambda x: f"${x:,.2f}")
-    rev_display.columns = ["Song", "Artist", "Spotify Streams", "Est. Total Streams", "Est. Revenue"]
+    rev_display["jake_split"] = rev_display["jake_split"].apply(lambda x: f"{x:.0%}")
+    rev_display["jake_revenue"] = rev_display["jake_revenue"].apply(lambda x: f"${x:,.2f}")
+    rev_display.columns = ["Song", "Artist", "Spotify Streams", "Est. Total", "Total Rev", "Jake's %", "Jake's Share"]
     st.dataframe(rev_display, use_container_width=True, hide_index=True, height=400)
 
     spacer(32)
@@ -128,9 +141,9 @@ def render() -> None:
     section("Revenue Projection Tool")
     st.markdown("""
 <div style="background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 18px;margin-bottom:16px">
-    <span style="color:#8b949e;font-size:0.82rem">Adjust sliders to model future revenue based on monthly stream growth.</span>
+    <span style="color:#8b949e;font-size:0.82rem">Adjust sliders to model future revenue. Projections apply Jake's average split ({avg_split:.0%}) to new streams.</span>
 </div>
-    """, unsafe_allow_html=True)
+    """.format(avg_split=avg_split), unsafe_allow_html=True)
 
     col_s1, col_s2 = st.columns(2)
     with col_s1:
@@ -140,18 +153,20 @@ def render() -> None:
 
     # Build projection
     projection_data = []
-    cumulative_streams = combined  # start from current total
+    cumulative_streams = combined
     cumulative_revenue = combined_rev.estimated_revenue
 
     for m in range(1, months + 1):
         monthly_cross = int(monthly_streams / 0.60)
         monthly_rev = estimate_revenue(monthly_cross).estimated_revenue
+        monthly_jake = monthly_rev * avg_split
         cumulative_streams += monthly_cross
         cumulative_revenue += monthly_rev
         projection_data.append({
             "Month": m,
             "Monthly Streams": monthly_cross,
             "Monthly Revenue": monthly_rev,
+            "Jake's Monthly": monthly_jake,
             "Cumulative Streams": cumulative_streams,
             "Cumulative Revenue": cumulative_revenue,
         })
@@ -177,10 +192,11 @@ def render() -> None:
         section("Projection Summary")
         final = proj_df.iloc[-1]
         annual_rev = proj_df["Monthly Revenue"].sum()
+        annual_jake = proj_df["Jake's Monthly"].sum()
 
         kpi_row([
             {"label": f"{months}-Month Revenue", "value": f"${annual_rev:,.0f}", "accent": GOLD},
-            {"label": "Final Monthly", "value": f"${final['Monthly Revenue']:,.0f}"},
+            {"label": f"Jake's {months}-Month", "value": f"${annual_jake:,.0f}", "accent": SPOTIFY_GREEN},
         ])
         spacer(12)
         kpi_row([
@@ -189,4 +205,4 @@ def render() -> None:
         ])
 
     spacer(20)
-    st.caption("Revenue estimates use industry-average per-stream rates. Actual payouts vary by territory, subscription type, and distributor terms.")
+    st.caption("Revenue estimates use industry-average per-stream rates. Splits are default assumptions (50/50 for co-writes) — adjust in revenue_estimator.py. Actual payouts vary by territory, subscription type, and distributor terms.")

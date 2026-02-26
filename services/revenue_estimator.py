@@ -79,6 +79,53 @@ def estimate_revenue(total_streams: int, platform_split: dict[str, float] | None
     )
 
 
+# ---------------------------------------------------------------------------
+# Writer splits — default assumptions based on catalog data
+# Jake can manually adjust these percentages later.
+# Key: exact song name. Value: Jake Goble's ownership share (0.0–1.0).
+# ---------------------------------------------------------------------------
+JAKE_SPLITS: dict[str, float] = {
+    # Allen Blickle co-writes (50/50)
+    "Your Love's Not Wasted": 0.50,
+    "Sugar Tide": 0.50,
+    "Brick by Brick": 0.50,
+    "Delicate": 0.50,
+    "Drink You Slowly": 0.50,
+    "Late Night": 0.50,
+    "Hurricane": 0.50,
+    # Jake Goble + Trevor Coulter (50/50)
+    "Adriatic": 0.50,
+    "Whisper Of The Void": 0.50,
+    # Collaborator featured — Jake is primary writer (100%)
+    "Peace Of Mind": 1.0,       # Somelee = featured artist
+    "Karma Response": 1.0,      # Nuage = featured artist
+    "Waves": 1.0,               # Enjune = Jake's project
+    "Without Peace": 1.0,
+    "WAIT": 1.0,
+    "Shallow Mold": 1.0,        # matty co. = featured
+    "HOW DO YOU LOVE": 1.0,     # TÂCHES = featured
+    # Solo / self-released
+    "Waves (Acoustic)": 1.0,
+    "Burn": 1.0,
+    "Burn Me Up": 1.0,          # Enjune = Jake's project
+    "Release": 1.0,
+    "Father World (Mama Earth)": 1.0,
+    "Take Me With You": 1.0,
+    # Remixes — standard arrangement: Jake keeps master share (100%)
+    "Sugar Tide (Club Mix)": 1.0,
+    "Sugar Tide (Lofi Remix)": 1.0,
+    "Sugar Tide (Remix)": 1.0,
+    "Release (TRØVES Remix)": 1.0,
+    "Release (Curt Reynolds Remix)": 1.0,
+    "Burn Me Up (Jako Diaz Remix)": 1.0,
+}
+
+
+def get_jake_split(song_name: str) -> float:
+    """Get Jake's ownership share for a song. Defaults to 1.0 if not listed."""
+    return JAKE_SPLITS.get(song_name, 1.0)
+
+
 def estimate_track_revenue(spotify_streams: int) -> float:
     """Quick estimate: given Spotify streams, estimate total revenue across all platforms.
 
