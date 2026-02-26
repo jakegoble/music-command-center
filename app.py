@@ -99,30 +99,44 @@ st.markdown("""
         border-right: 1px solid #161b22;
     }
 
-    /* === SIDEBAR: Kill ALL gaps at EVERY nesting level === */
+    /* === SIDEBAR: Broad catch-all — force left-align on EVERY div === */
+    [data-testid="stSidebar"] div {
+        text-align: left !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    [data-testid="stSidebar"] p {
+        text-align: left !important;
+        margin: 0 !important;
+    }
+
+    /* === SIDEBAR: Tighter padding === */
+    [data-testid="stSidebarContent"] {
+        padding: 0.75rem 0.5rem !important;
+    }
+
+    /* === SIDEBAR: Kill gaps at every nesting level === */
     [data-testid="stSidebar"] [data-testid="stVerticalBlock"] {
-        gap: 0 !important;
+        gap: 1px !important;
     }
     [data-testid="stSidebar"] [data-testid="stVerticalBlock"] > div {
         margin: 0 !important;
         padding: 0 !important;
-        gap: 0 !important;
+        gap: 1px !important;
     }
     [data-testid="stSidebar"] [data-testid="stHorizontalBlock"] {
-        gap: 0 !important;
+        gap: 1px !important;
     }
 
-    /* === SIDEBAR: Force left-alignment on ALL element containers === */
+    /* === SIDEBAR: Element containers — block display, left-aligned === */
     [data-testid="stSidebar"] [data-testid="stElementContainer"] {
         margin: 0 !important;
         padding: 0 !important;
         display: block !important;
         text-align: left !important;
-        align-items: flex-start !important;
-        justify-content: flex-start !important;
     }
 
-    /* === SIDEBAR: Kill margin/padding on stMarkdown AND inner p tags === */
+    /* === SIDEBAR: Markdown + inner p tags === */
     [data-testid="stSidebar"] [data-testid="stMarkdown"] {
         margin: 0 !important;
         padding: 0 !important;
@@ -133,11 +147,6 @@ st.markdown("""
         padding: 0 !important;
     }
 
-    /* === SIDEBAR PADDING: Tighter overall === */
-    [data-testid="stSidebarContent"] {
-        padding: 1rem 0.75rem !important;
-    }
-
     /* === NAV BUTTONS: Full-width, left-aligned, compact === */
     [data-testid="stSidebar"] [data-testid="stButton"] {
         width: 100% !important;
@@ -146,7 +155,6 @@ st.markdown("""
         display: block !important;
         text-align: left !important;
     }
-    /* Kill centering on button's parent wrapper divs */
     [data-testid="stSidebar"] [data-testid="stButton"] > div {
         display: block !important;
         text-align: left !important;
@@ -174,11 +182,14 @@ st.markdown("""
         color: rgba(255, 255, 255, 0.9) !important;
         border-left-color: rgba(255, 255, 255, 0.15) !important;
     }
-    /* Kill ALL focus/active/focus-visible states to prevent multi-highlight */
+    /* Kill ALL focus/active states — prevents multi-highlight bug */
     [data-testid="stSidebar"] [data-testid="stButton"] button:focus,
     [data-testid="stSidebar"] [data-testid="stButton"] button:active,
     [data-testid="stSidebar"] [data-testid="stButton"] button:focus-visible,
-    [data-testid="stSidebar"] [data-testid="stButton"] button:focus:not(:focus-visible) {
+    [data-testid="stSidebar"] [data-testid="stButton"] button:focus:not(:focus-visible),
+    [data-testid="stSidebar"] button:focus,
+    [data-testid="stSidebar"] button:active,
+    [data-testid="stSidebar"] button:focus-visible {
         box-shadow: none !important;
         outline: none !important;
         background: transparent !important;
@@ -186,7 +197,7 @@ st.markdown("""
         border-left-color: transparent !important;
     }
 
-    /* === ACTIVE NAV ITEM: Green left border, subtle bg === */
+    /* === ACTIVE NAV ITEM === */
     [data-testid="stSidebar"] .nav-active {
         display: block !important;
         text-align: left !important;
@@ -201,7 +212,7 @@ st.markdown("""
         line-height: 1.3 !important;
     }
 
-    /* === SECTION HEADERS: Tiny, barely visible gray, left-aligned === */
+    /* === SECTION HEADERS === */
     [data-testid="stSidebar"] .sidebar-section {
         text-align: left !important;
         font-size: 9.5px !important;

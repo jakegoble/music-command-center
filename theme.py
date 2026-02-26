@@ -186,11 +186,12 @@ PIE_LAYOUT = dict(
 def apply_theme(fig, **overrides):
     """Apply the standard Plotly theme to a figure, safely merging overrides.
 
-    Filters out base-theme keys that conflict with overrides to prevent
-    'got multiple values for keyword argument' errors.
+    Uses single-dict merge to make duplicate-keyword errors impossible.
+    Overrides always win over base theme values.
     """
-    theme = {k: v for k, v in PLOTLY_LAYOUT.items() if k not in overrides}
-    fig.update_layout(**theme, **overrides)
+    merged = dict(PLOTLY_LAYOUT)
+    merged.update(overrides)
+    fig.update_layout(**merged)
     return fig
 
 

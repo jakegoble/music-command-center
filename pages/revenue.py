@@ -92,7 +92,7 @@ def render() -> None:
         ]).sort_values("Rate")
         fig_rates = px.bar(
             rate_df, x="Rate", y="Platform", orientation="h",
-            color_discrete_sequence=[ACCENT_BLUE],
+            color="Platform", color_discrete_map=colors,
         )
         apply_theme(fig_rates, height=340, yaxis_title="", xaxis_title="$/Stream")
         fig_rates.update_xaxes(tickprefix="$")
