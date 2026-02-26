@@ -41,12 +41,26 @@ st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-    /* Kill Streamlit chrome but keep sidebar toggle */
+    /* Collapse header to zero height but let sidebar button escape */
     header[data-testid="stHeader"] {
-        background: transparent !important;
-        height: auto !important;
+        visibility: hidden;
+        height: 0 !important;
+        min-height: 0 !important;
+        padding: 0 !important;
+        overflow: visible !important;
+        pointer-events: none !important;
     }
-    div[data-testid="stToolbar"] { display: none !important; }
+
+    /* Re-show the expand-sidebar button as a fixed overlay */
+    [data-testid="stExpandSidebarButton"] {
+        visibility: visible !important;
+        pointer-events: auto !important;
+        position: fixed !important;
+        top: 0.6rem !important;
+        left: 0.6rem !important;
+        z-index: 999995 !important;
+    }
+
     div[data-testid="stDecoration"] { display: none !important; }
     div[data-testid="stStatusWidget"] { display: none !important; }
     #MainMenu { display: none !important; }
