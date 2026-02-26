@@ -1,0 +1,86 @@
+{
+  "account": {
+    "username": "jakke",
+    "followers": 26353,
+    "following": 1842,
+    "posts_count": 1107
+  },
+  "period": {
+    "start": "2026-01-26",
+    "end": "2026-02-25",
+    "days": 30
+  },
+  "overview": {
+    "views_30d": 51773,
+    "accounts_reached": 5771,
+    "interactions": 669,
+    "accounts_engaged": 431,
+    "profile_visits": 936,
+    "external_link_taps": 5,
+    "conversations_started": 192
+  },
+  "views_by_content_type": {
+    "stories": 43641,
+    "reels": 7248,
+    "posts": 884
+  },
+  "interactions_by_content_type": {
+    "reels": 343,
+    "stories": 208,
+    "posts": 118
+  },
+  "follower_demographics": {
+    "top_cities": [
+      {"city": "Los Angeles", "percentage": 8.2},
+      {"city": "New York", "percentage": 5.1},
+      {"city": "London", "percentage": 3.4},
+      {"city": "San Francisco", "percentage": 2.8},
+      {"city": "Chicago", "percentage": 2.1}
+    ],
+    "top_countries": [
+      {"country": "United States", "percentage": 52.3},
+      {"country": "United Kingdom", "percentage": 8.7},
+      {"country": "Canada", "percentage": 5.2},
+      {"country": "Australia", "percentage": 3.9},
+      {"country": "Germany", "percentage": 2.8}
+    ],
+    "age_gender": {
+      "18-24": {"male": 12.3, "female": 8.7},
+      "25-34": {"male": 22.1, "female": 15.4},
+      "35-44": {"male": 14.2, "female": 9.8},
+      "45-54": {"male": 6.3, "female": 4.1},
+      "55+": {"male": 3.8, "female": 3.3}
+    }
+  },
+  "follower_active_hours": {
+    "0": 2145,
+    "1": 1432,
+    "2": 987,
+    "3": 756,
+    "4": 654,
+    "5": 876,
+    "6": 1987,
+    "7": 3456,
+    "8": 4876,
+    "9": 5994,
+    "10": 5432,
+    "11": 5234,
+    "12": 5993,
+    "13": 5678,
+    "14": 5123,
+    "15": 4987,
+    "16": 4765,
+    "17": 4543,
+    "18": 4321,
+    "19": 3987,
+    "20": 3654,
+    "21": 3210,
+    "22": 2876,
+    "23": 2543
+  },
+  "messaging": {
+    "conversations_started": 192,
+    "response_rate": 0.694,
+    "avg_response_time_hours": 2.3
+  }
+}
