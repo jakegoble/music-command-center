@@ -92,17 +92,35 @@ st.markdown("""
     }
 
     /* ── Sidebar: kill all vertical bloat ── */
-    [data-testid="stSidebar"] > div:first-child {
+    [data-testid="stSidebarContent"] {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
         padding-top: 1rem !important;
     }
+    [data-testid="stSidebar"] [data-testid="stVerticalBlock"] {
+        gap: 2px !important;
+    }
     [data-testid="stSidebar"] [data-testid="stVerticalBlock"] > div {
-        gap: 0px !important;
         padding-top: 0px !important;
         padding-bottom: 0px !important;
     }
 
+    /* Zero out all wrapper margins in sidebar */
+    [data-testid="stSidebar"] [data-testid="stMarkdown"] {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stElementContainer"] {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
     /* Sidebar nav buttons — compact, left-aligned */
-    section[data-testid="stSidebar"] .stButton > button {
+    [data-testid="stSidebar"] [data-testid="stButton"] {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stButton"] button {
         background: transparent !important;
         border: none !important;
         border-left: 3px solid transparent !important;
@@ -110,22 +128,36 @@ st.markdown("""
         color: rgba(255,255,255,0.7) !important;
         text-align: left !important;
         justify-content: flex-start !important;
-        padding: 7px 12px 7px 12px !important;
+        padding: 7px 12px !important;
         margin: 0 !important;
-        font-size: 0.85rem !important;
-        font-weight: 500 !important;
+        font-size: 14px !important;
+        font-weight: 400 !important;
         width: 100% !important;
         cursor: pointer !important;
-        transition: background 0.15s ease, color 0.15s ease !important;
+        transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease !important;
         min-height: 0 !important;
         line-height: 1.4 !important;
     }
-    section[data-testid="stSidebar"] .stButton > button:hover {
+    [data-testid="stSidebar"] [data-testid="stButton"] button:hover {
         background: rgba(255,255,255,0.05) !important;
         color: rgba(255,255,255,0.95) !important;
+        border-left-color: rgba(29,185,84,0.4) !important;
     }
-    section[data-testid="stSidebar"] .stButton > button:focus {
+    [data-testid="stSidebar"] [data-testid="stButton"] button:focus {
         box-shadow: none !important;
+    }
+
+    /* Active nav item */
+    .nav-active {
+        background: rgba(29,185,84,0.15);
+        border-left: 3px solid #1DB954;
+        border-radius: 0 6px 6px 0;
+        padding: 7px 12px;
+        margin: 0;
+        font-size: 14px;
+        font-weight: 600;
+        color: #1DB954;
+        line-height: 1.4;
     }
 
     /* Section headers in sidebar */
@@ -135,9 +167,32 @@ st.markdown("""
         color: rgba(255,255,255,0.35);
         text-transform: uppercase;
         letter-spacing: 1.5px;
-        padding: 14px 12px 4px 12px;
+        padding: 16px 0 4px 0;
         margin: 0;
         line-height: 1;
+    }
+
+    /* Artist profile header in sidebar */
+    .artist-profile-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 0 6px 0;
+    }
+
+    /* Sidebar stats block */
+    .sidebar-stats {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 6px;
+        padding: 6px 12px;
+        margin: 0 0 8px 0;
+    }
+
+    /* Tighten selectbox wrapper in sidebar */
+    [data-testid="stSidebar"] .stSelectbox {
+        margin-top: 0 !important;
+        margin-bottom: 4px !important;
     }
 
     /* ── Metric cards ── */
@@ -286,7 +341,7 @@ with st.sidebar:
     # Avatar + name
     hue = sum(ord(c) for c in name) % 360
     st.markdown(f"""
-    <div style="padding:8px 12px 6px 12px;display:flex;align-items:center;gap:10px">
+    <div class="artist-profile-header">
         <div style="display:inline-flex;align-items:center;justify-content:center;
             width:36px;height:36px;border-radius:50%;
             background:linear-gradient(135deg, hsl({hue},50%,35%), hsl({(hue+60)%360},40%,25%));
@@ -316,7 +371,7 @@ with st.sidebar:
                 f'{icon}</a>'
             )
         st.markdown(
-            f'<div style="display:flex;gap:5px;align-items:center;padding:0 12px;margin:0 0 6px 0">{"".join(icons_html)}</div>',
+            f'<div style="display:flex;gap:5px;align-items:center;padding:0;margin:0 0 6px 0">{"".join(icons_html)}</div>',
             unsafe_allow_html=True,
         )
 
@@ -339,8 +394,7 @@ with st.sidebar:
             )
         if stats_html:
             st.markdown(
-                f'<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;'
-                f'padding:6px 12px;margin:0 12px 8px 12px">{"".join(stats_html)}</div>',
+                f'<div class="sidebar-stats">{"".join(stats_html)}</div>',
                 unsafe_allow_html=True,
             )
 
@@ -363,10 +417,7 @@ with st.sidebar:
             is_active = (st.session_state.current_page == page_key)
             if is_active:
                 st.markdown(
-                    f'<div style="background:rgba(29,185,84,0.15);border-left:3px solid #1DB954;'
-                    f'border-radius:0 6px 6px 0;padding:7px 12px;margin:0;'
-                    f'font-size:0.85rem;font-weight:600;color:#1DB954;line-height:1.4">'
-                    f'{label}</div>',
+                    f'<div class="nav-active">{label}</div>',
                     unsafe_allow_html=True,
                 )
             else:
@@ -376,7 +427,7 @@ with st.sidebar:
 
     # Version footer
     st.markdown(
-        '<div style="font-size:0.65rem;color:rgba(255,255,255,0.2);padding:20px 12px 0 12px">'
+        '<div style="font-size:0.65rem;color:rgba(255,255,255,0.2);padding:20px 0 0 0">'
         'v5.1</div>',
         unsafe_allow_html=True,
     )
