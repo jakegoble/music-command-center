@@ -248,11 +248,14 @@ def kpi_row(cards: list[dict]) -> None:
 # Section header
 # ---------------------------------------------------------------------------
 def section(title: str, accent: str = "") -> None:
-    """Render a subtle uppercase section header."""
+    """Render a subtle uppercase section header.
+
+    Uses <div> instead of <p> to avoid Streamlit's paragraph color overrides.
+    """
     color = accent or "rgba(255,255,255,0.4)"
     st.markdown(
-        f'<p style="color:{color};font-size:11px;font-weight:700;letter-spacing:1px;'
-        f'text-transform:uppercase;margin:16px 0 4px 0">{title}</p>',
+        f'<div style="color:{color};font-size:11px;font-weight:700;letter-spacing:1px;'
+        f'text-transform:uppercase;margin:16px 0 4px 0">{title}</div>',
         unsafe_allow_html=True,
     )
 
@@ -473,15 +476,19 @@ def time_range_selector(key: str, options: list[str] | None = None,
 # Page accent CSS injection
 # ---------------------------------------------------------------------------
 def render_page_title(title: str, subtitle: str = "", accent_color: str = "") -> None:
-    """Render a styled page title with accent underline bar."""
+    """Render a styled page title with accent underline bar.
+
+    Uses <div> instead of <h1>/<p> to avoid Streamlit's heading/paragraph
+    color overrides that force white text.
+    """
     color = accent_color or ACCENT_BLUE
     sub_html = (
-        f'<p style="color:rgba(255,255,255,0.45);margin:3px 0 0;font-size:0.8rem">{subtitle}</p>'
+        f'<div style="color:rgba(255,255,255,0.45);margin:3px 0 0;font-size:0.8rem">{subtitle}</div>'
         if subtitle else ""
     )
     st.markdown(f"""
     <div style="margin-bottom:1rem">
-        <h1 style="color:{color};margin:0;font-size:1.6rem;font-weight:700;line-height:1.2">{title}</h1>
+        <div style="color:{color};margin:0;font-size:1.6rem;font-weight:700;line-height:1.2">{title}</div>
         {sub_html}
         <div style="width:32px;height:2.5px;background:{color};margin-top:6px;border-radius:2px"></div>
     </div>

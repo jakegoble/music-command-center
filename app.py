@@ -99,21 +99,36 @@ st.markdown("""
         border-right: 1px solid #161b22;
     }
 
-    /* === SIDEBAR: Kill the 16px gap between ALL sidebar elements === */
+    /* === SIDEBAR: Kill ALL gaps at EVERY nesting level === */
     [data-testid="stSidebar"] [data-testid="stVerticalBlock"] {
-        gap: 2px !important;
+        gap: 0 !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stVerticalBlock"] > div {
+        margin: 0 !important;
+        padding: 0 !important;
+        gap: 0 !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stHorizontalBlock"] {
+        gap: 0 !important;
     }
 
-    /* === SIDEBAR: Remove extra margin/padding on element containers === */
+    /* === SIDEBAR: Force left-alignment on ALL element containers === */
     [data-testid="stSidebar"] [data-testid="stElementContainer"] {
-        margin-top: 0 !important;
-        margin-bottom: 0 !important;
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: block !important;
+        text-align: left !important;
+        align-items: flex-start !important;
+        justify-content: flex-start !important;
     }
 
-    /* === SIDEBAR: Remove extra margin on stMarkdown wrappers === */
+    /* === SIDEBAR: Kill margin/padding on stMarkdown AND inner p tags === */
     [data-testid="stSidebar"] [data-testid="stMarkdown"] {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stMarkdown"] p {
         margin: 0 !important;
         padding: 0 !important;
     }
@@ -128,12 +143,20 @@ st.markdown("""
         width: 100% !important;
         margin: 0 !important;
         padding: 0 !important;
+        display: block !important;
+        text-align: left !important;
+    }
+    /* Kill centering on button's parent wrapper divs */
+    [data-testid="stSidebar"] [data-testid="stButton"] > div {
+        display: block !important;
+        text-align: left !important;
+        width: 100% !important;
     }
     [data-testid="stSidebar"] [data-testid="stButton"] button {
         width: 100% !important;
         text-align: left !important;
         justify-content: flex-start !important;
-        padding: 7px 10px 7px 14px !important;
+        padding: 6px 10px 6px 14px !important;
         margin: 0 !important;
         border: none !important;
         border-left: 3px solid transparent !important;
@@ -151,15 +174,23 @@ st.markdown("""
         color: rgba(255, 255, 255, 0.9) !important;
         border-left-color: rgba(255, 255, 255, 0.15) !important;
     }
-    [data-testid="stSidebar"] [data-testid="stButton"] button:focus {
+    /* Kill ALL focus/active/focus-visible states to prevent multi-highlight */
+    [data-testid="stSidebar"] [data-testid="stButton"] button:focus,
+    [data-testid="stSidebar"] [data-testid="stButton"] button:active,
+    [data-testid="stSidebar"] [data-testid="stButton"] button:focus-visible,
+    [data-testid="stSidebar"] [data-testid="stButton"] button:focus:not(:focus-visible) {
         box-shadow: none !important;
+        outline: none !important;
+        background: transparent !important;
+        color: rgba(255, 255, 255, 0.6) !important;
+        border-left-color: transparent !important;
     }
 
     /* === ACTIVE NAV ITEM: Green left border, subtle bg === */
     [data-testid="stSidebar"] .nav-active {
         display: block !important;
         text-align: left !important;
-        padding: 7px 10px 7px 11px !important;
+        padding: 6px 10px 6px 11px !important;
         margin: 0 !important;
         background: rgba(29, 185, 84, 0.10) !important;
         border-left: 3px solid #1DB954 !important;
@@ -170,15 +201,15 @@ st.markdown("""
         line-height: 1.3 !important;
     }
 
-    /* === SECTION HEADERS: Tiny, muted, left-aligned === */
+    /* === SECTION HEADERS: Tiny, barely visible gray, left-aligned === */
     [data-testid="stSidebar"] .sidebar-section {
         text-align: left !important;
         font-size: 9.5px !important;
         font-weight: 700 !important;
         letter-spacing: 1.5px !important;
         text-transform: uppercase !important;
-        color: rgba(255, 255, 255, 0.25) !important;
-        padding: 12px 0 3px 14px !important;
+        color: rgba(255, 255, 255, 0.2) !important;
+        padding: 10px 0 2px 14px !important;
         margin: 0 !important;
         line-height: 1 !important;
     }
