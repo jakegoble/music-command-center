@@ -9,6 +9,7 @@ import streamlit as st
 from theme import (
     SPOTIFY_GREEN, ACCENT_BLUE, GOLD, AMBER, MUTED, IG_PINK,
     PLOTLY_LAYOUT, kpi_row, section, spacer, platform_icon,
+    inject_page_accent,
 )
 
 
@@ -21,6 +22,8 @@ def render() -> None:
     songs = load_songs_all()
     ss = load_songstats_jakke()
     enjune = load_songstats_enjune()
+
+    inject_page_accent("revenue")
 
     st.markdown("""
     <div style="margin-bottom:28px">

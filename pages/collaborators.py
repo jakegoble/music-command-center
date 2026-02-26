@@ -9,6 +9,7 @@ import streamlit as st
 from theme import (
     IG_PINK, SPOTIFY_GREEN, ACCENT_BLUE, GOLD, AMBER, MUTED,
     PLOTLY_LAYOUT, kpi_row, section, spacer, avatar,
+    inject_page_accent, collab_chip, collab_chips,
 )
 
 TIER_COLORS = {1: GOLD, 2: ACCENT_BLUE, 3: MUTED}
@@ -20,6 +21,8 @@ def render() -> None:
 
     collabs = load_ig_collaborators()
     music_collabs = load_music_collaborators()
+
+    inject_page_accent("collaborators")
 
     st.markdown("""
     <div style="margin-bottom:28px">

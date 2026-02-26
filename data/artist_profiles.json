@@ -1,0 +1,70 @@
+{
+  "jakke": {
+    "name": "Jakke",
+    "subtitle": "ARTIST",
+    "verified": true,
+    "country": "US",
+    "country_flag": "\ud83c\uddfa\ud83c\uddf8",
+    "bio": "Jakke began his musical journey in alternative rock, making waves under his former project Enjune. His talent earned spots on Spotify's Chill Tracks and Apple Music's New in Dance. Now blending live instrumentation with electronic elements, he delivers mesmerizing hybrid sets.",
+    "genres": ["Alternative", "Dance", "Alt Pop", "Indie Chill", "Folk", "Breakbeat", "Afro House"],
+    "collaborators": [
+      {"name": "Allen Blickle", "role": "Writer/Producer"},
+      {"name": "Trevor Coulter", "role": "Writer/Producer"},
+      {"name": "Nuage", "role": "Featured"},
+      {"name": "Somelee", "role": "Featured"},
+      {"name": "matty co.", "role": "Featured"},
+      {"name": "T\u00c2CHES", "role": "Featured"}
+    ],
+    "social_links": {
+      "spotify": "https://open.spotify.com/artist/JAKKE_SPOTIFY_ID",
+      "instagram": "https://instagram.com/jakkemusic",
+      "youtube": "https://youtube.com/@jakkemusic",
+      "soundcloud": "https://soundcloud.com/jakkemusic",
+      "apple_music": "https://music.apple.com/artist/jakke",
+      "beatport": "https://beatport.com/artist/jakke",
+      "amazon_music": "https://music.amazon.com/artists/jakke",
+      "tiktok": "https://tiktok.com/@jakkemusic"
+    },
+    "performance": {
+      "followers": {"value": 142000, "display": "142K", "platforms": ["spotify", "soundcloud", "instagram", "youtube"]},
+      "streams": {"value": 4610000, "display": "4.61M", "platforms": ["spotify", "youtube", "soundcloud"]},
+      "radio_plays": {"value": 640, "display": "640", "platforms": ["soundcloud"]},
+      "playlists": {"value": 820, "display": "820", "platforms": ["spotify", "soundcloud", "apple_music"]},
+      "playlist_reach": {"value": 15700000, "display": "15.7M", "platforms": ["spotify", "beatport"]},
+      "monthly_listeners": {"value": 32100, "display": "32.1K", "platforms": ["spotify"]},
+      "spotify_followers": {"value": 27100, "display": "27.1K", "platforms": ["spotify"]},
+      "popularity": {"value": 23, "display": "23%", "platforms": ["spotify"]}
+    }
+  },
+  "enjune": {
+    "name": "Enjune",
+    "subtitle": "ARTIST",
+    "verified": false,
+    "country": "US",
+    "country_flag": "\ud83c\uddfa\ud83c\uddf8",
+    "bio": "Enjune is Jake Goble's legacy project \u2014 alternative rock turned electronic. Follow @Jakke on Instagram for the latest.",
+    "genres": ["Alternative", "Indie", "Chill", "Electronic"],
+    "collaborators": [
+      {"name": "Jake Goble", "role": "Producer/Writer"},
+      {"name": "Jakke", "role": "Related Artist"}
+    ],
+    "social_links": {
+      "spotify": "https://open.spotify.com/artist/ENJUNE_SPOTIFY_ID",
+      "instagram": "https://instagram.com/jakkemusic",
+      "youtube": "https://youtube.com/@jakkemusic",
+      "apple_music": "https://music.apple.com/artist/enjune",
+      "soundcloud": "https://soundcloud.com/enjune",
+      "amazon_music": "https://music.amazon.com/artists/enjune"
+    },
+    "performance": {
+      "followers": {"value": 5740, "display": "5,740", "platforms": ["spotify", "soundcloud", "instagram"]},
+      "streams": {"value": 2650000, "display": "2.65M", "platforms": ["spotify", "youtube", "soundcloud"]},
+      "playlists": {"value": 258, "display": "258", "platforms": ["spotify", "apple_music"]},
+      "playlist_reach": {"value": 2450000, "display": "2.45M", "platforms": ["spotify"]},
+      "charts": {"value": 15, "display": "15", "platforms": ["apple_music", "beatport"]},
+      "monthly_listeners": {"value": 6492, "display": "6,492", "platforms": ["spotify"]},
+      "spotify_followers": {"value": 1474, "display": "1,474", "platforms": ["spotify"]},
+      "popularity": {"value": 13, "display": "13%", "platforms": ["spotify"]}
+    }
+  }
+}

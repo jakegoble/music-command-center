@@ -9,6 +9,7 @@ import streamlit as st
 from theme import (
     IG_PINK, IG_PURPLE, IG_ORANGE, ACCENT_BLUE, MUTED, GOLD,
     PLOTLY_LAYOUT, chart_layout, kpi_row, section, spacer, platform_icon,
+    inject_page_accent, get_platform_icon_html,
 )
 
 # UTC → ET offset (EST = -5)
@@ -38,9 +39,13 @@ def render() -> None:
     interactions = ig["overview"]["interactions"]
     engagement_rate = (interactions / followers * 100) if followers > 0 else 0
 
+    inject_page_accent("instagram")
+
     st.markdown(f"""
     <div style="margin-bottom:28px">
-        <h1 style="margin:0;font-size:1.8rem;font-weight:700;color:#f0f6fc">Instagram</h1>
+        <h1 style="margin:0;font-size:1.8rem;font-weight:700;color:#f0f6fc">
+            {get_platform_icon_html("instagram", 24)} Instagram
+        </h1>
         <p style="color:#8b949e;margin:4px 0 0 0;font-size:0.9rem">
             @jakke · {followers:,} followers · {ig['account']['posts_count']:,} posts
         </p>

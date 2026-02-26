@@ -9,7 +9,8 @@ import streamlit as st
 from theme import (
     SPOTIFY_GREEN, IG_PINK, ACCENT_BLUE, GOLD, AMBER, MUTED,
     PLOTLY_LAYOUT, kpi_row, section, spacer,
-    platform_icon, PLATFORM_ICONS,
+    platform_icon, PLATFORM_ICONS, inject_page_accent,
+    get_platform_icon_html,
 )
 
 
@@ -23,6 +24,8 @@ def render() -> None:
     enjune = load_songstats_enjune()
     ig = load_ig_insights()
     songs = load_songs_all()
+
+    inject_page_accent("cross_platform")
 
     st.markdown("""
     <div style="margin-bottom:28px">
@@ -176,13 +179,13 @@ Last.fm data requires a free API key. Set <code>LASTFM_API_KEY</code> in secrets
     cols = st.columns(len(statuses))
     for col, status in zip(cols, statuses):
         with col:
-            icon_html = platform_icon(status.name, "1.2rem") if status.name in PLATFORM_ICONS else ""
+            svg_icon = get_platform_icon_html(status.name, 22)
             dot = "🟢" if status.configured else "⚪"
             label = "Connected" if status.configured else "Not configured"
             st.markdown(f"""
 <div style="background:linear-gradient(135deg, #161b22 0%, #1c2333 100%);border:1px solid #21262d;border-radius:10px;padding:14px 16px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.25)">
-    <div style="font-size:1rem;margin-bottom:6px">{icon_html}{dot}</div>
+    <div style="margin-bottom:6px">{svg_icon}</div>
     <div style="font-size:0.75rem;color:#8b949e;font-weight:600;text-transform:uppercase;letter-spacing:0.05em">{status.name}</div>
-    <div style="font-size:0.72rem;color:{'#3fb950' if status.configured else '#484f58'};margin-top:3px">{label}</div>
+    <div style="font-size:0.72rem;color:{'#3fb950' if status.configured else '#484f58'};margin-top:3px">{dot} {label}</div>
 </div>
             """, unsafe_allow_html=True)

@@ -5,7 +5,10 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
-from theme import IG_PINK, SPOTIFY_GREEN, ACCENT_BLUE, GOLD, MUTED, PLOTLY_LAYOUT, chart_layout, section, spacer
+from theme import (
+    IG_PINK, SPOTIFY_GREEN, ACCENT_BLUE, GOLD, MUTED,
+    PLOTLY_LAYOUT, chart_layout, section, spacer, inject_page_accent,
+)
 
 MILESTONES = [
     {"year": 2012, "event": "First Instagram post", "icon": "📸", "detail": "27 posts, 12 avg likes — the beginning"},
@@ -27,6 +30,8 @@ def render() -> None:
 
     yearly = load_ig_yearly()
     monthly = load_ig_monthly()
+
+    inject_page_accent("growth")
 
     st.markdown("""
     <div style="margin-bottom:28px">

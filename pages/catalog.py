@@ -9,7 +9,7 @@ import streamlit as st
 from theme import (
     SPOTIFY_GREEN, ACCENT_BLUE, GOLD, AMBER, MUTED, IG_PINK,
     PLOTLY_LAYOUT, kpi_row, section, spacer, genre_pill, genre_pills,
-    GENRE_COLORS, platform_icon,
+    GENRE_COLORS, platform_icon, inject_page_accent, track_row,
 )
 
 
@@ -21,6 +21,8 @@ def render() -> None:
     catalog_raw = load_catalog()
     ss = load_songstats_jakke()
     enjune = load_songstats_enjune()
+
+    inject_page_accent("catalog")
 
     st.markdown("""
     <div style="margin-bottom:28px">
@@ -144,10 +146,24 @@ def render() -> None:
 
         spacer(20)
 
-        # Track deep dives
+        # Track list with artwork placeholders (D9)
         section("Track Details")
+
+        # Visual track list — top 10
+        top_tracks = unified.nlargest(10, "streams")
+        for _, t in top_tracks.iterrows():
+            is_pl = t["song"] in playlisted
+            st.markdown(
+                track_row(
+                    t["song"], t["artist"], f"{t['streams']:,}",
+                    genre=t.get("genre", ""), playlisted=is_pl,
+                ),
+                unsafe_allow_html=True,
+            )
+
+        spacer(12)
         selected_track = st.selectbox(
-            "Select a track",
+            "Select a track for detail",
             unified.sort_values("streams", ascending=False)["song"].tolist(),
             key="cat_track_select",
         )
@@ -155,9 +171,16 @@ def render() -> None:
         if selected_track:
             track = unified[unified["song"] == selected_track].iloc[0]
             track_genre = track.get("genre", "")
-            if track_genre:
-                st.markdown(genre_pill(track_genre), unsafe_allow_html=True)
-                spacer(8)
+
+            # Track header with artwork placeholder
+            st.markdown(
+                track_row(
+                    track["song"], track["artist"], f"{track['streams']:,}",
+                    genre=track_genre, playlisted=selected_track in playlisted,
+                ),
+                unsafe_allow_html=True,
+            )
+            spacer(8)
             c1, c2, c3, c4, c5, c6 = st.columns(6)
             c1.metric("Streams", f"{track['streams']:,}")
             c2.metric("Popularity", str(track["ss_popularity"]) if track["ss_popularity"] > 0 else "—")

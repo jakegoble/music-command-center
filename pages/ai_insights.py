@@ -3,7 +3,10 @@ from __future__ import annotations
 
 import streamlit as st
 
-from theme import SPOTIFY_GREEN, IG_PINK, GOLD, MUTED, ACCENT_BLUE, AMBER, kpi_row, section, spacer
+from theme import (
+    SPOTIFY_GREEN, IG_PINK, GOLD, MUTED, ACCENT_BLUE, AMBER,
+    kpi_row, section, spacer, inject_page_accent,
+)
 
 
 def render() -> None:
@@ -16,6 +19,8 @@ def render() -> None:
     # Compute key metrics
     top_song = songs.loc[songs["streams"].idxmax()]
     combined_streams = ss["cross_platform"]["total_streams"] + enjune["spotify"]["total_streams"]
+
+    inject_page_accent("ai_insights")
 
     st.markdown("""
     <div style="margin-bottom:28px">
